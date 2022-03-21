@@ -17,12 +17,11 @@
 #include <stdlib.h>
 #define PASSWORD "12345"
 
-int	main(int argc, char **argv)
-{
+int check_arg(int argc, char **argv) {
 	if (argc != 3)
 	{
 		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
-		return (1);
+		return (-1);
 	}
 	std::string	port = argv[1];
 	std::string	passWord = argv[2];
@@ -32,21 +31,26 @@ int	main(int argc, char **argv)
 		if (!std::isdigit(port[i]))
 		{
 			std::cerr << RED << "Error : wrong format input" << NC << std::endl;
-			return (1);
+			return (-1);
 		}
 	}
-	int_port = atoi(argv[1]);
 	if (passWord != PASSWORD)
 	{
 		std::cerr << RED << "Error : wrong password input" << NC << std::endl;
 		return (1);
 	}
+	return (atoi(argv[1]));
+}
 
+int	main(int argc, char **argv)
+{
+	int int_port = check_arg(argc, argv);
 	int sock_fd, sock, reader;
 	struct sockaddr_in address;
 	int opted = 1;
 	int address_length = sizeof(address);
 	char buffer[1024] = {0};
+
 	std::string message = "A message from server !";
 	if (( sock_fd = socket ( AF_INET, SOCK_STREAM, 0)) == 0)
 	{
