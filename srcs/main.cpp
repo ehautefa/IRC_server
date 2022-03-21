@@ -22,7 +22,7 @@ int	main(int argc, char **argv)
 	std::string	passWord = argv[2];
 	for (unsigned int i = 0; port[i] != '\0'; i++)
 	{
-		if (!std::isdigit(port[i]) && port[i] != '.')
+		if (!std::isdigit(port[i]))
 		{
 			std::cerr << RED << "Error : wrong format input" << NC << std::endl;
 			return (1);
