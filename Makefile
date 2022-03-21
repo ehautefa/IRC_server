@@ -23,6 +23,7 @@ ${OBJS}:			| ${DIR_OBJ}
 
 ${DIR_OBJ}:
 				mkdir -p ${DIR_OBJ}
+				mkdir -p ${DIR_OBJ}/srcs
 
 ${DIR_OBJ}%.o:%.cpp		
 						${CC} ${FLAG} -c $< -o ${<:%.cpp=${DIR_OBJ}%.o}
