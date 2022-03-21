@@ -18,26 +18,22 @@
 #define PASSWORD "12345"
 
 int check_arg(int argc, char **argv) {
-	if (argc != 3)
-	{
+	if (argc != 3) {
 		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
 		return (-1);
 	}
 	std::string	port = argv[1];
 	std::string	passWord = argv[2];
 	int	int_port;
-	for (unsigned int i = 0; port[i] != '\0'; i++)
-	{
-		if (!std::isdigit(port[i]))
-		{
+	for (unsigned int i = 0; port[i] != '\0'; i++) {
+		if (!std::isdigit(port[i])) {
 			std::cerr << RED << "Error : wrong format input" << NC << std::endl;
 			return (-1);
 		}
 	}
-	if (passWord != PASSWORD)
-	{
+	if (passWord != PASSWORD) {
 		std::cerr << RED << "Error : wrong password input" << NC << std::endl;
-		return (1);
+		return (-1);
 	}
 	return (atoi(argv[1]));
 }
@@ -50,8 +46,10 @@ int	main(int argc, char **argv)
 	int opted = 1;
 	int address_length = sizeof(address);
 	char buffer[1024] = {0};
-
 	std::string message = "A message from server !";
+
+	if (int_port < 0)
+		return 1;
 	if (( sock_fd = socket ( AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		perror ( "Opening of Socket Failed !");
