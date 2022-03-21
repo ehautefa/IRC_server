@@ -15,7 +15,7 @@ int	main(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		std::cerr << RED << "Error : wrong numbers of args" << NC << std::endl;
+		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
 		return (1);
 	}
 	std::string	port = argv[1];

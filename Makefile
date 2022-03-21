@@ -1,6 +1,6 @@
-SRCS	=	main.cpp
+SRCS	=	srcs/main.cpp
 
-HEADER	=	easyfind.hpp
+HEADER	=	include/serv.hpp
 
 OBJS	=	${SRCS:%.cpp=${DIR_OBJ}%.o}
 
@@ -10,7 +10,7 @@ FLAG	=	-Wall -Werror -Wextra -Wshadow
 
 FLAG_DEBUG	=	-fsanitize=address -g3
 
-NAME	=	easy_find
+NAME	=	ircserv
 
 CC		=	c++ -std=c++98
 
