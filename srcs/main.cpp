@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <netdb.h>
+#include <poll.h>
 #define PASSWORD "12345"
 
 int check_arg(int argc, char **argv) {
