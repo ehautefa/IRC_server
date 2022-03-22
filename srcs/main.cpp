@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
+/*   Updated: 2022/03/22 17:25:30 by ehautefa         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #define NC "\e[0m"
 #define RED "\e[0;31m"
 #define GRN "\e[0;32m"
@@ -5,179 +17,165 @@
 #define GR "\e[0;90m"
 #define BL "\e[0;30m"
 
-#include <iostream>
-#include <cctype>
-#include <exception>
 #include <stdio.h>
-#include <unistd.h>
-#include <netinet/in.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 #include <string.h>
-#include <sstream>
+#include <poll.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
+#include <sys/wait.h>
+#include <signal.h>
+
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iostream>
+
 #define PASSWORD 	"12345"
-#define BACKLOG		3
+#define BACKLOG 10   // how many pending connections queue will hold
 
 std::string	itoa(int n) {
 	std::stringstream out;
 	out << n;
 	return(out.str());
-
 }
 
-int check_arg(int argc, char **argv) {
+bool	check_arg(int argc, char **argv) {
 	if (argc != 3) {
 		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
-		return (-1);
+		return false;
 	}
 	std::string	port = argv[1];
 	std::string	passWord = argv[2];
 	for (unsigned int i = 0; port[i] != '\0'; i++) {
 		if (!std::isdigit(port[i])) {
 			std::cerr << RED << "Error : wrong format input" << NC << std::endl;
-			return (-1);
+			return false;
 		}
 	}
 	if (passWord != PASSWORD) {
 		std::cerr << RED << "Error : wrong password input" << NC << std::endl;
-		return (-1);
+		return false;
 	}
-	return (atoi(argv[1]));
+	return true;
 }
 
-int		init_info_addr(int port, struct addrinfo *address) {
-	struct addrinfo hints;
-	
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-	hints.ai_protocol = 0;
-    hints.ai_canonname = NULL;
-    hints.ai_addr = NULL;
-    hints.ai_next = NULL;
+// get sockaddr, IPv4 or IPv6:
+void *get_in_addr(struct sockaddr *sa) {
+    if (sa->sa_family == AF_INET)
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
 
-	if (getaddrinfo(NULL, itoa(port).c_str() , &hints, &address) != 0) {
-        std::cerr << RED << "Error : getaddrinfo failed" << NC << std::endl;
+int	init_socket(char *port) {
+	int		sockfd, rv;
+    int 	yes = 1;
+    struct	addrinfo hints, *servinfo, *p;
+	
+	memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE; // use my IP
+
+    if ((rv = getaddrinfo(NULL, port, &hints, &servinfo)) != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
+
+    // loop through all the results and bind to the first we can
+    for (p = servinfo; p != NULL; p = p->ai_next) {
+        sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (sockfd == -1) {
+            perror("server: socket");
+            continue;
+        }
+        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
+                sizeof(int)) == -1) {
+            perror("setsockopt");
+            return -1;
+        }
+        if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(sockfd);
+            perror("server: bind");
+            continue;
+        }
+        break;
+    }
+
+    freeaddrinfo(servinfo); // all done with this structure
+    if (p == NULL)  {
+        fprintf(stderr, "server: failed to bind\n");
         return -1;
     }
-	return 0;
-
-// 	 getsockname, getprotobyname,
-// gethostbyname, getaddrinfo, freeaddrinfo
+    if (listen(sockfd, BACKLOG) == -1) {
+        perror("listen");
+        return -1;
+    }
+	return (sockfd);
 }
-
 
 int	main(int argc, char **argv)
 {
-	int		sock_fd, sock;
-	int 	yes = 1;
-	int 	port = check_arg(argc, argv);
-	struct sockaddr_in addr;
-	struct sockaddr_storage their_addr;
-    socklen_t addr_size = sizeof their_addr;
-	char buffer[1024] = {0};
-	std::string message = "A message from server !";
-	struct	addrinfo	*address = NULL;
-	struct addrinfo hints;
-	
-	// memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-	hints.ai_protocol = 0;
-    hints.ai_canonname = NULL;
-    hints.ai_addr = NULL;
-    hints.ai_next = NULL;
+    int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
+    struct sockaddr_storage their_addr; // connector's address information
+    socklen_t sin_size;
+    char s[INET6_ADDRSTRLEN];
 
-	if (getaddrinfo(NULL, itoa(port).c_str() , &hints, &address) != 0) {
-        std::cerr << RED << "Error : getaddrinfo failed" << NC << std::endl;
-        return -1;
+    if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
+		return EXIT_FAILURE;
+
+    printf("server: waiting for connections...\n");
+	std::vector<struct pollfd>	pfds;
+	
+	struct pollfd pfds_tmp; // More if you want to monitor more
+	pfds_tmp.events = POLLIN | POLLOUT;
+
+    while(1) {  // main accept() loop
+        sin_size = sizeof their_addr;
+        new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+        if (new_fd == -1) {
+            perror("accept");
+            continue;
+        }
+
+        inet_ntop(their_addr.ss_family,
+            get_in_addr((struct sockaddr *)&their_addr),
+            s, sizeof s);
+        printf("server: got connection from %s %d\n", s, new_fd);
+
+		pfds_tmp.fd = new_fd;          // Standard input
+		pfds.push_back(pfds_tmp);
+
+
+		printf("Hit RETURN or wait 2.5 seconds for timeout\n");
+
+		int num_events = poll(&pfds[0], pfds.size(), 2500); // 2.5 second timeout
+
+		if (num_events == 0) {
+			printf("Poll timed out!\n");
+		} else {
+			int pollout_happened = pfds[0].revents & POLLOUT;
+			int pollin_happened = pfds[0].revents & POLLIN;
+
+			if (pollin_happened) {
+				char	buffer[1024];
+				recv(new_fd, buffer, 1024, 0);
+				printf("RECEIVE : %s\n", buffer);
+			}
+			if (pollout_happened) {
+				std::string message = "A message from server !";
+				send(new_fd , message.c_str(), message.size(), 0 );
+				printf("Server : Message has been sent ! \n");
+			} else {
+				printf("Unexpected event occurred: %d\n", pfds[0].revents);
+			}
+		}
     }
-	std::cout << address->ai_family << std::endl;
-	std::cout << address->ai_socktype << std::endl;
-	std::cout << address->ai_flags << std::endl;
-	std::cout << address->ai_protocol << std::endl;
 
-
-	
-	// if (port < 0 || init_info_addr(port, address) < 0)
-	// 	return EXIT_FAILURE;
-	address->ai_protocol = 0;
-	sock_fd = socket ( address->ai_family, address->ai_socktype, address->ai_protocol);
-	if (sock_fd == 0) {
-		perror ( "Opening of Socket Failed !");
-		return EXIT_FAILURE;
-	}
-	if ( setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes))) {
-		perror ( "Can't set the socket" );
-		return EXIT_FAILURE;
-	}
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons( port ); //  convert values between host and network byte order
-	if (bind(sock_fd, ( struct sockaddr * )&addr, sizeof(addr)) < 0) {
-		perror ( "Binding of socket failed !" );
-		return EXIT_FAILURE;
-	}
-	if (listen ( sock_fd, BACKLOG) < 0) {
-		perror ( "Can't listen from the server !");
-		return EXIT_FAILURE;
-	}
-	if ((sock = accept(sock_fd, (struct sockaddr *)&address, &addr_size)) < 0) {
-		perror("Accept");
-		return EXIT_FAILURE;
-	}
-	recv(sock_fd, buffer, 1024, MSG_WAITALL);
-	printf("%s\n", buffer);
-	send(sock , message.c_str(), message.size(), 0 );
-	printf("Server : Message has been sent ! \n");
-	
+    return 0;
 }
-
-
-// int	main(int argc, char **argv)
-// {
-// 	int port = check_arg(argc, argv);
-// 	int sock_fd, sock, reader;
-// 	struct sockaddr_in address;
-// 	int opted = 1;
-// 	int address_length = sizeof(address);
-// 	char buffer[1024] = {0};
-// 	std::string message = "A message from server !";
-
-// 	if (port < 0)
-// 		return EXIT_FAILURE;
-// 	if (( sock_fd = socket ( AF_INET, SOCK_STREAM, 0)) == 0) {
-// 		perror ( "Opening of Socket Failed !");
-// 		return EXIT_FAILURE;
-// 	}
-// 	if ( setsockopt(sock_fd, IPPROTO_TCP, SO_REUSEADDR, &opted, sizeof ( opted ))) {
-// 		perror ( "Can't set the socket" );
-// 		return EXIT_FAILURE;
-// 	}
-// 	address.sin_family = AF_INET;
-// 	address.sin_addr.s_addr = INADDR_ANY;
-// 	address.sin_port = htons( port ); //  convert values between host and network byte order
-// 	if (bind(sock_fd, ( struct sockaddr * )&address, address_length) < 0) {
-// 		perror ( "Binding of socket failed !" );
-// 		return EXIT_FAILURE;
-// 	}
-// 	if (listen ( sock_fd, 3) < 0) {
-// 		perror ( "Can't listen from the server !");
-// 		return EXIT_FAILURE;
-// 	}
-// 	if ((sock = accept(sock_fd, (struct sockaddr *)&address, (socklen_t*)&address_length)) < 0) {
-// 		perror("Accept");
-// 		return EXIT_FAILURE;
-// 	}
-// 	reader = recv(sock_fd, buffer, 1024, MSG_WAITALL);
-// 	printf("%s\n", buffer);
-// 	send(sock , message.c_str(), message.size(), 0 );
-// 	printf("Server : Message has been sent ! \n");
-// 	return 0;
-// }
