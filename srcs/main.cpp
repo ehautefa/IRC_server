@@ -6,16 +6,9 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/03/22 17:56:42 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/03/23 12:26:26 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#define NC "\e[0m"
-#define RED "\e[0;31m"
-#define GRN "\e[0;32m"
-#define CYN "\e[0;36m"
-#define GR "\e[0;90m"
-#define BL "\e[0;30m"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +23,9 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
+
+#include "../include/Command.hpp"
+#include "../include/Colors.hpp"
 
 #include <string>
 #include <vector>
@@ -67,63 +63,63 @@ bool	check_arg(int argc, char **argv) {
 
 int	init_socket(char *port) {
 	int		sockfd, rv;
-    int 	yes = 1;
-    struct	addrinfo hints, *servinfo, *p;
+	int 	yes = 1;
+	struct	addrinfo hints, *servinfo, *p;
 	
 	memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = AI_PASSIVE; // use my IP
-    if ((rv = getaddrinfo(NULL, port, &hints, &servinfo)) != 0) {
-        std::cerr << RED << "ERROR: GETADRRINFO failed" << NC << std::endl;
-        return -1;
-    }
-    for (p = servinfo; p != NULL; p = p->ai_next) {
-        sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-        if (sockfd == -1) {
-        	std::cerr << RED << "ERROR: SOCKET failed" << NC << std::endl;
-            continue;
-        }
-        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
-        	std::cerr << RED << "ERROR: SETSOCKOPT failed" << NC << std::endl;
-            return -1;
-        }
-        if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-            close(sockfd);
-        	std::cerr << RED << "ERROR: BIND failed" << NC << std::endl;
-            continue;
-        }
-        break;
-    }
-    freeaddrinfo(servinfo);
-    if (p == NULL)  {
-        std::cerr << RED << "ERROR: Failed to bind" << NC << std::endl;
-        return -1;
-    }
-    if (listen(sockfd, BACKLOG) == -1) {
-        std::cerr << RED << "ERROR: LISTEN Failed" << NC << std::endl;
-        return -1;
-    }
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE; // use my IP
+	if ((rv = getaddrinfo(NULL, port, &hints, &servinfo)) != 0) {
+		std::cerr << RED << "ERROR: GETADRRINFO failed" << NC << std::endl;
+		return -1;
+	}
+	for (p = servinfo; p != NULL; p = p->ai_next) {
+		sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+		if (sockfd == -1) {
+			std::cerr << RED << "ERROR: SOCKET failed" << NC << std::endl;
+			continue;
+		}
+		if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+			std::cerr << RED << "ERROR: SETSOCKOPT failed" << NC << std::endl;
+			return -1;
+		}
+		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+			close(sockfd);
+			std::cerr << RED << "ERROR: BIND failed" << NC << std::endl;
+			continue;
+		}
+		std::cout << "Here 3" << std::endl;
+		break;
+	}
+	if (p == NULL)  {
+		std::cerr << RED << "ERROR: Failed to bind" << NC << std::endl;
+		return -1;
+	}
+	if (listen(sockfd, BACKLOG) == -1) {
+		std::cerr << RED << "ERROR: LISTEN Failed" << NC << std::endl;
+		return -1;
+	}
 	return (sockfd);
 }
 
 int	main(int argc, char **argv)
 {
-    int							sockfd, new_fd, pollout_happened, pollin_happened, num_events;
-    struct						sockaddr_storage their_addr; // connector's address information
-    socklen_t					sin_size;
+	int							sockfd, new_fd, pollout_happened, pollin_happened, num_events;
+	struct						sockaddr_storage their_addr; // connector's address information
+	socklen_t					sin_size;
 	struct pollfd 				pfds_tmp;
 	std::vector<struct pollfd>	pfds;
 	
-    if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
+	if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
 		return EXIT_FAILURE;
 	std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 	pfds_tmp.events = POLLIN | POLLOUT;
-    while (1) {
-        sin_size = sizeof their_addr;
-        new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-        if (new_fd == -1)
-            std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
+	while (1) {
+		sin_size = sizeof their_addr;
+		new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+		if (new_fd == -1)
+			std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
 		pfds_tmp.fd = new_fd;
 		pfds.push_back(pfds_tmp);
 		num_events = poll(&pfds[0], pfds.size(), 2500); // 2.5 second timeout
@@ -138,7 +134,7 @@ int	main(int argc, char **argv)
 			if (pollin_happened) {
 				char	buffer[1024];
 				recv(new_fd, buffer, 1024, 0);
-				std::cout << GRN << "SERVER receive: " << buffer << NC << std::endl;
+				std::cout << GRN << "SERVER receive: " << checkArg(buffer) << NC << std::endl;
 			}
 			if (pollout_happened) {
 				std::string message = "A message from server !";
@@ -146,7 +142,7 @@ int	main(int argc, char **argv)
 				std::cout << CYN << "SERVER : Message has been sent !" << NC << std::endl;
 			}
 		}
-    }
+	}
 
-    return 0;
+	return 0;
 }
