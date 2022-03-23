@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/03/23 12:26:26 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/03/23 15:59:30 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ int	init_socket(char *port) {
 			std::cerr << RED << "ERROR: BIND failed" << NC << std::endl;
 			continue;
 		}
-		std::cout << "Here 3" << std::endl;
 		break;
 	}
 	if (p == NULL)  {
@@ -110,7 +109,7 @@ int	main(int argc, char **argv)
 	socklen_t					sin_size;
 	struct pollfd 				pfds_tmp;
 	std::vector<struct pollfd>	pfds;
-	
+
 	if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
 		return EXIT_FAILURE;
 	std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
@@ -133,8 +132,12 @@ int	main(int argc, char **argv)
 
 			if (pollin_happened) {
 				char	buffer[1024];
-				recv(new_fd, buffer, 1024, 0);
-				std::cout << GRN << "SERVER receive: " << checkArg(buffer) << NC << std::endl;
+				std::string	cmd;
+				int 		n;
+
+				n = recv(new_fd, buffer, sizeof(buffer), 0);
+    			cmd.append(buffer, buffer + n);
+				checkArg(cmd);
 			}
 			if (pollout_happened) {
 				std::string message = "A message from server !";
