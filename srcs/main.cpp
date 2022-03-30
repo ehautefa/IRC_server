@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/03/30 11:50:13 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/03/30 12:57:35 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#include "../include/Command.hpp"
+#include "../include/User.hpp"
 #include "../include/Colors.hpp"
 
 #include <string>
@@ -139,6 +139,7 @@ int	main(int argc, char **argv)
 				n = recv(new_fd, buffer, sizeof(buffer), 0);
 				std::cout << RED << buffer << NC << std::endl;
     			cmd.append(buffer, buffer + n);
+				createUser(cmd);
 			}
 			if (pollout_happened) {
 				std::string message = "A message from server !";

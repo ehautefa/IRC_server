@@ -1,9 +1,23 @@
-#include "../include/Command.hpp"
+#include "../include/User.hpp"
 
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-int	checkArg(std::string buf) {
+User::User(std::string nick, std::string name, std::string fullname, std::string host)
+{
+	(void)nick;
+	(void)name;
+	(void)fullname;
+	(void)host;
+	return ;
+}
+
+User::~User(void)
+{
+	return ;
+}
+
+int	createUser(std::string buf) {
 
 	std::string			cmd;
 	const std::string	lst_cmd[2] = {"/connect", "/msg"};

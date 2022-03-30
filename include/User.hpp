@@ -1,23 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Command.hpp                                        :+:      :+:    :+:   */
+/*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/23 11:55:04 by hlucie            #+#    #+#             */
-/*   Updated: 2022/03/23 15:41:20 by hlucie           ###   ########.fr       */
+/*   Created: 2022/03/30 12:38:31 by hlucie            #+#    #+#             */
+/*   Updated: 2022/03/30 12:56:42 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_HPP
-# define PARSER_HPP
+#ifndef USER_HPP
+# define USER_HPP
 
 #include <string>
 #include <iostream>
 #include "Colors.hpp"
 
-int checkArg(std::string buf);
+class	User {
 
+private : 
+	std::string	_nickName;
+	std::string	_userName;
+	std::string	_hostName;
+	std::string	_fullName;
+
+public :
+	User(std::string nick, std::string name, std::string fullname, std::string host);
+	User(const User &src);
+	User &operator=(const User &rhs);
+	~User(void);
+};
+
+int createUser(std::string buf);
 
 #endif
