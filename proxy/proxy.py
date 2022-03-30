@@ -46,7 +46,7 @@ class Game2Proxy(Thread):
 
     def run(self):
         while True:
-            data = self.game.recv(6667)
+            data = self.game.recv(4096)
             if data:
                 #print "[{}] -> {}".format(self.port, data[:100].encode('hex'))
                 try:

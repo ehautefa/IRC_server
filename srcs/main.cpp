@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/03/23 15:59:30 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/03/30 11:50:13 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,13 +131,14 @@ int	main(int argc, char **argv)
 			pollin_happened		= pfds[0].revents & POLLIN;
 
 			if (pollin_happened) {
-				char	buffer[1024];
+				char		buffer[512];
 				std::string	cmd;
 				int 		n;
+				std::fill(buffer, buffer + 512, '\0');
 
 				n = recv(new_fd, buffer, sizeof(buffer), 0);
+				std::cout << RED << buffer << NC << std::endl;
     			cmd.append(buffer, buffer + n);
-				checkArg(cmd);
 			}
 			if (pollout_happened) {
 				std::string message = "A message from server !";
