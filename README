@@ -1,0 +1,64 @@
+/*********************
+ * IRC DOCUMENTATION *
+ *********************/
+
+https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
+
+						■ Channel Management ■
+
+□ Namespace :
+	Nom/titre d'un channel est une string conmmencant par '&', '#', '+' or "!' (prefixe). 
+	Longueur maximum : 50 caracteres. Ne doit pas contenir de ' ', ',' ou CTRL+G.
+□ Privileged channel members : 
+	Peuvent :  
+	INVITE	- peuvent inviter un user en mode invitation-seulement (mode +i)
+	KICK	- bon, c'est assez clair.
+	MODE	- permet de changer le mode d'un channel. 
+	PRIVMSG	- envoie d'un message dans un channel (mode +n, +m, +v)
+	TOPIC	- change le topic/sujet d'un channel (mode +t)
+□ Channel Operators :
+	Les operateurs "owner" d'un channel (sauf apres l'abolition de la propriete privee).
+	Identifiables par le '@' devant leur nickname.
+	Si un channel commence par le prefixe '+', le chan ne supporte pas les modes
+	et ne peut pas avoir d'operateurs. 
+□ Channel creator : 
+	Un user qui cree un chan avec prefixe '!' est identifie comme le.a createur.trice 
+	du channel. Cet user a aussi les droits operateurs. 
+	Il peut appliquer certains modes sur un chan contrairement aux operateurs. 
+	Bref createur > operateur.
+□ Standard channel : 
+	Channel cree quand le premier user le rejoint et cesse d'exister 
+	quand le dernier user le quitte (est-ce que c'est comme ca pour une conv messenger ?)
+	La personne qui cree un channel devient automatiquement un channel operateur
+	quand le channel commence par le prefixe '+'
+□ Safe channel : 
+	Un channel safe n'est pas automatiquement cree quand un user le rejoint. 
+	Pour le creer il faut faire une requete en tapant la commande JOIN.
+	Le prefixe d'un channel safe commence par '!'
+	Le process de creation est totalement controle. Le user choisi un parti du nom ("short name").
+	Puis automatiquement un identifiant (5 caracteres) est donne. 
+	Le nom final est un mix du short name et de cet identifiant. 
+	C'est donc unique et securise. 
+	La personne qui cree le channel devient son createur. Et elle est la seule a l'etre,
+	meme si plus personne n'est dessus et qu'un utilisateur rejoint le channel.
+□ Channel modes : (tout n'est pas a faire ptdr heureusement)
+	O - donne le statut de channel createur (can be used in "safe channels" and SHALL NOT be manipulated by users);
+	o - donne les privileges d'un channel operateur;
+	v - donne le privilege de la voix, avec ce privilege les personnes peuvent parler sur un chan modere;
+	a - anonyme channel, anonymous!anonymous@anonymous;
+	i - mode invitation-seulement, possibilite de rejoindre le channel uniquement sur invitation;
+	m - channel modere, seul les personnes avec le flag 'm' ou moderateur/operateur peuvent parler;
+	n - ce flag affecte seulement les users, seuls les membres du channel peuvent parler;
+	q - serveur uniquement, les activites du serveur (membre qui rejoint, changement de nicname...) 
+	ne sont pas envoyes sur le serveur;
+	p - rend un channel prive, impossibilite de faire un WHOIS sans etre dans le channel;
+	s - pareil que le mode+p mais en plus restrictif, pas de TOPIC, LIST, NAME cmd;
+	r - seul le createur peut set ce mode (franchement j'ai pas compris et je pense qu'il n'y a pas besoin de le faire);
+	t - restreint les droits des operateurs (je crois a verifier ???);
+	k - set/remove the channel key (password);
+	l - set/remove the user limit to channel;
+	b - set/remove ban mask to keep users out;
+	e - set/remove an exception mask to override a ban mask;
+	I - set/remove an invitation mask to automatically override the invite-only flag;
+	Unless mentioned otherwise below, all these modes can be manipulated
+	by "channel operators" by using the MODE command defined in "IRC client Protocol"
