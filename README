@@ -2,6 +2,8 @@
  * IRC DOCUMENTATION *
  *********************/
 
+(A prendre avec des pincettes, parce qu'il ya plein de choses qu'on ne doit pas faire (on refait ps une minishell haha))
+
 https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 
 						■ Channel Management ■
@@ -17,11 +19,13 @@ https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 	PRIVMSG	- envoie d'un message dans un channel (mode +n, +m, +v)
 	TOPIC	- change le topic/sujet d'un channel (mode +t)
 □ Channel Operators :
-	Les operateurs "owner" d'un channel (sauf apres l'abolition de la propriete privee).
+	Les operateurs d'un channel (sauf apres l'abolition de la propriete privee).
 	Identifiables par le '@' devant leur nickname.
 	Si un channel commence par le prefixe '+', le chan ne supporte pas les modes
-	et ne peut pas avoir d'operateurs. 
+	et ne peut pas avoir d'operateurs.
+	Peut connecter et deconnecter des serveurs, virer de force (BOUHHHH) un user. 
 □ Channel creator : 
+	"owner" du channel.
 	Un user qui cree un chan avec prefixe '!' est identifie comme le.a createur.trice 
 	du channel. Cet user a aussi les droits operateurs. 
 	Il peut appliquer certains modes sur un chan contrairement aux operateurs. 
@@ -62,3 +66,69 @@ https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 	I - set/remove an invitation mask to automatically override the invite-only flag;
 	Unless mentioned otherwise below, all these modes can be manipulated
 	by "channel operators" by using the MODE command defined in "IRC client Protocol"
+□ Channel identifier : 
+	fonction de temps. Temps depuis epoque.
+Interdiction de faire safe serveurs avec le meme short-name.
+
+https://datatracker.ietf.org/doc/html/rfc2812
+(On dirait moi qui me repete dans une dissetation de philo)
+
+□ Users : 
+	possede un nickname unique compose de maximum 9 caracteres (j'imagine qu'il y a d'autres bails, je reviendrai plus tard ici).
+Le prefix, la commande et les parametres sont separes par un espace (0x20).
+
+(Partie trop chiante)
+
+message	=  [ ":" prefix SPACE ] command [ params ] crlf
+prefix	=  servername / ( nickname [ [ "!" user ] "@" host ] )
+command	=  1*letter / 3digit
+params	=  *14( SPACE middle ) [ SPACE ":" trailing ]
+		=/ 14( SPACE middle ) [ SPACE [ ":" ] trailing ]
+
+nospcrlfcl	= 	%x01-09 / %x0B-0C / %x0E-1F / %x21-39 / %x3B-FF
+				; any octet except NUL, CR, LF, " " and ":"
+middle		=  nospcrlfcl *( ":" / nospcrlfcl )
+trailing	=  *( ":" / " " / nospcrlfcl )
+
+SPACE		=	%x20	; space character
+crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
+
+□ Connection : 
+					1. Pass message
+    2. Nick message                 2. Service message
+    3. User message
+(J'ai rien compris je crois que mon cerveau peut plus comprendre l'anglais la)
+	Upon success, the client will receive an RPL_WELCOME (for users) or
+	RPL_YOURESERVICE (for services) message indicating that the
+	connection is now registered and known the to the entire IRC network.
+	The reply message MUST contain the full client identifier upon which
+	it was registered.
+
+						■ COMMAND ■
+□ Password message : 
+	Command : Pass
+	Param : <password>
+	Cette commande permet de set une connection avec mdp.
+	Numeric Replies:
+		ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+	Example:
+		PASS secretpasswordhere
+□ Nick message : 
+	Comamnd : NICK
+	Param : <nickname>
+	Permet d'attribuer ou changer de nickname.
+	Numeric Replies:
+		ERR_NONICKNAMEGIVEN				ERR_ERRONEUSNICKNAME
+		ERR_NICKNAMEINUSE				ERR_NICKCOLLISION
+		ERR_UNAVAILRESOURCE				ERR_RESTRICTED
+	Examples:
+		NICK Wiz		; Introducing new nick "Wiz" if session is
+						still unregistered, or user changing his
+						nickname to "Wiz"
+		:WiZ!jto@tolsun.oulu.fi NICK Kilroy
+						; Server telling that WiZ changed his
+						nickname to Kilroy.
+□ User message : 
+	Command : USER
+	Param : <user> <mode> <unused> <realname>
+	La commande USER est utilise lors de la connection pour specifier le username, hostname et realname.
