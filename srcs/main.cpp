@@ -126,7 +126,9 @@ int	main(int argc, char **argv)
             std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
 		pfds_tmp.fd = new_fd;
 		pfds.push_back(pfds_tmp);
-		num_events = poll(&pfds[0], pfds.size(), 2500); // 2.5 second timeout
+		num_events = poll(pfds.data(), pfds.size(), -1);
+		std::cout << GR << "SERVER: poll() returned " << num_events << " events" << NC << std::endl;
+		// num_events = poll(&pfds[0], pfds.size(), 2500); // 2.5 second timeout
 		if (num_events == -1) {
 			std::cout << RED << "ERROR: POLL failed" << NC << std::endl;
 		} else if (num_events == 0) {
