@@ -70,6 +70,8 @@ https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 	fonction de temps. Temps depuis epoque.
 Interdiction de faire safe serveurs avec le meme short-name.
 
+[ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ]
+
 https://datatracker.ietf.org/doc/html/rfc2812
 (On dirait moi qui me repete dans une dissetation de philo)
 
@@ -93,11 +95,11 @@ trailing	=  *( ":" / " " / nospcrlfcl )
 SPACE		=	%x20	; space character
 crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 
+(J'ai rien compris je crois que mon cerveau peut plus comprendre l'anglais la)
 □ Connection : 
 					1. Pass message
     2. Nick message                 2. Service message
     3. User message
-(J'ai rien compris je crois que mon cerveau peut plus comprendre l'anglais la)
 	Upon success, the client will receive an RPL_WELCOME (for users) or
 	RPL_YOURESERVICE (for services) message indicating that the
 	connection is now registered and known the to the entire IRC network.
@@ -131,4 +133,51 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 □ User message : 
 	Command : USER
 	Param : <user> <mode> <unused> <realname>
-	La commande USER est utilise lors de la connection pour specifier le username, hostname et realname.
+	La commande USER est utilise lors de la connection pour specifier le username, hostname et realname d'un nouveau user.
+	Le param <mode> doit etre un numerique et, bitmask. Si jamais le deuxieme bit est set, le mode+w est active (user receives wallops - j'ai pas compris),
+	si jamais le bit 3 est setm le mode+i (marks a users as invisible) est active.
+	Le <realname> peut contenir des espaces.
+	Numeric Replies:
+		ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+	Example:
+		USER guest 0 * :Ronnie Reagan   ; User registering themselves with a
+								username of "guest" and real name
+								"Ronnie Reagan".
+		USER guest 8 * :Ronnie Reagan   ; User registering themselves with a
+								username of "guest" and real name
+								"Ronnie Reagan", and asking to be set
+								invisible.
+□ User mode 
+	Command: MODE
+	Parameters: <nickname>
+		*( ( "+" / "-" ) *( "i" / "w" / "o" / "O" / "r" ) )
+	a - user is flagged as away;
+	i - marks a users as invisible;
+	w - user receives wallops;
+	r - restricted user connection;
+	o - operator flag;
+	O - local operator flag;
+	s - marks a user for receipt of server notices.
+	Numeric Replies:
+		ERR_NEEDMOREPARAMS				ERR_USERSDONTMATCH
+		ERR_UMODEUNKNOWNFLAG			RPL_UMODEIS
+	Examples:
+		MODE WiZ -wallops		; Command by WiZ to turn off
+								reception of WALLOPS messages.
+		MODE Angel +i			; Command from Angel to make herself
+								invisible.
+		MODE WiZ -O				; WiZ 'deopping' (removing operator
+								status).
+
+□ Operator message :
+	Command: OPER
+	Parameters: <name> <password>
+	Un user lambda utilise la cmd OPER pour obtenir les privileges des operateurs (abolis apres la revolution).
+	La combinaison <name> <password> est obligatoire afin d'obtenir les droits.
+	Numeric Replies:
+		ERR_NEEDMOREPARAMS				RPL_YOUREOPER
+		ERR_NOOPERHOST					ERR_PASSWDMISMATCH
+	Example:
+		OPER foo bar		; Attempt to register as an operator
+							using a username of "foo" and "bar"
+							as the password.
