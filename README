@@ -1,3 +1,21 @@
+/***********
+ * SUBJECT *
+ ***********/
+
+Executable : ./ircserver <port> <password>
+
+- Le serveur IRC doit pouvoir recevoir/manipuler plusieurs clients en meme temps sans crash.
+- Interdiction de fork. fd non-bloques.
+- 1 poll() autorise pour read, write, listen... Poll() obligatoire.
+- Protocol de communication : TCP/IP.  
+- Features a implenter :
+	1. On doit pouvoir s'authentifier, set un nickname, a username, rejoindre un channel,
+	envoyer et recevoir des messages prives.
+	2. Tous les messages envoyes a un channel d'un client doivent etre envoyes aux clients qui ont rejoint le channel.
+	(bref les users doivent recevoir/pouvoir lire les messages envoyes par un autre user).
+	3. On doit avoir des operateurs (modo quoi) et des users lambdas.
+	4. On doit implenter les commandes specifiques au modo.
+
 /*********************
  * IRC DOCUMENTATION *
  *********************/
@@ -46,11 +64,11 @@ https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 	La personne qui cree le channel devient son createur. Et elle est la seule a l'etre,
 	meme si plus personne n'est dessus et qu'un utilisateur rejoint le channel.
 □ Channel modes : (tout n'est pas a faire ptdr heureusement)
-	O - donne le statut de channel createur (can be used in "safe channels" and SHALL NOT be manipulated by users);
-	o - donne les privileges d'un channel operateur;
+	* O - donne le statut de channel createur (can be used in "safe channels" and SHALL NOT be manipulated by users);
+	* o - donne les privileges d'un channel operateur;
 	v - donne le privilege de la voix, avec ce privilege les personnes peuvent parler sur un chan modere;
 	a - anonyme channel, anonymous!anonymous@anonymous;
-	i - mode invitation-seulement, possibilite de rejoindre le channel uniquement sur invitation;
+	* i - mode invitation-seulement, possibilite de rejoindre le channel uniquement sur invitation;
 	m - channel modere, seul les personnes avec le flag 'm' ou moderateur/operateur peuvent parler;
 	n - ce flag affecte seulement les users, seuls les membres du channel peuvent parler;
 	q - serveur uniquement, les activites du serveur (membre qui rejoint, changement de nicname...) 
@@ -181,3 +199,80 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 		OPER foo bar		; Attempt to register as an operator
 							using a username of "foo" and "bar"
 							as the password.
+□ Service message : 
+	Command: SERVICE
+	Parameters: <nickname> <reserved> <distribution> <type>
+				<reserved> <info>
+	(Je pense qu'on se fout de ca...)
+	La cmd SERVICE permet de souscrire a un nouveau service.
+	Numeric Replies:
+		ERR_ALREADYREGISTRED			ERR_NEEDMOREPARAMS
+		ERR_ERRONEUSNICKNAME
+		RPL_YOURESERVICE				RPL_YOURHOST
+		RPL_MYINFO
+	Example:
+	SERVICE dict * *.fr 0 0 :French Dictionary ; Service registering
+								itself with a name of "dict".  This
+								service will only be available on
+								servers which name matches "*.fr".
+□ Quit : 
+	Command : QUIT
+	Parameters : [ <Quit Message> ]
+	La session est terminee, envoi d'un court message.
+	Numeric Replies:
+		None.
+	Example:
+		QUIT :Gone to have lunch        ; Preferred message format.
+		:syrk!kalt@millennium.stealth.net QUIT :Gone to have lunch ; User syrk has quit IRC to have lunch.
+□ Squit :
+	Pour les OPERATEURS (donc a coder quoi)
+	Command : SQUIT
+	Params : <server> <comment>
+	Deconnecte un serveur. 
+	Numeric replies:
+		ERR_NOPRIVILEGES		ERR_NOSUCHSERVER
+		ERR_NEEDMOREPARAMS
+	Examples:
+	SQUIT tolsun.oulu.fi :Bad Link ?  ; Command to uplink of the server
+								tolson.oulu.fi to terminate its
+								connection with comment "Bad Link".
+	:Trillian SQUIT cm22.eng.umd.edu :Server out of control ; Command
+								from Trillian from to disconnect
+								"cm22.eng.umd.edu" from the net with
+								comment "Server out of control".
+□ Join message : 
+	Command : JOIN
+	Params : ( <channel> *( "," <channel> ) [ <key> *( "," <key> ) ] )
+				/ "0"
+	La cmd JOIN permet de rejoindre un channel. 
+	Une fois qu'un user rejoint un channel, il recoit les infos concernant ce-dernier : 
+		toutes les commandes acceptees dans ce chan, JOIN, MODE, KICK, PART, QUIT, PRIVMSG/NOTICE.
+	Si jamais le user parvient a rejoindre le channel, il recoit un msg indiquant qu'il a bien rejoint le channel,
+	recoit le TOPIC du channel (RPL_TOPIC) et la liste des membres du chan (RPL_NAMREPLY), liste dans laquelle il 
+	est lui-meme inclu.
+	Numeric Replies:
+		ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+		ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+		ERR_CHANNELISFULL               ERR_BADCHANMASK
+		ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+		ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+		RPL_TOPIC
+	Examples:
+		JOIN #foobar					; Command to join channel #foobar.
+		JOIN &foo fubar					; Command to join channel &foo using
+    		                            key "fubar".
+		JOIN #foo,&bar fubar			; Command to join channel #foo using
+										key "fubar" and &bar using no key.
+		JOIN #foo,#bar fubar,foobar     ; Command to join channel #foo using
+    	                               key "fubar", and channel #bar using
+    	                               key "foobar".
+		JOIN #foo,#bar                  ; Command to join channels #foo and
+    	                               #bar.
+		JOIN 0                          ; Leave all currently joined
+    	                               channels.
+		:WiZ!jto@tolsun.oulu.fi JOIN #Twilight_zone ; JOIN message from WiZ
+    	                               on channel #Twilight_zone
+□ Part message : 
+	Command :	PART
+	Params	:	<channel> *( "," <channel> ) [ <Part Message> ]
+	Permet de supprimer le user des listes des membres actifs des channels.
