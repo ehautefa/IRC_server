@@ -276,3 +276,65 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Command :	PART
 	Params	:	<channel> *( "," <channel> ) [ <Part Message> ]
 	Permet de supprimer le user des listes des membres actifs des channels.
+	Si jamais un <part message> est passe en parametres, il remplace le msg par defaut.
+	Numeric Replies:
+
+		ERR_NEEDMOREPARAMS			ERR_NOSUCHCHANNEL
+		ERR_NOTONCHANNEL
+	Examples:
+		PART #twilight_zone             ; Command to leave channel
+								"#twilight_zone"
+		PART #oz-ops,&group5            ; Command to leave both channels
+								"&group5" and "#oz-ops".
+		:WiZ!jto@tolsun.oulu.fi PART #playzone :I lost
+								; User WiZ leaving channel
+								"#playzone" with the message "I
+								lost".
+□ Channel mode message : 
+	Command: MODE
+	Parameters: <channel> *( ( "-" / "+" ) *<modes> *<modeparams> )
+	commande MODE permet de changer le(s) mode(s)/caracteristiques d'un channel.
+	Maximum trois modes par commandes.
+	Numeric Replies:
+           ERR_NEEDMOREPARAMS              ERR_KEYSET
+           ERR_NOCHANMODES                 ERR_CHANOPRIVSNEEDED
+           ERR_USERNOTINCHANNEL            ERR_UNKNOWNMODE
+           RPL_CHANNELMODEIS
+           RPL_BANLIST                     RPL_ENDOFBANLIST
+           RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
+           RPL_INVITELIST                  RPL_ENDOFINVITELIST
+           RPL_UNIQOPIS
+	Examples:
+	MODE #Finnish +imI *!*@*.fi     ; Command to make #Finnish channel
+								moderated and 'invite-only' with user
+								with a hostname matching *.fi
+								automatically invited.
+	MODE #Finnish +o Kilroy         ; Command to give 'chanop' privileges
+								to Kilroy on channel #Finnish.
+	MODE #Finnish +v Wiz            ; Command to allow WiZ to speak on
+								#Finnish.
+□ Names message : 
+	Command: NAMES
+	Parameters: [ <channel> *( "," <channel> ) [ <target> ] ]
+	La cmd NAMES permet de lister tous les nicknames visibles d'un channel.
+	Si jamais aucun channel n'est passe en param, une list des channel et des 
+	users est retourne.
+	Numerics:
+		ERR_TOOMANYMATCHES              ERR_NOSUCHSERVER
+		RPL_NAMREPLY                    RPL_ENDOFNAMES
+	Examples:
+	NAMES #twilight_zone,#42	; Command to list visible users on
+								#twilight_zone and #42
+	NAMES						; Command to list all visible
+								channels and users
+□ List message : 
+	Command: LIST
+	Parameters: [ <channel> *( "," <channel> ) [ <target> ] ]
+	Permets de lister les channels et leurs topics.
+	Numeric Replies:
+		ERR_TOOMANYMATCHES              ERR_NOSUCHSERVER
+		RPL_LIST                        RPL_LISTEND
+	Examples:
+		LIST							; Command to list all channels.
+		LIST #twilight_zone,#42			; Command to list channels
+										#twilight_zone and #42
