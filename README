@@ -17,6 +17,28 @@ Executable : ./ircserver <port> <password>
 	3. On doit avoir des operateurs (modo quoi) et des users lambdas.
 	4. On doit implenter les commandes specifiques au modo.
 
+/****************
+ * LIENS UTILES *
+ ****************/
+Pour la grammaire/syntaxe :
+	http://abcdrfc.free.fr/rfc-vf/rfc5234.html
+
+RFC 2810, RFC, 2811, RFC 2812, RFC 2813.
+	https://www.rfc-editor.org/rfc/rfc2810.html
+	https://www.rfc-editor.org/rfc/rfc2811.html
+	https://www.rfc-editor.org/rfc/rfc2812.html
+	https://www.rfc-editor.org/rfc/rfc2813.html
+
+Pour les modes : 
+	https://www.alien.net.au/irc/chanmodes.html
+
+Schemas sympa : 
+	https://www.ibm.com/docs/en/i/7.3?topic=designs-example-nonblocking-io-select
+
+Un peu de tout (bcp l`ont partage sur le discord): 
+	https://ircgod.com/
+
+
 /************************
  * FONCTIONS AUTORISEES *
  ************************/
@@ -31,6 +53,14 @@ Executable : ./ircserver <port> <password>
 - int setsockopt(int s, int level, int optname, const void *optval, socklen_t optlen);
 	Permet de manipuler les options liees a une socket.
 	(En vrai j`ai pas compris grand chose).
+- int accept(int sockfd, struct sockaddr *adresse, socklen_t *longueur);
+	L`appel système accept() est employé avec les sockets utilisant un protocole en mode connecté 
+	(SOCK_STREAM et SOCK_SEQPACKET). Il extrait la première connexion de la file des connexions 
+	en attente de la socket sockfd à l`écoute, crée une nouvelle socket connectée, 
+	et renvoie un nouveau descripteur de fichier qui fait référence à cette socket. 
+	La nouvelle socket n`est pas en état d`écoute. La socket originale sockfd n`est pas modifiée par l`appel système.
+	L`argument sockfd est une socket qui a été créée avec la fonction socket(), attachée à 
+	une adresse avec bind(2), et attend des connextions après un appel listen().
 - int getsockname(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 	getsockname()  renvoie,  dans  le  tampon  pointé par addr, l`adresse à
 	laquelle la socket sockfd est liée. Le  paramètre  addrlen  doit  être
@@ -84,9 +114,9 @@ Executable : ./ircserver <port> <password>
 	L`ensemble des descripteurs de fichier à surveiller est indiqué dans l`argument
 	fds qui est un tableau de structures nfds du type :
 	struct pollfd {
-    	int   fd;         /* Descripteur de fichier */
-    	short events;     /* Événements attendus    */
-    	short revents;    /* Événements détectés    */
+		int   fd;         /* Descripteur de fichier */
+		short events;     /* Événements attendus    */
+		short revents;    /* Événements détectés    */
 	};
 	Le champ fd contient un descripteur de fichier ouvert.
 	Le champ events est un paramètre d`entrée, un masque de bits indiquant les événements 
