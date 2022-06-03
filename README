@@ -9,73 +9,158 @@ Executable : ./ircserver <port> <password>
 - 1 poll() autorise pour read, write, listen... Poll() obligatoire.
 - Protocol de communication : TCP/IP.  
 - Features a implenter :
-	1. On doit pouvoir s'authentifier, set un nickname, a username, rejoindre un channel,
+	1. On doit pouvoir s`authentifier, set un nickname, a username, rejoindre un channel,
 	envoyer et recevoir des messages prives.
-	2. Tous les messages envoyes a un channel d'un client doivent etre envoyes aux clients qui ont rejoint le channel.
+	2. Tous les messages envoyes a un channel d`un client doivent etre envoyes aux clients
+	qui ont rejoint le channel.
 	(bref les users doivent recevoir/pouvoir lire les messages envoyes par un autre user).
 	3. On doit avoir des operateurs (modo quoi) et des users lambdas.
 	4. On doit implenter les commandes specifiques au modo.
 
+/************************
+ * FONCTIONS AUTORISEES *
+ ************************/
+
+- int socket(int domain, int type, int protocol);
+	Socket cree un point de communication et renvoie un file descriptor.
+	* Domain : permet de selectionner la famille de protocol a utiliser (voir linux/socket.h)
+	* Type : indique la semantique de communication.
+		SOCK_STREAM : Support de dialogue garantissant l`intégrite, fournissant 
+		un flux de données binaires, et intégrant un mécanisme pour les transmissions
+		de données hors-bande.
+- int setsockopt(int s, int level, int optname, const void *optval, socklen_t optlen);
+	Permet de manipuler les options liees a une socket.
+	(En vrai j`ai pas compris grand chose).
+- int getsockname(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+	getsockname()  renvoie,  dans  le  tampon  pointé par addr, l`adresse à
+	laquelle la socket sockfd est liée. Le  paramètre  addrlen  doit  être
+	initialisé pour indiquer la taille de la zone mémoire pointée par addr.
+	En retour, il contiendra la taille effective (en octets)  de  l`adresse
+	de la socket.
+- struct protoent *getprotobyname(const char *name);
+	renvoie une structure protoent correspondant à la ligne du fichier 
+	/etc/protocols qui concerne le protocole appelé name.
+- int gethostbyname_r(const char *name,
+		struct hostent *ret, char *buf, size_t buflen,
+		struct hostent **result, int *h_errnop);
+	Renvoie une structure de type hostent pour l`hôte name. 
+	(j`ai pas trop compris non-plus).
+- int getaddrinfo(const char *node, const char *service,
+		const struct addrinfo *hints,
+		struct addrinfo **res);
+	Étant donné node et service, qui identifie un hôte Internet et un service, getaddrinfo()
+	renvoie une ou plusieurs structures addrinfo, chacune d`entre elles
+	contenant une adresse Internet qui puisse être indiquée dans un appel à bind(2) ou connect(2).
+	La structure addrinfo utilisée par getaddrinfo() contient les membres suivants :
+	struct addrinfo {
+		int              ai_flags;
+		int              ai_family;
+		int              ai_socktype;
+		int              ai_protocol;
+		size_t           ai_addrlen;
+		struct sockaddr *ai_addr;
+		char            *ai_canonname;
+		struct addrinfo *ai_next;
+	};
+- void freeaddrinfo(struct addrinfo *res);
+- int bind(int sockfd, const struct sockaddr *addr,
+	socklen_t addrlen);
+	bind() affecte l`adresse spécifiée dans addr à la socket référencée par 
+	le descripteur de fichier sockfd.
+	addrlen indique la taille, en octets, de la structure d`adresse pointée par addr.
+	struct sockaddr {
+	sa_family_t sa_family;
+	char        sa_data[14];
+	}
+- int connect(int sockfd, const struct sockaddr *serv_addr,
+		socklen_t addrlen);
+	L`appel système connect() connecte la socket référencée par
+	le descripteur de fichier sockfd à l`adresse indiquée par serv_addr.
+	Si la socket est du type SOCK_STREAM ou SOCK_SEQPACKET, cette fonction tente 
+	de se connecter à la socket qui est liée à l`adresse indiquée par serv_addr.
+- int poll(struct pollfd *fds, nfds_t nfds, int délai);
+	il attend que l`un des descripteurs de fichier parmi un ensemble soit
+	prêt pour effectuer des entrées-sorties.
+	L`ensemble des descripteurs de fichier à surveiller est indiqué dans l`argument
+	fds qui est un tableau de structures nfds du type :
+	struct pollfd {
+    	int   fd;         /* Descripteur de fichier */
+    	short events;     /* Événements attendus    */
+    	short revents;    /* Événements détectés    */
+	};
+	Le champ fd contient un descripteur de fichier ouvert.
+	Le champ events est un paramètre d`entrée, un masque de bits indiquant les événements 
+	qui intéressent l`application. Le champ revents est un paramètre de sortie, 
+	rempli par le noyau avec les événements qui se sont effectivement produits. 
+	Les bits renvoyés dans revents peuvent inclure ceux spécifiés dans events,
+	Si aucun événement attendu (ni aucune erreur) ne s`est déjà produit, poll() bloque 
+	jusqu1à ce que l`un des événements survienne. L`argument délai définit une limite supérieure, 
+	en millisecondes, sur le temps pendant lequel poll() bloquera. 
+	Définir une valeur négative pour délai signifie un délai d`attente infini.
+		POLLIN
+			- Il y a des données en attente de lecture.
+		POLLOUT
+			- Une écriture ne bloquera pas.
 /*********************
  * IRC DOCUMENTATION *
  *********************/
 
-(A prendre avec des pincettes, parce qu'il ya plein de choses qu'on ne doit pas faire (on refait ps une minishell haha))
+(A prendre avec des pincettes, parce qu`il ya plein de choses qu`on ne doit pas faire (on refait ps une minishell haha))
 
 https://datatracker.ietf.org/doc/html/rfc2811#section-2.1
 
 						■ Channel Management ■
 
 □ Namespace :
-	Nom/titre d'un channel est une string conmmencant par '&', '#', '+' or "!' (prefixe). 
-	Longueur maximum : 50 caracteres. Ne doit pas contenir de ' ', ',' ou CTRL+G.
+	Nom/titre d`un channel est une string conmmencant par `&`, `#`, `+` or `!` (prefixe). 
+	Longueur maximum : 50 caracteres. Ne doit pas contenir de ` `, `,` ou CTRL+G.
 □ Privileged channel members : 
 	Peuvent :  
 	INVITE	- peuvent inviter un user en mode invitation-seulement (mode +i)
-	KICK	- bon, c'est assez clair.
-	MODE	- permet de changer le mode d'un channel. 
-	PRIVMSG	- envoie d'un message dans un channel (mode +n, +m, +v)
-	TOPIC	- change le topic/sujet d'un channel (mode +t)
+	KICK	- bon, c`est assez clair.
+	MODE	- permet de changer le mode d`un channel. 
+	PRIVMSG	- envoie d`un message dans un channel (mode +n, +m, +v)
+	TOPIC	- change le topic/sujet d`un channel (mode +t)
 □ Channel Operators :
-	Les operateurs d'un channel (sauf apres l'abolition de la propriete privee).
-	Identifiables par le '@' devant leur nickname.
-	Si un channel commence par le prefixe '+', le chan ne supporte pas les modes
-	et ne peut pas avoir d'operateurs.
+	Les operateurs d`un channel (sauf apres l`abolition de la propriete privee).
+	Identifiables par le `@` devant leur nickname.
+	Si un channel commence par le prefixe `+`, le chan ne supporte pas les modes
+	et ne peut pas avoir d`operateurs.
 	Peut connecter et deconnecter des serveurs, virer de force (BOUHHHH) un user. 
 □ Channel creator : 
 	"owner" du channel.
-	Un user qui cree un chan avec prefixe '!' est identifie comme le.a createur.trice 
+	Un user qui cree un chan avec prefixe `!` est identifie comme le.a createur.trice 
 	du channel. Cet user a aussi les droits operateurs. 
 	Il peut appliquer certains modes sur un chan contrairement aux operateurs. 
 	Bref createur > operateur.
 □ Standard channel : 
-	Channel cree quand le premier user le rejoint et cesse d'exister 
-	quand le dernier user le quitte (est-ce que c'est comme ca pour une conv messenger ?)
+	Channel cree quand le premier user le rejoint et cesse d`exister 
+	quand le dernier user le quitte (est-ce que c`est comme ca pour une conv messenger ?)
 	La personne qui cree un channel devient automatiquement un channel operateur
-	quand le channel commence par le prefixe '+'
+	quand le channel commence par le prefixe `+`
 □ Safe channel : 
-	Un channel safe n'est pas automatiquement cree quand un user le rejoint. 
+	Un channel safe n`est pas automatiquement cree quand un user le rejoint. 
 	Pour le creer il faut faire une requete en tapant la commande JOIN.
-	Le prefixe d'un channel safe commence par '!'
+	Le prefixe d`un channel safe commence par `!`
 	Le process de creation est totalement controle. Le user choisi un parti du nom ("short name").
 	Puis automatiquement un identifiant (5 caracteres) est donne. 
 	Le nom final est un mix du short name et de cet identifiant. 
-	C'est donc unique et securise. 
-	La personne qui cree le channel devient son createur. Et elle est la seule a l'etre,
-	meme si plus personne n'est dessus et qu'un utilisateur rejoint le channel.
-□ Channel modes : (tout n'est pas a faire ptdr heureusement)
+	C`est donc unique et securise. 
+	La personne qui cree le channel devient son createur. Et elle est la seule a l`etre,
+	meme si plus personne n`est dessus et qu`un utilisateur rejoint le channel.
+□ Channel modes : (tout n`est pas a faire ptdr heureusement)
 	* O - donne le statut de channel createur (can be used in "safe channels" and SHALL NOT be manipulated by users);
-	* o - donne les privileges d'un channel operateur;
+	* o - donne les privileges d`un channel operateur;
 	v - donne le privilege de la voix, avec ce privilege les personnes peuvent parler sur un chan modere;
 	a - anonyme channel, anonymous!anonymous@anonymous;
 	* i - mode invitation-seulement, possibilite de rejoindre le channel uniquement sur invitation;
-	m - channel modere, seul les personnes avec le flag 'm' ou moderateur/operateur peuvent parler;
+	m - channel modere, seul les personnes avec le flag `m` ou moderateur/operateur peuvent parler;
 	n - ce flag affecte seulement les users, seuls les membres du channel peuvent parler;
 	q - serveur uniquement, les activites du serveur (membre qui rejoint, changement de nicname...) 
 	ne sont pas envoyes sur le serveur;
 	p - rend un channel prive, impossibilite de faire un WHOIS sans etre dans le channel;
 	s - pareil que le mode+p mais en plus restrictif, pas de TOPIC, LIST, NAME cmd;
-	r - seul le createur peut set ce mode (franchement j'ai pas compris et je pense qu'il n'y a pas besoin de le faire);
+	r - seul le createur peut set ce mode (franchement j`ai pas compris et je pense qu`il n`y a pas besoin de le faire);
 	t - restreint les droits des operateurs (je crois a verifier ???);
 	k - set/remove the channel key (password);
 	l - set/remove the user limit to channel;
@@ -94,7 +179,7 @@ https://datatracker.ietf.org/doc/html/rfc2812
 (On dirait moi qui me repete dans une dissetation de philo)
 
 □ Users : 
-	possede un nickname unique compose de maximum 9 caracteres (j'imagine qu'il y a d'autres bails, je reviendrai plus tard ici).
+	possede un nickname unique compose de maximum 9 caracteres (j`imagine qu`il y a d`autres bails, je reviendrai plus tard ici).
 Le prefix, la commande et les parametres sont separes par un espace (0x20).
 
 (Partie trop chiante)
@@ -113,11 +198,11 @@ trailing	=  *( ":" / " " / nospcrlfcl )
 SPACE		=	%x20	; space character
 crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 
-(J'ai rien compris je crois que mon cerveau peut plus comprendre l'anglais la)
+(J`ai rien compris je crois que mon cerveau peut plus comprendre l`anglais la)
 □ Connection : 
 					1. Pass message
-    2. Nick message                 2. Service message
-    3. User message
+	2. Nick message                 2. Service message
+	3. User message
 	Upon success, the client will receive an RPL_WELCOME (for users) or
 	RPL_YOURESERVICE (for services) message indicating that the
 	connection is now registered and known the to the entire IRC network.
@@ -136,7 +221,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 □ Nick message : 
 	Comamnd : NICK
 	Param : <nickname>
-	Permet d'attribuer ou changer de nickname.
+	Permet d`attribuer ou changer de nickname.
 	Numeric Replies:
 		ERR_NONICKNAMEGIVEN				ERR_ERRONEUSNICKNAME
 		ERR_NICKNAMEINUSE				ERR_NICKCOLLISION
@@ -151,8 +236,8 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 □ User message : 
 	Command : USER
 	Param : <user> <mode> <unused> <realname>
-	La commande USER est utilise lors de la connection pour specifier le username, hostname et realname d'un nouveau user.
-	Le param <mode> doit etre un numerique et, bitmask. Si jamais le deuxieme bit est set, le mode+w est active (user receives wallops - j'ai pas compris),
+	La commande USER est utilise lors de la connection pour specifier le username, hostname et realname d`un nouveau user.
+	Le param <mode> doit etre un numerique et, bitmask. Si jamais le deuxieme bit est set, le mode+w est active (user receives wallops - j`ai pas compris),
 	si jamais le bit 3 est setm le mode+i (marks a users as invisible) est active.
 	Le <realname> peut contenir des espaces.
 	Numeric Replies:
@@ -184,14 +269,14 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 								reception of WALLOPS messages.
 		MODE Angel +i			; Command from Angel to make herself
 								invisible.
-		MODE WiZ -O				; WiZ 'deopping' (removing operator
+		MODE WiZ -O				; WiZ `deopping` (removing operator
 								status).
 
 □ Operator message :
 	Command: OPER
 	Parameters: <name> <password>
 	Un user lambda utilise la cmd OPER pour obtenir les privileges des operateurs (abolis apres la revolution).
-	La combinaison <name> <password> est obligatoire afin d'obtenir les droits.
+	La combinaison <name> <password> est obligatoire afin d`obtenir les droits.
 	Numeric Replies:
 		ERR_NEEDMOREPARAMS				RPL_YOUREOPER
 		ERR_NOOPERHOST					ERR_PASSWDMISMATCH
@@ -203,7 +288,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Command: SERVICE
 	Parameters: <nickname> <reserved> <distribution> <type>
 				<reserved> <info>
-	(Je pense qu'on se fout de ca...)
+	(Je pense qu`on se fout de ca...)
 	La cmd SERVICE permet de souscrire a un nouveau service.
 	Numeric Replies:
 		ERR_ALREADYREGISTRED			ERR_NEEDMOREPARAMS
@@ -218,7 +303,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 □ Quit : 
 	Command : QUIT
 	Parameters : [ <Quit Message> ]
-	La session est terminee, envoi d'un court message.
+	La session est terminee, envoi d`un court message.
 	Numeric Replies:
 		None.
 	Example:
@@ -245,9 +330,9 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Params : ( <channel> *( "," <channel> ) [ <key> *( "," <key> ) ] )
 				/ "0"
 	La cmd JOIN permet de rejoindre un channel. 
-	Une fois qu'un user rejoint un channel, il recoit les infos concernant ce-dernier : 
+	Une fois qu`un user rejoint un channel, il recoit les infos concernant ce-dernier : 
 		toutes les commandes acceptees dans ce chan, JOIN, MODE, KICK, PART, QUIT, PRIVMSG/NOTICE.
-	Si jamais le user parvient a rejoindre le channel, il recoit un msg indiquant qu'il a bien rejoint le channel,
+	Si jamais le user parvient a rejoindre le channel, il recoit un msg indiquant qu`il a bien rejoint le channel,
 	recoit le TOPIC du channel (RPL_TOPIC) et la liste des membres du chan (RPL_NAMREPLY), liste dans laquelle il 
 	est lui-meme inclu.
 	Numeric Replies:
@@ -260,18 +345,18 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Examples:
 		JOIN #foobar					; Command to join channel #foobar.
 		JOIN &foo fubar					; Command to join channel &foo using
-    		                            key "fubar".
+										key "fubar".
 		JOIN #foo,&bar fubar			; Command to join channel #foo using
 										key "fubar" and &bar using no key.
 		JOIN #foo,#bar fubar,foobar     ; Command to join channel #foo using
-    	                               key "fubar", and channel #bar using
-    	                               key "foobar".
+									   key "fubar", and channel #bar using
+									   key "foobar".
 		JOIN #foo,#bar                  ; Command to join channels #foo and
-    	                               #bar.
+									   #bar.
 		JOIN 0                          ; Leave all currently joined
-    	                               channels.
+									   channels.
 		:WiZ!jto@tolsun.oulu.fi JOIN #Twilight_zone ; JOIN message from WiZ
-    	                               on channel #Twilight_zone
+									   on channel #Twilight_zone
 □ Part message : 
 	Command :	PART
 	Params	:	<channel> *( "," <channel> ) [ <Part Message> ]
@@ -293,31 +378,31 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 □ Channel mode message : 
 	Command: MODE
 	Parameters: <channel> *( ( "-" / "+" ) *<modes> *<modeparams> )
-	commande MODE permet de changer le(s) mode(s)/caracteristiques d'un channel.
+	commande MODE permet de changer le(s) mode(s)/caracteristiques d`un channel.
 	Maximum trois modes par commandes.
 	Numeric Replies:
-           ERR_NEEDMOREPARAMS              ERR_KEYSET
-           ERR_NOCHANMODES                 ERR_CHANOPRIVSNEEDED
-           ERR_USERNOTINCHANNEL            ERR_UNKNOWNMODE
-           RPL_CHANNELMODEIS
-           RPL_BANLIST                     RPL_ENDOFBANLIST
-           RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
-           RPL_INVITELIST                  RPL_ENDOFINVITELIST
-           RPL_UNIQOPIS
+		   ERR_NEEDMOREPARAMS              ERR_KEYSET
+		   ERR_NOCHANMODES                 ERR_CHANOPRIVSNEEDED
+		   ERR_USERNOTINCHANNEL            ERR_UNKNOWNMODE
+		   RPL_CHANNELMODEIS
+		   RPL_BANLIST                     RPL_ENDOFBANLIST
+		   RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
+		   RPL_INVITELIST                  RPL_ENDOFINVITELIST
+		   RPL_UNIQOPIS
 	Examples:
 	MODE #Finnish +imI *!*@*.fi     ; Command to make #Finnish channel
-								moderated and 'invite-only' with user
+								moderated and `invite-only` with user
 								with a hostname matching *.fi
 								automatically invited.
-	MODE #Finnish +o Kilroy         ; Command to give 'chanop' privileges
+	MODE #Finnish +o Kilroy         ; Command to give `chanop` privileges
 								to Kilroy on channel #Finnish.
 	MODE #Finnish +v Wiz            ; Command to allow WiZ to speak on
 								#Finnish.
 □ Names message : 
 	Command: NAMES
 	Parameters: [ <channel> *( "," <channel> ) [ <target> ] ]
-	La cmd NAMES permet de lister tous les nicknames visibles d'un channel.
-	Si jamais aucun channel n'est passe en param, une list des channel et des 
+	La cmd NAMES permet de lister tous les nicknames visibles d`un channel.
+	Si jamais aucun channel n`est passe en param, une list des channel et des 
 	users est retourne.
 	Numerics:
 		ERR_TOOMANYMATCHES              ERR_NOSUCHSERVER
