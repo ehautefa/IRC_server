@@ -21,6 +21,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
 
@@ -33,6 +34,7 @@
 #include "../include/Colors.hpp"
 
 #define PASSWORD "12345"
+#define LEN_MAX_PACKETS 512
 #define BACKLOG 10 // how many pending connections queue will hold
 
 std::string itoa(int n)
@@ -134,53 +136,56 @@ std::string getIfnfo(std::string to_find, std::string buffer)
 	std::cout << "ret : " << ret << std::endl;
 	return ret;
 }
+ 
+int receive(std::vector<struct pollfd> pfds) {
+    std::cout << CYN << "Check receive box ..." << NC << std::endl;
+    for (size_t i = 1; i < pfds.size(); i++) {
+        if (pfds[i].revents == POLLIN) {
+            char packets[LEN_MAX_PACKETS];
+            int size = recv(pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
+            if (size == -1)
+                std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
+            std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+        }
+    }
+    return 0;
+}
 
 int main(int argc, char **argv)
 {
-	int sockfd, num_events;
-	// struct sockaddr_storage their_addr; // connector's address information
-	// socklen_t sin_size;
-	std::vector<struct pollfd> pfds;
+	int                         sockfd, num_events;
+	std::vector<struct pollfd>  pfds;
 
 	if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
 		return EXIT_FAILURE;
-	std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 	pfds.push_back(pollfd());
 	pfds.back().events = POLLIN;
 	pfds.back().fd = sockfd;
-	while (1)
-	{
+	while (1) {
+	    std::cout << GRN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&pfds[0], pfds.size(), -1);
 		std::cout << CYN << "SERVER: poll() returned " << num_events << " events" << NC << std::endl;
-		if (num_events == -1)
-		{
+		if (num_events == -1) {
 			std::cout << RED << "ERROR: POLL failed" << NC << std::endl;
-		}
-		else if (num_events == 0)
-		{
-			std::cout << RED << "ERROR: TIMEOUT" << NC << std::endl;
-		}
-		else if (pfds[0].revents & POLLIN)
-		{
-			// sin_size = sizeof their_addr;
-			// new_fd = accept(pfds[0].fd, (struct sockaddr *)&their_addr, &sin_size);
-			// if (new_fd == -1)
-			// 	std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
-			// pfds.push_back(pollfd());
-			// pfds.back().events = POLLIN;
-			// pfds.back().fd = new_fd;
-			// char	buffer[512];
-			// recv(new_fd, buffer, 512, 0);
-			// std::cout << GR << "SERVER: received " << buffer << NC << std::endl;
-			char buf[10];
-			ssize_t s = read(pfds[0].fd, buf, sizeof(buf));
-			if (s == -1)
-				std::cout << RED << "ERROR: read failed" << NC << std::endl;
-			printf("    read %zd bytes: %.*s\n",
-				   s, (int)s, buf);
-			// std::cout << GR << "PASSWORD |" << getIfnfo("PASS", buffer) << "|" << NC << std::endl;
-			// std::cout << GR << "NICKNAME |" << getIfnfo("NICK", buffer) << "|" << NC << std::endl;
-			// std::cout << GR << "USERNAME |" << getIfnfo("USER", buffer) << "|" << NC << std::endl;
+		} else {
+            if (pfds[0].revents == POLLIN) {
+	            struct sockaddr_in  their_addr; // connector's address information
+	            socklen_t           sin_size = sizeof(their_addr);
+                int                 new_fd = accept(pfds[0].fd, (struct sockaddr *)&their_addr, &sin_size);
+                if (new_fd == -1)
+                    std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
+                char hostname[NI_MAXHOST];
+                fcntl(new_fd, F_SETFL, O_NONBLOCK);
+                if (getnameinfo((struct sockaddr *)&their_addr, sin_size, hostname, NI_MAXHOST, NULL, 0,  NI_NUMERICSERV) != 0)
+                    std::cerr << RED << "ERROR : getnameinfo() failed" << NC << std::endl;
+                pfds.push_back(pollfd());
+                pfds.back().events = POLLIN;
+                pfds.back().fd = new_fd;
+                std::cout << GRN << "ADD USER WITH HOSTNAME : " << CYN << hostname << NC << std::endl;
+            }
+            else {
+                receive(pfds);
+            }
 		}
 	}
 	return 0;
