@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 13:45:47 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 14:02:34 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ std::string Server::getInfo(std::string to_find, std::string buffer)
 
 void	Server::server_loop() {
 	int	num_events;
-	    const void *buf = ":localhost 001 <hlucie> :Welcome to the <localhost> Network, hlucie[!<hlucie hlucie>@<localhost>]\r\n";
+	const void *buf = ":localhost 001 <hlucie> :Welcome to the <localhost> Network, hlucie[!<hlucie hlucie>@<localhost>]\r\n";
 
 	_pfds.push_back(pollfd());
 	_pfds.back().events = POLLIN;

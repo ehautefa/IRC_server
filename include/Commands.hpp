@@ -22,23 +22,23 @@
 
 	// Away
 	RPL_AWAY			= 301,                  // <nick> :away
-	RPL_UnAway			= 305,                  // :You are no longer marked as being away
-	RPL_NowAway			= 306,                  // :You have been marked as being away
+	RPL_UNAWAY			= 305,                  // :You are no longer marked as being away
+	RPL_NOWAWAY			= 306,                  // :You have been marked as being away
 
 	// WHOIS/WHOWAS
-	RPL_WhoisHelper      = 310,                  // <nick> :looks very helpful                                                       DALNET
-	RPL_WhoIsUser        = 311,                  // <nick> <username> <address> * :<info>
-	RPL_WhoIsServer      = 312,                  // <nick> <server> :<info>
-	RPL_WhoIsOperator    = 313,                  // <nick> :is an IRC Operator
-	RPL_WhoIsIdle        = 317,                  // <nick> <seconds> <signon> :<info>
-	RPL_EndOfWhois       = 318,                  // <request> :End of /WHOIS list.
-	RPL_WhoIsChannels    = 319,                  // <nick> :<channels>
-	RPL_WhoWasUser       = 314,                  // <nick> <username> <address> * :<info>
-	RPL_EndOfWhoWas      = 369,                  // <request> :End of WHOWAS
-	RPL_WhoReply         = 352,                  // <channel> <username> <address> <server> <nick> <flags> :<hops> <info>
-	RPL_EndOfWho         = 315,                  // <request> :End of /WHO list.
-	RPL_UserIPs          = 307,                  // :userips                                                                         UNDERNET
-	RPL_UserIP           = 340,                  // <nick> :<nickname>=+<user>@<IP.address>                                          UNDERNET
+	RPL_WHOISHELPER		= 310,                  // <nick> :looks very helpful                                                       DALNET
+	RPL_WHOISUSER		= 311,                  // <nick> <username> <address> * :<info>
+	RPL_WHOISSERVER		= 312,                  // <nick> <server> :<info>
+	RPL_WHOISOPERATOR	= 313,                  // <nick> :is an IRC Operator
+	RPL_WhoIsIdle		= 317,                  // <nick> <seconds> <signon> :<info>
+	RPL_EndOfWhois		= 318,                  // <request> :End of /WHOIS list.
+	RPL_WhoIsChannels	= 319,                  // <nick> :<channels>
+	RPL_WhoWasUser		= 314,                  // <nick> <username> <address> * :<info>
+	RPL_EndOfWhoWas		= 369,                  // <request> :End of WHOWAS
+	RPL_WhoReply		= 352,                  // <channel> <username> <address> <server> <nick> <flags> :<hops> <info>
+	RPL_EndOfWho		= 315,                  // <request> :End of /WHO list.
+	RPL_UserIPs			= 307,                  // :userips                                                                         UNDERNET
+	RPL_UserIP			= 340,                  // <nick> :<nickname>=+<user>@<IP.address>                                          UNDERNET
 
 	// List
 	RPL_ListStart        = 321,                  // Channel :Users Name
