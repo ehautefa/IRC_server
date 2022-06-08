@@ -10,13 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#define NC "\e[0m"
-#define RED "\e[0;31m"
-#define GRN "\e[0;32m"
-#define CYN "\e[0;36m"
-#define GR "\e[0;90m"
-#define BL "\e[0;30m"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -28,6 +21,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
 
@@ -36,7 +30,11 @@
 #include <sstream>
 #include <iostream>
 
+#include "../include/User.hpp"
+#include "../include/Colors.hpp"
+
 #define PASSWORD "12345"
+#define LEN_MAX_PACKETS 512
 #define BACKLOG 10 // how many pending connections queue will hold
 
 std::string itoa(int n)
@@ -121,44 +119,74 @@ int init_socket(char *port)
 	return (sockfd);
 }
 
+std::string getIfnfo(std::string to_find, std::string buffer)
+{
+	size_t begin = buffer.find(to_find);
+	size_t end = buffer.find("\r\n", begin);
+	std::cout << "begin : " << begin << " end : " << end << std::endl;
+	if (begin == std::string::npos || begin < 0 || end == std::string::npos || end < 0 || begin >= end)
+		return "";
+	std::cout << "begin : " << begin << " end : " << end << std::endl;
+	begin += to_find.size() + 1;
+	end = begin;
+	while (buffer[end] && buffer[end] != ' ')
+		end++;
+	std::cout << "begin : " << begin << " end : " << end << std::endl;
+	std::string ret = buffer.substr(begin, end - begin);
+	std::cout << "ret : " << ret << std::endl;
+	return ret;
+}
+ 
+int receive(std::vector<struct pollfd> pfds) {
+    std::cout << CYN << "Check receive box ..." << NC << std::endl;
+    for (size_t i = 1; i < pfds.size(); i++) {
+        if (pfds[i].revents == POLLIN) {
+            char packets[LEN_MAX_PACKETS];
+            int size = recv(pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
+            if (size == -1)
+                std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
+            std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+        }
+    }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
-	struct sockaddr_storage their_addr; // connector's address information
-	int sockfd, new_fd, num_events;
-	socklen_t sin_size;
-	struct pollfd pfds_tmp;
-	std::vector<struct pollfd> pfds;
+	int                         sockfd, num_events;
+	std::vector<struct pollfd>  pfds;
 
 	if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
 		return EXIT_FAILURE;
-	std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
-	pfds_tmp.events = POLLIN;
-	pfds_tmp.fd = sockfd;
-	pfds.push_back(pfds_tmp);
-	while (1)
-	{
+	pfds.push_back(pollfd());
+	pfds.back().events = POLLIN;
+	pfds.back().fd = sockfd;
+	while (1) {
+	    std::cout << GRN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&pfds[0], pfds.size(), -1);
-		std::cout << GR << "SERVER: poll() returned " << num_events << " events" << NC << std::endl;
-		if (num_events == -1){
+		std::cout << CYN << "SERVER: poll() returned " << num_events << " events" << NC << std::endl;
+		if (num_events == -1) {
 			std::cout << RED << "ERROR: POLL failed" << NC << std::endl;
-		}
-		else {
-			sin_size = sizeof their_addr;
-			new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-			if (new_fd == -1)
-				std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
-
-			pfds_tmp.fd = new_fd;
-			pfds_tmp.events = POLLIN;
-			pfds.push_back(pfds_tmp);
-
-			if (pfds[0].revents & POLLIN) {
-				char buffer[1024];
-				recv(new_fd, buffer, 1024, 0);
-				std::cout << GRN << "SERVER receive: " << buffer << NC << std::endl;
-			}
+		} else {
+            if (pfds[0].revents == POLLIN) {
+	            struct sockaddr_in  their_addr; // connector's address information
+	            socklen_t           sin_size = sizeof(their_addr);
+                int                 new_fd = accept(pfds[0].fd, (struct sockaddr *)&their_addr, &sin_size);
+                if (new_fd == -1)
+                    std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
+                char hostname[NI_MAXHOST];
+                fcntl(new_fd, F_SETFL, O_NONBLOCK);
+                if (getnameinfo((struct sockaddr *)&their_addr, sin_size, hostname, NI_MAXHOST, NULL, 0,  NI_NUMERICSERV) != 0)
+                    std::cerr << RED << "ERROR : getnameinfo() failed" << NC << std::endl;
+                pfds.push_back(pollfd());
+                pfds.back().events = POLLIN;
+                pfds.back().fd = new_fd;
+                std::cout << GRN << "ADD USER WITH HOSTNAME : " << CYN << hostname << NC << std::endl;
+            }
+            else {
+                receive(pfds);
+            }
 		}
 	}
-
 	return 0;
 }
