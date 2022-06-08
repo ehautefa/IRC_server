@@ -1,7 +1,8 @@
 SRCS	=	srcs/main.cpp		\
 			srcs/User.cpp	\
+			srcs/Server.cpp		\
 
-HEADER	=	include/serv.hpp	\
+HEADER	=	include/Server.hpp	\
 			include/User.hpp	\
 			include/Colors.hpp
 
