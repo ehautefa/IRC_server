@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 16:34:10 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 17:54:59 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 #include "User.hpp"
 #include "Commands.hpp"
 
+std::vector<std::string> split(const std::string &chaine, char delimiteur);
+
 
 class Server
 {
@@ -58,6 +60,14 @@ class Server
         std::string                 getInfo(std::string to_find, std::string buffer);
         void                        receive();
         void        parse_packets(char *packets, int size);
+
+        // COMMANDS
+
+        
+        void	user(std::vector<User>::iterator user, std::string username);  
+        void    nick(std::vector<User>::iterator user, std::string nickname);      
+        void	ping(std::vector<User>::iterator user, std::string server);
+        void	whois(std::vector<User>::iterator user, std::string who);
 };
 
 
