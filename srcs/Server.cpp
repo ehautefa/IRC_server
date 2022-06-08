@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 12:06:51 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 13:45:47 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,18 @@ bool	Server::set_sockfd(int sockfd)
 
 // GETTERS
 
+std::vector<User>::iterator	Server::get_user(int fd)
+{
+	std::vector<User>::iterator	it = this->_users.begin();
+	while (it != this->_users.end())
+	{
+		if (it->get_fd() == fd)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
 std::string Server::get_password()
 {
 	return (this->_password);
@@ -55,6 +67,29 @@ std::vector<struct pollfd> Server::get_pfds()
 
 
 // METHODS
+
+void	Server::parse_packets(char *packets, int fd) {
+	std::vector<User>::iterator tmp = this->get_user(fd);
+	tmp->set_nickName(this->getInfo("NICK", std::string(packets)));
+	tmp->set_userName(this->getInfo("USER", std::string(packets)));
+	tmp->set_fullName(this->getInfo("localhost ", std::string(packets)));
+
+	tmp->print_user();
+}
+
+std::string Server::getInfo(std::string to_find, std::string buffer)
+{
+	size_t begin = buffer.find(to_find);
+	size_t end = buffer.find("\r\n", begin);
+	if (begin == std::string::npos || begin < 0 || end == std::string::npos || end < 0 || begin >= end)
+		return "";
+	begin += to_find.size() + 1;
+	end = begin;
+	while (buffer[end] && (buffer[end] != ' ' || to_find.compare("localhost ") == false) && buffer[end] != '\r' && buffer[end] != '\n')
+		end++;
+	std::string ret = buffer.substr(begin, end - begin);
+	return ret;
+}
 
 void	Server::server_loop() {
 	int	num_events;
@@ -84,7 +119,8 @@ void	Server::server_loop() {
                 _pfds.back().events = POLLIN;
                 _pfds.back().fd = new_fd;
 				send(new_fd, buf, 99, MSG_CONFIRM);
-                std::cout << GRN << "ADD USER WITH HOSTNAME : " << CYN << hostname << NC << std::endl;
+				_users.push_back(User(new_fd, hostname));
+				std::cout << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
             } else {
                 this->receive();
             }
@@ -104,8 +140,17 @@ void	Server::receive() {
 				std::cerr << RED << "ERROR: Client disconnected" << NC << std::endl;
 				close(_pfds[i].fd);
 				_pfds.erase(_pfds.begin() + i);
+				_users.erase(this->get_user(_pfds[i].fd));
+			}
+			std::string pass = this->getInfo("PASS", std::string(packets));
+			if (pass.size() > 0  && pass.compare(_password) != 0){
+				std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
+				close(_pfds[i].fd);
+				_pfds.erase(_pfds.begin() + i);
+				_users.erase(this->get_user(_pfds[i].fd));
 			}
             std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+			this->parse_packets(packets, _pfds[i].fd);
         }
     }
 }
