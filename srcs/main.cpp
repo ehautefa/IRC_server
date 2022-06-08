@@ -140,7 +140,7 @@ std::string getIfnfo(std::string to_find, std::string buffer)
 	return ret;
 }
  
-int receive(std::vector<struct pollfd> pfds) {
+std::vector<struct pollfd> receive(std::vector<struct pollfd> pfds) {
     std::cout << CYN << "Check receive box ..." << NC << std::endl;
     for (size_t i = 1; i < pfds.size(); i++) {
         if (pfds[i].revents == POLLIN) {
@@ -148,10 +148,16 @@ int receive(std::vector<struct pollfd> pfds) {
             int size = recv(pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
             if (size == -1)
                 std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
+			else if (size == 0) {
+				std::cerr << RED << "ERROR: Client disconnected" << NC << std::endl;
+				close(pfds[i].fd);
+				pfds.erase(pfds.begin() + i);
+				return (pfds);
+			}
             std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
         }
     }
-    return 0;
+    return pfds;
 }
 
 int main(int argc, char **argv)
@@ -185,9 +191,8 @@ int main(int argc, char **argv)
                 pfds.back().events = POLLIN;
                 pfds.back().fd = new_fd;
                 std::cout << GRN << "ADD USER WITH HOSTNAME : " << CYN << hostname << NC << std::endl;
-            }
-            else {
-                receive(pfds);
+            } else {
+                pfds = receive(pfds);
             }
 		}
 	}
