@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 13:41:08 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 15:01:36 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ class Server
         int get_port();
         std::vector<struct pollfd> get_pfds();
         std::vector<User>::iterator	get_user(int fd);
+        std::vector<User>::iterator	get_user(std::string nickname);
         
         void                        server_loop();
         std::string                 getInfo(std::string to_find, std::string buffer);

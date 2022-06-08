@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 12:38:31 by hlucie            #+#    #+#             */
-/*   Updated: 2022/06/08 13:19:19 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 15:00:08 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class User
         std::string _userName;
         std::string _hostName;
         std::string _fullName;
+        bool        _isConnected;
 
     public:
         User(int fd, std::string hostname);
@@ -36,6 +37,10 @@ class User
         // GETTERS
 
         int         get_fd(void) const;
+        std::string get_nickName(void) const;
+        std::string get_hostName(void) const;
+        std::string get_fullName(void) const;
+        std::string get_userName(void) const;
 
         // SETTER
 
@@ -43,6 +48,7 @@ class User
         void        set_userName(std::string userName);
         void        set_hostName(std::string hostName);
         void        set_fullName(std::string fullName);
+        void        set_isConnected(bool isConnected);
 
         void        print_user(void); // for debug
         

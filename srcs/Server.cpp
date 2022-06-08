@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 15:01:24 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/06/08 15:04:55 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ std::vector<User>::iterator	Server::get_user(int fd)
 	return (it);
 }
 
+std::vector<User>::iterator	Server::get_user(std::string nickname)
+{
+	std::vector<User>::iterator	it = this->_users.begin();
+	while (it != this->_users.end())
+	{
+		if (it->get_nickName().compare(nickname) == 0)
+			return (it);
+		it++;
+	}
+	return (it);
+}
+
 std::string Server::get_password()
 {
 	return (this->_password);
@@ -70,16 +82,42 @@ std::vector<struct pollfd> Server::get_pfds()
 
 void	Server::parse_packets(char *packets, int fd) {
 	std::vector<User>::iterator tmp = this->get_user(fd);
-	tmp->set_nickName(this->getInfo("NICK", std::string(packets)));
-	tmp->set_userName(this->getInfo("USER", std::string(packets)));
-	tmp->set_fullName(this->getInfo("localhost ", std::string(packets)));
-
-	tmp->print_user();
+	
+	std::string nickname = this->getInfo("NICK", std::string(packets));
+	std::string username = this->getInfo("USER", std::string(packets));
+	std::string fullname = this->getInfo("localhost ", std::string(packets));
+	std::string ping = this->getInfo("PING", std::string(packets));
+	std::string who = this->getInfo("WHOIS", std::string(packets));
+	if (nickname.length() > 0 && username.length() > 0 && fullname.length() > 0)
+	{
+		tmp->set_nickName(nickname);
+		tmp->set_userName(username);
+		tmp->set_fullName(fullname);
+		tmp->set_isConnected(true);
+		std::cout << YEL << "User " << tmp->get_nickName() << " connected" << NC << std::endl;
+		tmp->print_user();
+	    const std::string buf = ":" + tmp->get_hostName() + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n";
+		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);
+	} else if (ping.length() > 0) {
+		std::cout << YEL << "PING received" << NC << std::endl;
+		const std::string buf = "PONG " + ping + "\r\n";
+		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);
+	} else if (nickname.length() > 0) {
+		std::cout << YEL << "NICK received" << NC << std::endl;
+		tmp->set_nickName(nickname);
+	} else if (who.size() > 0) {
+		std::cout << YEL << "WHOIS received" << NC << std::endl;
+		std::vector<User>::iterator user = this->get_user(who);
+		const std::string buf = user->get_nickName() + " " + user->get_userName() + " " + user->get_hostName() + " * :" + user->get_fullName() + "\r\n";
+		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);	
+	}
 }
 
 std::string Server::getInfo(std::string to_find, std::string buffer)
 {
 	size_t begin = buffer.find(to_find);
+	if (to_find[begin - 1] && to_find[begin - 1] != '\n')
+		return ("");
 	size_t end = buffer.find("\r\n", begin);
 	if (begin == std::string::npos || begin < 0 || end == std::string::npos || end < 0 || begin >= end)
 		return "";
@@ -88,12 +126,16 @@ std::string Server::getInfo(std::string to_find, std::string buffer)
 	while (buffer[end] && (buffer[end] != ' ' || to_find.compare("localhost ") == false) && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
+	
 	return ret;
 }
 
 void	Server::server_loop() {
 	int	num_events;
+<<<<<<< HEAD
 	const void *buf = ":localhost 001 <hlucie> :Welcome to the <localhost> Network, hlucie[!<hlucie hlucie>@<localhost>]\r\n";
+=======
+>>>>>>> pika
 
 	_pfds.push_back(pollfd());
 	_pfds.back().events = POLLIN;
@@ -117,7 +159,6 @@ void	Server::server_loop() {
                 _pfds.push_back(pollfd());
                 _pfds.back().events = POLLIN;
                 _pfds.back().fd = new_fd;
-				send(new_fd, buf, 99, MSG_CONFIRM);
 				_users.push_back(User(new_fd, hostname));
 				std::cout << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
             } else {
@@ -148,8 +189,10 @@ void	Server::receive() {
 				_pfds.erase(_pfds.begin() + i);
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
-            std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
-			this->parse_packets(packets, _pfds[i].fd);
+			else {
+				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+				this->parse_packets(packets, _pfds[i].fd);
+			}
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';
         }
