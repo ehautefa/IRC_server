@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 10:02:25 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/06/08 12:01:27 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@ int main(int argc, char **argv)
 {
 	int                         sockfd, num_events;
 	std::vector<struct pollfd>  pfds;
+	const void *buf = ":localhost 001 <hlucie> :Welcome to the <localhost> Network, hlucie[!<hlucie hlucie>@<localhost>]\r\n";
 
 	if (check_arg(argc, argv) == false || (sockfd = init_socket(argv[1])) < 0)
 		return EXIT_FAILURE;
@@ -190,6 +191,7 @@ int main(int argc, char **argv)
                 pfds.push_back(pollfd());
                 pfds.back().events = POLLIN;
                 pfds.back().fd = new_fd;
+				send(new_fd, buf, 99, MSG_CONFIRM);
                 std::cout << GRN << "ADD USER WITH HOSTNAME : " << CYN << hostname << NC << std::endl;
             } else {
                 pfds = receive(pfds);
