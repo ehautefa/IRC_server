@@ -6,7 +6,11 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/06/08 14:02:34 by hlucie           ###   ########.fr       */
+=======
+/*   Updated: 2022/06/08 14:03:14 by ehautefa         ###   ########.fr       */
+>>>>>>> master
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +103,8 @@ void	Server::server_loop() {
 	_pfds.back().events = POLLIN;
 	_pfds.back().fd = _sockfd;
 	while (1) {
-	    std::cout << GRN << "SERVER: waiting for connections..." << NC << std::endl;
+	    std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
-		std::cout << CYN << "SERVER: poll() returned " << num_events << " events" << NC << std::endl;
 		if (num_events == -1) {
 			std::cout << RED << "ERROR: POLL failed" << NC << std::endl;
 		} else {
@@ -151,6 +154,8 @@ void	Server::receive() {
 			}
             std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
 			this->parse_packets(packets, _pfds[i].fd);
+			for (int j = 0; packets[j] != '\0'; j++)
+				packets[j] = '\0';
         }
     }
 }

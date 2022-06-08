@@ -44,5 +44,5 @@ void	User::set_fullName(std::string fullName)
 
 void	User::print_user(void)
 {
-	std::cout << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName << std::endl;
+	std::cout << YEL << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName << NC << std::endl;
 }
