@@ -6,6 +6,7 @@
 		"initializer_list": "cpp",
 		"ranges": "cpp",
 		"utility": "cpp",
-		"ostream": "cpp"
+		"ostream": "cpp",
+		"readme": "c"
 	}
 }

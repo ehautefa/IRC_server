@@ -11,12 +11,17 @@
 /* ************************************************************************** */
 
 #ifndef USER_HPP
+<<<<<<< HEAD
 #define USER_HPP
+=======
+# define USER_HPP
+>>>>>>> lucie
 
 #include <string>
 #include <iostream>
 #include "Colors.hpp"
 
+<<<<<<< HEAD
 class User
 {
 
@@ -31,8 +36,27 @@ class User
         User(const User &src);
         User &operator=(const User &rhs);
         ~User(void);
+=======
+class	User {
+
+private : 
+	std::string	_nickName;
+	std::string	_userName;
+	std::string	_hostName;
+	std::string	_fullName;
+
+public :
+	User(std::string nick, std::string name, std::string fullname, std::string host);
+	User(const User &src);
+	User &operator=(const User &rhs);
+	~User(void);
+>>>>>>> lucie
 };
 
 int createUser(std::string buf);
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> lucie

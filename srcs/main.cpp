@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/03/22 17:50:03 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 10:02:25 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <signal.h>
+
+#include "../include/User.hpp"
+#include "../include/Colors.hpp"
 
 #include <string>
 #include <vector>

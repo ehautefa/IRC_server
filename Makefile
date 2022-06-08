@@ -1,6 +1,9 @@
-SRCS	=	srcs/main.cpp
+SRCS	=	srcs/main.cpp		\
+			srcs/User.cpp	\
 
-HEADER	=	include/serv.hpp
+HEADER	=	include/serv.hpp	\
+			include/User.hpp	\
+			include/Colors.hpp
 
 OBJS	=	${SRCS:%.cpp=${DIR_OBJ}%.o}
 

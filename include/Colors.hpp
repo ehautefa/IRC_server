@@ -20,4 +20,8 @@
 #define GR "\e[0;90m"
 #define BL "\e[0;30m"
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> lucie
