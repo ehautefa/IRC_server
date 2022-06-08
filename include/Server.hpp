@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 15:01:36 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:11:44 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include "Commands.hpp"
 #include "User.hpp"
 
 

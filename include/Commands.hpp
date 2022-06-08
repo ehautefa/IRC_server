@@ -1,6 +1,15 @@
 #ifndef COMMANDS_HPP
 # define COMMANDS_HPP
 
+#include <sstream>
+
+template<typename T>
+std::string to_string(const T & value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
 enum Reply
 {
 	RPL_NONE				= 0,

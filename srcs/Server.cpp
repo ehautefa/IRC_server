@@ -3,16 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 15:04:55 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:29:50 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 
 // CONSTRUCTOR
+
+// template<typename T>
+// std::string to_string(const T & value) {
+//     std::ostringstream oss;
+//     oss << value;
+//     return oss.str();
+// }
 
 Server::Server(int port, std::string password) : _port(port), _password(password), _pfds(), _users(), _sockfd(0)
 {
@@ -96,7 +103,7 @@ void	Server::parse_packets(char *packets, int fd) {
 		tmp->set_isConnected(true);
 		std::cout << YEL << "User " << tmp->get_nickName() << " connected" << NC << std::endl;
 		tmp->print_user();
-	    const std::string buf = ":" + tmp->get_hostName() + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n";
+	    const std::string buf = ":" + tmp->get_hostName() + to_string(RPL_WELCOME) + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n";
 		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);
 	} else if (ping.length() > 0) {
 		std::cout << YEL << "PING received" << NC << std::endl;
@@ -132,10 +139,6 @@ std::string Server::getInfo(std::string to_find, std::string buffer)
 
 void	Server::server_loop() {
 	int	num_events;
-<<<<<<< HEAD
-	const void *buf = ":localhost 001 <hlucie> :Welcome to the <localhost> Network, hlucie[!<hlucie hlucie>@<localhost>]\r\n";
-=======
->>>>>>> pika
 
 	_pfds.push_back(pollfd());
 	_pfds.back().events = POLLIN;
