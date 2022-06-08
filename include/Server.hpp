@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 15:01:36 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:03:36 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,12 @@
 
 #include <vector>
 #include <string>
-#include <sys/socket.h>
+# include <cerrno>
+# include <cstring>
+# include <string>
+# include <fstream>
+
+#include <sys/select.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <poll.h>
@@ -25,6 +30,7 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include "User.hpp"
+#include "Commands.hpp"
 
 
 class Server
