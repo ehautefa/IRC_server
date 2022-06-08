@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 16:31:49 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:56:45 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,19 @@ void	Server::parse_packets(char *packets, int fd) {
 	std::string who = this->getInfo("WHOIS", std::string(packets));
 	if (nickname.length() > 0 && username.length() > 0 && fullname.length() > 0)
 	{
-		if (this->get_user(nickname).get_fd() == 0)
+		if (this->get_user(nickname)->get_fd() == 0)
 		{
-			tmp->send_message(":" + tmp->get_hostName() + ERR_NICKNAMEINUSE + " " + nickname + " :Nickname is already in use.");
+			std::cout << RED << "ERROR: " << NC << "User " << nickname << " already exists" << std::endl;
+			tmp->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
 			return ;
 		}
 		tmp->set_nickName(nickname);
 		tmp->set_userName(username);
 		tmp->set_fullName(fullname);
 		tmp->set_isConnected(true);
-		std::cout << YEL << "User " << tmp->get_nickName() << " connected" << NC << std::endl;
+		std::cout << YEL << "User " << tmp->get_nickName() << to_string(RPL_WELCOME) << " connected" << NC << std::endl;
+		tmp->send_message(to_string(RPL_WELCOME), nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n");
 		tmp->print_user();
-		tmp->send_to_client(":" + tmp->get_hostName() + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n");
 	} else if (ping.length() > 0) {
 		std::cout << YEL << "PING received" << NC << std::endl;
 		const std::string buf = "PONG " + ping + "\r\n";

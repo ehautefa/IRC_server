@@ -72,6 +72,7 @@ void	User::print_user(void)
 	std::cout << YEL << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName << NC << std::endl;
 }
 
-int	User::send_to_client (std::string to_send) {
+int	User::send_message(std::string rpl, std::string to_send) {
+	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }

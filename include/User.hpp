@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 12:38:31 by hlucie            #+#    #+#             */
-/*   Updated: 2022/06/08 16:00:09 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 16:52:48 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define USER_HPP
 
 #include <string>
+#include "Commands.hpp"
 #include <iostream>
 #include <netdb.h>
 #include "Colors.hpp"
@@ -52,7 +53,7 @@ class User
         void        set_isConnected(bool isConnected);
 
         void        print_user(void); // for debug
-        int 	    send_to_client (std::string to_send);
+        int 	    send_message(std::string rpl, std::string to_send);
         
 };
 
