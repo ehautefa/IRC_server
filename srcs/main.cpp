@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 12:15:09 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 13:51:35 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ int main(int argc, char **argv)
 			return EXIT_FAILURE;
 		}
 	}
-	
 	Server	serv(atoi(argv[1]), argv[2]);
 	
 	if (serv.set_sockfd(init_socket(argv[1])) == false)
