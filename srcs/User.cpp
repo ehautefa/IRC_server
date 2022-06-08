@@ -3,13 +3,11 @@
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-User::User(std::string nick, std::string name, std::string fullname, std::string host)
+User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname)
 {
-	(void)nick;
-	(void)name;
-	(void)fullname;
-	(void)host;
-	return ;
+	this->_nickName = "";
+	this->_userName = "";
+	this->_fullName = "";
 }
 
 User::~User(void)
@@ -17,36 +15,34 @@ User::~User(void)
 	return ;
 }
 
-int	createUser(std::string buf) {
+// GETTERS
 
-	std::string			cmd;
-	const std::string	lst_cmd[2] = {"/connect", "/msg"};
-	int					i;
+int		User::get_fd(void) const
+{
+	return (this->_fd);
+}
 
-	i = 0;
-	cmd = buf;
-	std::cout << GRN << "SERVER receive: " << cmd << NC << std::endl;
-	while (cmd[i] && cmd[i] == ' ')
-		i++;
-	if (cmd[i] && cmd[i] != '/')
-	{
-		std::cout << RED << "Wrong format" << NC << std::endl;
-		return (WRONG_INPUT);
-	}
-	i = 0;
-	while (i < 2)
-	{
-		if (lst_cmd[i] == cmd)
-		{
-			std::cout << "Index : " << i << " cmd : " << cmd << std::endl;
-			return 1;
-		}
-		else
-		{
-			std::cout << "Unknown command: " << cmd << std::endl;
-			return (UNKNOWN_CMD);
-		}
-		i++;
-	}
-	return (0);
+// SETTER
+
+void	User::set_nickName(std::string nickName)
+{
+	if (nickName.length() > 0 && _nickName.size() == 0)
+		this->_nickName = nickName;
+}
+
+void	User::set_userName(std::string userName)
+{
+	if (userName.length() > 0 && _userName.size() == 0)
+		this->_userName = userName;
+}
+
+void	User::set_fullName(std::string fullName)
+{
+	if (fullName.length() > 0 && _fullName.size() == 0)
+		this->_fullName = fullName;
+}
+
+void	User::print_user(void)
+{
+	std::cout << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName << std::endl;
 }

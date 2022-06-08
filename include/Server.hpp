@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 11:59:12 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 13:41:08 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,12 @@ class Server
         std::string get_password();
         int get_port();
         std::vector<struct pollfd> get_pfds();
-        // User                         get_user(int i);
+        std::vector<User>::iterator	get_user(int fd);
         
         void                        server_loop();
-        void                           receive();
+        std::string                 getInfo(std::string to_find, std::string buffer);
+        void                        receive();
+        void        parse_packets(char *packets, int size);
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 17:06:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 12:06:11 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 12:15:09 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,24 +75,6 @@ int init_socket(char *port)
 		return -1;
 	}
 	return (sockfd);
-}
-
-std::string getIfnfo(std::string to_find, std::string buffer)
-{
-	size_t begin = buffer.find(to_find);
-	size_t end = buffer.find("\r\n", begin);
-	std::cout << "begin : " << begin << " end : " << end << std::endl;
-	if (begin == std::string::npos || begin < 0 || end == std::string::npos || end < 0 || begin >= end)
-		return "";
-	std::cout << "begin : " << begin << " end : " << end << std::endl;
-	begin += to_find.size() + 1;
-	end = begin;
-	while (buffer[end] && buffer[end] != ' ')
-		end++;
-	std::cout << "begin : " << begin << " end : " << end << std::endl;
-	std::string ret = buffer.substr(begin, end - begin);
-	std::cout << "ret : " << ret << std::endl;
-	return ret;
 }
 
 int main(int argc, char **argv)
