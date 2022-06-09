@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 13:12:08 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 16:28:21 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,19 @@ class Server
         std::vector<User>::iterator	get_user(std::string nickname);
         
         void                        server_loop();
-        std::string                 getInfo(std::string to_find, std::string buffer);
-        void                        receive();
-        void        				parse_packets(char *packets, int size);
+        std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
+        bool                        receive();
+        bool	       				parse_packets(char *packets, int size);
 
         // COMMANDS
 
         
-        void	user(std::vector<User>::iterator user, std::string username);  
-        void    nick(std::vector<User>::iterator user, std::string nickname);      
-        void	ping(std::vector<User>::iterator user, std::string server);
-        void	whois(std::vector<User>::iterator user, std::string who);
-		void	list(std::vector<User>::iterator user, std::string channel);
+        void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
+        void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
+        void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
+        void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
+		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
 };
 
 

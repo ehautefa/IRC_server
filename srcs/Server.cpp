@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 13:40:01 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 16:40:17 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ std::vector<struct pollfd> Server::get_pfds()
 
 
 
-void	Server::user(std::vector<User>::iterator user, std::string username) {
-	if (username == "")
+void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string> username) {
+	if (username.first == false)
 		return ;
 	std::cout << GR << "USER" << NC << std::endl;
-	std::vector<std::string> tab = split(username, ' ');
-	if (username.size() == 0 || tab.size() < 4) {
+	std::vector<std::string> tab = split(username.second, ' ');
+	if (username.second.size() == 0 || tab.size() < 4) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
 		return ;
 	}
@@ -110,52 +110,52 @@ void	Server::user(std::vector<User>::iterator user, std::string username) {
 	user->print_user();
 }
 
-void	Server::nick(std::vector<User>::iterator user, std::string nickname) {
-	if (nickname == "")
+void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname) {
+	if (nickname.first == false)
 		return ;
 	std::cout << GR << "NICK" << NC << std::endl;
-	if (this->get_user(nickname) != this->_users.end()) {
-		user->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
+	if (this->get_user(nickname.second) != this->_users.end()) {
+		user->send_message(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
 	}
-	user->set_nickName(nickname);
+	user->set_nickName(nickname.second);
 }
-
-void	Server::ping(std::vector<User>::iterator user, std::string server) {
-	if (server == "")
+ 
+void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>  server) {
+	if (server.first == false)
 		return ;
 	std::cout << GR << "PING" << NC << std::endl;
-	if (server.compare("localhost") != 0)
-		user->send_message(to_string(ERRNOSUCHSERVER), server + " :No such server");
+	if (server.second.compare("localhost") != 0)
+		user->send_message(to_string(ERRNOSUCHSERVER), server.second + " :No such server");
 	else if (user->get_isConnected() == false)
 		user->send_message(to_string(ERRNOORIGIN), ":No origin specified");
 	else {
-		std::string buf = "PONG " + server + " " + user->get_nickName() + "\r\n";
+		std::string buf = "PONG " + server.second + " " + user->get_nickName() + "\r\n";
 		send(user->get_fd(), buf.c_str(), buf.size(), 0);
 	}
 }
 
-void	Server::whois(std::vector<User>::iterator user, std::string who) {
-	if (who == "")
+void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
+	if (who.first == false)
 		return ;
 	std::cout << GR << "WHOIS" << NC << std::endl;
-	if (who.size() == 0) {
+	if (who.second.size() == 0) {
 		user->send_message(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
 		return ;
 	}
-	std::vector<User>::iterator to_ret = this->get_user(who);
+	std::vector<User>::iterator to_ret = this->get_user(who.second);
 	if (to_ret == this->_users.end()) {
-		user->send_message(to_string(ERRNOSUCHNICK), who + " :There was no such nickname");
+		user->send_message(to_string(ERRNOSUCHNICK), who.second + " :There was no such nickname");
 		return ;
 	}
 	user->send_message(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
 }
 
-void	Server::list(std::vector<User>::iterator user, std::string list) {
-	if (list == "")
+void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>  list) {
+	if (list.first == false)
 		return ;
 	std::cout << GR << "LIST" << NC << std::endl;
-	std::vector<std::string> tab = split(list, ' ');
+	std::vector<std::string> tab = split(list.second, ' ');
 	std::vector<std::string> channel = split(tab[0], ',');
 	if (tab.size() == 2 && tab[1].compare("localhost") != 0) {
 		user->send_message(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
@@ -174,10 +174,13 @@ void	Server::list(std::vector<User>::iterator user, std::string list) {
 	}
 }
 
-bool	Server::die(std::vector<User>::iterator user) {
+bool	Server::die(std::vector<User>::iterator user, std::pair<bool, std::string> die) {
+	if (die.first == false)
+		return (false);
+	std::cout << GR << "DIE" << NC << std::endl;
 	if (user->get_isOperator() == false) {
 		user->send_message(to_string(ERRNOPRIVILEGES), ":Permission Denied- You're not an IRC operator");
-		return false
+		return false;
 	}
 	return true;
 }
@@ -193,24 +196,24 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->ping(user, this->getInfo("PING", std::string(packets)));
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
 	this->list(user, this->getInfo("LIST", std::string(packets)));
-	return (this->die(user));
+	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
 
-std::string Server::getInfo(std::string to_find, std::string buffer)
+std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer)
 {
 	size_t begin = buffer.find(to_find);
 	if (to_find[begin - 1] && to_find[begin - 1] != '\n')
-		return ("");
+		return (std::make_pair(false, ""));
 	size_t end = buffer.find("\r\n", begin);
-	if (begin == std::string::npos || begin < 0 || end == std::string::npos || end < 0 || begin >= end)
-		return "";
+	if (begin == std::string::npos || end == std::string::npos || begin >= end)
+		return (std::make_pair(false, ""));
 	begin += to_find.size() + 1;
 	end = begin;
 	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
 	
-	return ret;
+	return std::make_pair(true, ret);
 }
 
 void	Server::server_loop() {
@@ -263,8 +266,8 @@ bool	Server::receive() {
 				_pfds.erase(_pfds.begin() + i);
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
-			std::string pass = this->getInfo("PASS", std::string(packets));
-			if (pass.size() > 0  && pass.compare(_password) != 0){
+			std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(packets));
+			if (pass.first == true  && pass.second.compare(_password) != 0){
 				std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
 				close(_pfds[i].fd);
 				_pfds.erase(_pfds.begin() + i);
