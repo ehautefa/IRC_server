@@ -2,12 +2,21 @@
 
 Channel::Channel(std::string name)
 {
-    this->_name = name;
-
-    return ;
+	this->_name = name;
+	return ;
 }
 
 Channel::~Channel(void)
 {
-    return ;
+	return ;
+}
+
+const std::string Channel::getTopic()
+{
+	return (this->_topic);
+}
+
+void	Channel::setTopic(std::string topic)
+{
+	
 }
