@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 12:38:31 by hlucie            #+#    #+#             */
-/*   Updated: 2022/06/08 17:20:07 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 13:35:38 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class User
         std::string _hostName;
         std::string _fullName;
         bool        _isConnected;
+        bool        _isOperator;
 
     public:
         User(int fd, std::string hostname);
@@ -44,6 +45,7 @@ class User
         std::string get_hostName(void) const;
         std::string get_fullName(void) const;
         std::string get_userName(void) const;
+        bool        get_isOperator(void) const;
 
         // SETTER
 
@@ -52,6 +54,7 @@ class User
         void        set_hostName(std::string hostName);
         void        set_fullName(std::string fullName);
         void        set_isConnected(bool isConnected);
+        void        set_isOperator(bool isOperator);
 
         void        print_user(void); // for debug
         int 	    send_message(std::string rpl, std::string to_send);

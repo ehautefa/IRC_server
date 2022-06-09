@@ -37,7 +37,7 @@ COMMAND :
 	❌	ISON : 
 	    ISON <nicknames>
 			Queries the server to see if the clients in the space-separated list <nicknames> are currently on the network.[10] The server returns only the nicknames that are on the network in a space-separated list. If none of the clients are on the network the server returns an empty list. Defined in RFC 1459. 
-	❌	JOIN : 
+	🔘	JOIN : 
 	    JOIN <channels> [<keys>]
 			Makes the client join the channels in the comma-separated list <channels>, specifying the passwords, if needed, in the comma-separated list <keys>.[11] If the channel(s) do not exist then they will be created. Defined in RFC 1459.
 	❌	KICK :
@@ -46,7 +46,7 @@ COMMAND :
 	❌	KILL : 
 	    KILL <client> <comment>
 			Forcibly removes <client> from the network.[13] This command may only be issued by IRC operators. Defined in RFC 1459. 
-	❌	LIST : 
+	🔘	LIST : 
 	    LIST [<channels> [<server>]]
 			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
 	✅	NICK : 

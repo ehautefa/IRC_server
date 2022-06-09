@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 11:29:47 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 13:40:01 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 // CONSTRUCTOR
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _pfds(), _users(), _sockfd(0)
+Server::Server(int port, std::string password) : _port(port), _password(password), _pfds(), _users(), _channels(), _sockfd(0)
 {
-
+	return ;
 }
 
 // DESTRUCTOR
@@ -114,7 +114,7 @@ void	Server::nick(std::vector<User>::iterator user, std::string nickname) {
 	if (nickname == "")
 		return ;
 	std::cout << GR << "NICK" << NC << std::endl;
-	if (this->get_user(nickname)->get_fd() == 0) {
+	if (this->get_user(nickname) != this->_users.end()) {
 		user->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
 		return ;
 	}
@@ -130,7 +130,7 @@ void	Server::ping(std::vector<User>::iterator user, std::string server) {
 	else if (user->get_isConnected() == false)
 		user->send_message(to_string(ERRNOORIGIN), ":No origin specified");
 	else {
-		std::string buf = "PONG " + server + user->get_nickName() + "\r\n";
+		std::string buf = "PONG " + server + " " + user->get_nickName() + "\r\n";
 		send(user->get_fd(), buf.c_str(), buf.size(), 0);
 	}
 }
@@ -144,23 +144,56 @@ void	Server::whois(std::vector<User>::iterator user, std::string who) {
 		return ;
 	}
 	std::vector<User>::iterator to_ret = this->get_user(who);
-	if (to_ret->get_fd() == 0) {
+	if (to_ret == this->_users.end()) {
 		user->send_message(to_string(ERRNOSUCHNICK), who + " :There was no such nickname");
 		return ;
 	}
 	user->send_message(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
 }
 
+void	Server::list(std::vector<User>::iterator user, std::string list) {
+	if (list == "")
+		return ;
+	std::cout << GR << "LIST" << NC << std::endl;
+	std::vector<std::string> tab = split(list, ' ');
+	std::vector<std::string> channel = split(tab[0], ',');
+	if (tab.size() == 2 && tab[1].compare("localhost") != 0) {
+		user->send_message(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
+	} else if (tab.size() == 1) {
+		for (size_t i = 0; i < channel.size(); i++) {
+			if (this->_channels.count(channel[i]))
+				user->send_message(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
+		}
+		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+	} else {
+		std::map<std::string, Channel>::iterator it = this->_channels.begin();
+		for(; it != this->_channels.end(); it++) {
+			user->send_message(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
+		}
+		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+	}
+}
+
+bool	Server::die(std::vector<User>::iterator user) {
+	if (user->get_isOperator() == false) {
+		user->send_message(to_string(ERRNOPRIVILEGES), ":Permission Denied- You're not an IRC operator");
+		return false
+	}
+	return true;
+}
+
 
 // METHODS
 
-void	Server::parse_packets(char *packets, int fd) {
+bool	Server::parse_packets(char *packets, int fd) {
 	std::vector<User>::iterator user = this->get_user(fd);
 	
 	this->nick(user, this->getInfo("NICK", std::string(packets)));
 	this->user(user, this->getInfo("USER", std::string(packets)));
 	this->ping(user, this->getInfo("PING", std::string(packets)));
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
+	this->list(user, this->getInfo("LIST", std::string(packets)));
+	return (this->die(user));
 }
 
 std::string Server::getInfo(std::string to_find, std::string buffer)
@@ -182,11 +215,12 @@ std::string Server::getInfo(std::string to_find, std::string buffer)
 
 void	Server::server_loop() {
 	int	num_events;
+	bool stop = false;
 
 	_pfds.push_back(pollfd());
 	_pfds.back().events = POLLIN;
 	_pfds.back().fd = _sockfd;
-	while (1) {
+	while (!stop) {
 	    std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
 		if (num_events == -1) {
@@ -208,13 +242,14 @@ void	Server::server_loop() {
 				_users.push_back(User(new_fd, hostname));
 				std::cout << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
             } else {
-                this->receive();
+                stop = this->receive();
             }
 		}
 	}
 }
 
-void	Server::receive() {
+bool	Server::receive() {
+	bool	stop = false;
 	std::cout << CYN << "Check receive box ..." << NC << std::endl;
     for (size_t i = 1; i < _pfds.size(); i++) {
         if (_pfds[i].revents == POLLIN) {
@@ -237,10 +272,11 @@ void	Server::receive() {
 			}
 			else {
 				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
-				this->parse_packets(packets, _pfds[i].fd);
+				stop = this->parse_packets(packets, _pfds[i].fd);
 			}
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';
         }
     }
+	return (stop);
 }

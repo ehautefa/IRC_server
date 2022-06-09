@@ -2,10 +2,12 @@ SRCS	=	srcs/main.cpp		\
 			srcs/User.cpp	\
 			srcs/Server.cpp		\
 			srcs/utils.cpp		\
+			srcs/Channel.cpp	\
 
 HEADER	=	include/Server.hpp	\
 			include/User.hpp	\
-			include/Colors.hpp
+			include/Colors.hpp \
+			include/Channel.hpp
 
 OBJS	=	${SRCS:%.cpp=${DIR_OBJ}%.o}
 
