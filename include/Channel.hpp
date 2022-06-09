@@ -31,9 +31,11 @@ class Channel
 
 	public:
 
+		Channel();
 		Channel(std::string name);
 		~Channel();
-		
+
+		const std::string	getName();
 		const std::string	getTopic();
 		void				setTopic(std::string topic);
 };

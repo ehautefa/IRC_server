@@ -1,5 +1,10 @@
 #include "../include/Channel.hpp"
 
+Channel::Channel()
+{
+	return ;
+}
+
 Channel::Channel(std::string name)
 {
 	this->_name = name;
@@ -18,5 +23,10 @@ const std::string Channel::getTopic()
 
 void	Channel::setTopic(std::string topic)
 {
-	
+	(void)topic;
 }
+
+// const std::string	Channel::getName()
+// {
+// 	return (this->_name);
+// }

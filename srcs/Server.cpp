@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 11:29:47 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 14:01:40 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,17 @@ bool	Server::set_sockfd(int sockfd)
 }
 
 // GETTERS
+
+std::map<std::string, Channel>::iterator	Server::get_channel()
+{
+	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
+	while (it != this->_channels.end())
+    {
+		std::cout << it->first << std::endl;
+		it++;
+	}
+	return (it);
+}
 
 std::vector<User>::iterator	Server::get_user(int fd)
 {
@@ -135,6 +146,22 @@ void	Server::ping(std::vector<User>::iterator user, std::string server) {
 	}
 }
 
+void	Server::join(std::vector <User>::iterator user, std::string channel) {
+	if (channel == "")
+		return ;
+	std::cout << GR << "JOIN" << NC << std::endl;
+	if (channel.size() == 0) {
+		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params");
+		return ;
+	}
+	if (channel.size() > 200)
+	{
+		
+	}
+	this->_channels[channel] = Channel(channel);
+	this->get_channel();
+}
+
 void	Server::whois(std::vector<User>::iterator user, std::string who) {
 	if (who == "")
 		return ;
@@ -161,6 +188,7 @@ void	Server::parse_packets(char *packets, int fd) {
 	this->user(user, this->getInfo("USER", std::string(packets)));
 	this->ping(user, this->getInfo("PING", std::string(packets)));
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
+	this->join(user, this->getInfo("JOIN", std::string(packets)));
 }
 
 std::string Server::getInfo(std::string to_find, std::string buffer)
