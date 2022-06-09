@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 14:01:40 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/06/09 16:54:21 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,24 @@ void	Server::ping(std::vector<User>::iterator user, std::string server) {
 	}
 }
 
+int	Server::isInStr(std::string toFind, std::string channelName)
+{
+	int i = 0;
+	int j = 1;
+	while (toFind[i] != '\0')
+	{
+		while (channelName[j] != '\0')
+		{
+			if (toFind[i] == channelName[j] || channelName[j] == 7)
+				return (1);
+			j++;
+		}
+		j = 1;
+		i++;
+	}
+	return (0);
+}
+
 void	Server::join(std::vector <User>::iterator user, std::string channel) {
 	if (channel == "")
 		return ;
@@ -154,11 +172,14 @@ void	Server::join(std::vector <User>::iterator user, std::string channel) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params");
 		return ;
 	}
-	if (channel.size() > 200)
+	else if (channel.size() > 200 || channel[0] != '#' || channel[0] != '&'
+			|| this->isInStr(" ,", channel))
 	{
-		
+		user->send_message(to_string(ERRBADCHANMASK), ": WRONG PARAMS");
+		return ;		
 	}
-	this->_channels[channel] = Channel(channel);
+	else
+		this->_channels[channel] = Channel(channel);
 	this->get_channel();
 }
 

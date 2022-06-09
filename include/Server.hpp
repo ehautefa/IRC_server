@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 13:35:05 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/06/09 16:28:51 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ class Server
         std::vector<struct pollfd> 	get_pfds();
         std::vector<User>::iterator	get_user(int fd);
         std::vector<User>::iterator	get_user(std::string nickname);
-		std::map<std::string, Channel>::iterator	get_channel();
+		
+        std::map<std::string, Channel>::iterator	get_channel();
+        int	isInStr(std::string toFind, std::string channelName);
+
 
         void                        server_loop();
         std::string                 getInfo(std::string to_find, std::string buffer);
