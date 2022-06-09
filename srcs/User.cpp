@@ -77,6 +77,11 @@ void	User::set_isConnected(bool isConnected)
 	this->_isConnected = isConnected;
 }
 
+void	User::set_isOperator(bool isOperator)
+{
+	this->_isOperator = isOperator;
+}
+
 void	User::print_user(void)
 {
 	std::cout << YEL << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName;
@@ -87,7 +92,7 @@ void	User::print_user(void)
 }
 
 int	User::send_message(std::string rpl, std::string to_send) {
-	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send;
+	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send + "\r\n";
 	std::cout << BLU << "Sending: " << to_send << NC << std::endl;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }

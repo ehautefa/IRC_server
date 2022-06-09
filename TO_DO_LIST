@@ -28,7 +28,7 @@ COMMAND :
 		CONNECT <target server> [<port> [<remote server>]] (RFC 1459)
     	CONNECT <target server> <port> [<remote server>] (RFC 2812)
 			Instructs the server <remote server> (or the current server, if <remote server> is omitted) to connect to <target server> on port <port>.[3][4] This command should only be available to IRC operators. Defined in RFC 1459; the <port> parameter became mandatory in RFC 2812.
-	❌	DIE :
+	✅	DIE :
 		DIE
 			Instructs the server to shut down.[5] This command may only be issued by IRC server operators. Defined in RFC 2812.
 	❌	INVITE : 

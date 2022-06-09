@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 16:40:17 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 17:35:42 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	if (user->get_isConnected() == false) {
 		user->set_isConnected(true);		
-		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName() +"\r\n");
+		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
 	}
 	user->print_user();
 }
@@ -174,6 +174,31 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
+void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string> oper) {
+	if (oper.first == false)
+		return ;
+	std::cout << GR << "OPER" << NC << std::endl;
+	std::vector<std::string> tab = split(oper.second, ' ');
+	if (oper.second.size() == 0 || tab.size() < 2) {
+		user->send_message(to_string(ERRNEEDMOREPARAMS), "OPER :Not enough parameters");
+	} else if (this->_users.size() == 0) {
+		user->send_message(to_string(ERRNOOPERHOST), ":No O-lines for your host");
+	} else {
+		std::vector<User>::iterator it = this->_users.begin();
+		for (; it != this->_users.end(); it++) {
+			if (it->get_userName().compare(tab[0]) == 0) {
+				if (this->get_password().compare(tab[1]) == 0) {
+					user->set_isOperator(true);
+					user->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
+				} else {
+					user->send_message(to_string(ERRNOOPERHOST), ":Password incorrect");
+				}
+				return ;
+			}
+		}
+	}
+}
+
 bool	Server::die(std::vector<User>::iterator user, std::pair<bool, std::string> die) {
 	if (die.first == false)
 		return (false);
@@ -196,6 +221,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->ping(user, this->getInfo("PING", std::string(packets)));
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
 	this->list(user, this->getInfo("LIST", std::string(packets)));
+	this->oper(user, this->getInfo("OPER", std::string(packets)));
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
 

@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 16:28:21 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 17:27:46 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ class Server
         void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
+		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 };
 
 
