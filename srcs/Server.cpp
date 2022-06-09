@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 16:56:45 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 11:29:47 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,47 +77,90 @@ std::vector<struct pollfd> Server::get_pfds()
 	return (this->_pfds);
 }
 
+// COMMANDS
+
+
+
+void	Server::user(std::vector<User>::iterator user, std::string username) {
+	if (username == "")
+		return ;
+	std::cout << GR << "USER" << NC << std::endl;
+	std::vector<std::string> tab = split(username, ' ');
+	if (username.size() == 0 || tab.size() < 4) {
+		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
+		return ;
+	}
+	if (user->get_nickName().compare(tab[0]) == 0 && user->get_hostName().compare(tab[2]) == 0) {
+		user->set_userName(tab[1]);
+		std::string	fullname = "";
+		for (size_t i = 3; i < tab.size(); i++) {
+			fullname += tab[i];
+			if (i != tab.size() - 1)
+				fullname += " ";
+		}
+		user->set_fullName(fullname.erase(0, 1));
+	} else {
+		user->send_message(to_string(ERRALREADYREGISTERED), ":Unauthorized command (already registered)");
+		return ;
+	}
+	if (user->get_isConnected() == false) {
+		user->set_isConnected(true);		
+		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName() +"\r\n");
+	}
+	user->print_user();
+}
+
+void	Server::nick(std::vector<User>::iterator user, std::string nickname) {
+	if (nickname == "")
+		return ;
+	std::cout << GR << "NICK" << NC << std::endl;
+	if (this->get_user(nickname)->get_fd() == 0) {
+		user->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
+		return ;
+	}
+	user->set_nickName(nickname);
+}
+
+void	Server::ping(std::vector<User>::iterator user, std::string server) {
+	if (server == "")
+		return ;
+	std::cout << GR << "PING" << NC << std::endl;
+	if (server.compare("localhost") != 0)
+		user->send_message(to_string(ERRNOSUCHSERVER), server + " :No such server");
+	else if (user->get_isConnected() == false)
+		user->send_message(to_string(ERRNOORIGIN), ":No origin specified");
+	else {
+		std::string buf = "PONG " + server + user->get_nickName() + "\r\n";
+		send(user->get_fd(), buf.c_str(), buf.size(), 0);
+	}
+}
+
+void	Server::whois(std::vector<User>::iterator user, std::string who) {
+	if (who == "")
+		return ;
+	std::cout << GR << "WHOIS" << NC << std::endl;
+	if (who.size() == 0) {
+		user->send_message(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
+		return ;
+	}
+	std::vector<User>::iterator to_ret = this->get_user(who);
+	if (to_ret->get_fd() == 0) {
+		user->send_message(to_string(ERRNOSUCHNICK), who + " :There was no such nickname");
+		return ;
+	}
+	user->send_message(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
+}
+
 
 // METHODS
 
-
-
 void	Server::parse_packets(char *packets, int fd) {
-	std::vector<User>::iterator tmp = this->get_user(fd);
+	std::vector<User>::iterator user = this->get_user(fd);
 	
-	std::string nickname = this->getInfo("NICK", std::string(packets));
-	std::string username = this->getInfo("USER", std::string(packets));
-	std::string fullname = this->getInfo("localhost ", std::string(packets));
-	std::string ping = this->getInfo("PING", std::string(packets));
-	std::string who = this->getInfo("WHOIS", std::string(packets));
-	if (nickname.length() > 0 && username.length() > 0 && fullname.length() > 0)
-	{
-		if (this->get_user(nickname)->get_fd() == 0)
-		{
-			std::cout << RED << "ERROR: " << NC << "User " << nickname << " already exists" << std::endl;
-			tmp->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
-			return ;
-		}
-		tmp->set_nickName(nickname);
-		tmp->set_userName(username);
-		tmp->set_fullName(fullname);
-		tmp->set_isConnected(true);
-		std::cout << YEL << "User " << tmp->get_nickName() << to_string(RPL_WELCOME) << " connected" << NC << std::endl;
-		tmp->send_message(to_string(RPL_WELCOME), nickname + " :Welcome to the Internet Relay Network, " + nickname + "!"+ username+"@"+ tmp->get_hostName() +"\r\n");
-		tmp->print_user();
-	} else if (ping.length() > 0) {
-		std::cout << YEL << "PING received" << NC << std::endl;
-		const std::string buf = "PONG " + ping + "\r\n";
-		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);
-	} else if (nickname.length() > 0) {
-		std::cout << YEL << "NICK received" << NC << std::endl;
-		tmp->set_nickName(nickname);
-	} else if (who.size() > 0) {
-		std::cout << YEL << "WHOIS received" << NC << std::endl;
-		std::vector<User>::iterator user = this->get_user(who);
-		const std::string buf = user->get_nickName() + " " + user->get_userName() + " " + user->get_hostName() + " * :" + user->get_fullName() + "\r\n";
-		send(tmp->get_fd(), buf.c_str(), buf.size(), MSG_CONFIRM);	
-	}
+	this->nick(user, this->getInfo("NICK", std::string(packets)));
+	this->user(user, this->getInfo("USER", std::string(packets)));
+	this->ping(user, this->getInfo("PING", std::string(packets)));
+	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
 }
 
 std::string Server::getInfo(std::string to_find, std::string buffer)
@@ -130,7 +173,7 @@ std::string Server::getInfo(std::string to_find, std::string buffer)
 		return "";
 	begin += to_find.size() + 1;
 	end = begin;
-	while (buffer[end] && (buffer[end] != ' ' || to_find.compare("localhost ") == false) && buffer[end] != '\r' && buffer[end] != '\n')
+	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
 	

@@ -42,6 +42,11 @@ std::string	User::get_userName(void) const
 	return (this->_userName);
 }
 
+bool	User::get_isConnected(void) const
+{
+	return (this->_isConnected);
+}
+
 // SETTER
 
 void	User::set_nickName(std::string nickName)
@@ -69,10 +74,15 @@ void	User::set_isConnected(bool isConnected)
 
 void	User::print_user(void)
 {
-	std::cout << YEL << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName << NC << std::endl;
+	std::cout << YEL << "NICK: " << this->_nickName << " USERNAME: " << this->_userName << " HOSTNAME: " << this->_hostName << " FULL: " << this->_fullName;
+	if (this->_isConnected)
+		std::cout << " CONNECTED" << NC << std::endl;
+	else
+		std::cout << " NOT CONNECTED" << NC << std::endl;
 }
 
 int	User::send_message(std::string rpl, std::string to_send) {
 	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send;
+	std::cout << BLU << "Sending: " << to_send << NC << std::endl;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }

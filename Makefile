@@ -1,6 +1,7 @@
 SRCS	=	srcs/main.cpp		\
 			srcs/User.cpp	\
 			srcs/Server.cpp		\
+			srcs/utils.cpp		\
 
 HEADER	=	include/Server.hpp	\
 			include/User.hpp	\

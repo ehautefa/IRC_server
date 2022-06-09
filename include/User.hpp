@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 12:38:31 by hlucie            #+#    #+#             */
-/*   Updated: 2022/06/08 16:52:48 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/08 17:20:07 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class User
         // GETTERS
 
         int         get_fd(void) const;
+        bool        get_isConnected(void) const;
         std::string get_nickName(void) const;
         std::string get_hostName(void) const;
         std::string get_fullName(void) const;
