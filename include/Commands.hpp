@@ -212,7 +212,7 @@ enum Reply
 	ERRBADCHANMASK			= 476,
 	ERRNICKNOREGISTERED		= 477,                  // <channel> :You need a registered nick to join that channel.                      DALNET
 	ERRBANLISTFULL			= 478,                  // <channel> <ban> :Channel ban/ignore list is full
-	ErrNoPrivileges			= 481,                  // :Permission Denied- You're not an IRC operator
+	ERRNOPRIVILEGES			= 481,                  // :Permission Denied- You're not an IRC operator
 	ERRCHANOPRIVSNEED		= 482,                  // <channel> :You're not channel operator
 	ERRCANTKILLSERVER		= 483,                  // :You cant kill a server!
 	ERRRESTRICTED			= 484,                  // <nick> <channel> :Cannot kill, kick or deop channel service                      UNDERNET

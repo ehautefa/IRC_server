@@ -7,7 +7,7 @@ SRCS	=	srcs/main.cpp		\
 HEADER	=	include/Server.hpp	\
 			include/User.hpp	\
 			include/Colors.hpp	\
-			include/Channel.hpp
+			srcs/Channel.cpp	\
 
 OBJS	=	${SRCS:%.cpp=${DIR_OBJ}%.o}
 

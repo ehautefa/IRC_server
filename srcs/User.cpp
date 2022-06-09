@@ -3,7 +3,7 @@
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false)
+User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(true)
 {
 	this->_nickName = "";
 	this->_userName = "";
@@ -45,6 +45,11 @@ std::string	User::get_userName(void) const
 bool	User::get_isConnected(void) const
 {
 	return (this->_isConnected);
+}
+
+bool	User::get_isOperator(void) const
+{
+	return (this->_isOperator);
 }
 
 // SETTER

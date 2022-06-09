@@ -21,12 +21,7 @@ const std::string Channel::getTopic()
 	return (this->_topic);
 }
 
-void	Channel::setTopic(std::string topic)
-{
-	(void)topic;
-}
-
-// const std::string	Channel::getName()
+// void	Channel::setTopic(std::string topic)
 // {
-// 	return (this->_name);
+	
 // }
