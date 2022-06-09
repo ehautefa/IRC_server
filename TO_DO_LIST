@@ -12,8 +12,8 @@
 	❌	Handling multiple clients at the same time		
 	❌	Authentification								
 	❌	Authentification								
-	❌	Set a Nickname
-	❌	Set a username
+	✅	Set a Nickname
+	✅	Set a username
 	❌	Join a channel
 	❌	Send a private msg
 	❌	Receive a private msg
@@ -24,7 +24,7 @@
 	❌ Test with NC
 
 COMMAND :
-	❌	CONNECT :
+	✅	CONNECT :
 		CONNECT <target server> [<port> [<remote server>]] (RFC 1459)
     	CONNECT <target server> <port> [<remote server>] (RFC 2812)
 			Instructs the server <remote server> (or the current server, if <remote server> is omitted) to connect to <target server> on port <port>.[3][4] This command should only be available to IRC operators. Defined in RFC 1459; the <port> parameter became mandatory in RFC 2812.
@@ -49,7 +49,7 @@ COMMAND :
 	❌	LIST : 
 	    LIST [<channels> [<server>]]
 			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
-	❌	NICK : 
+	✅	NICK : 
 	    NICK <nickname> [<hopcount>] (RFC 1459)
 	    NICK <nickname> (RFC 2812)
 			Allows a client to change their IRC nickname. Hopcount is for use between servers to specify how far away a nickname is from its home server.[23][24] Defined in RFC 1459; the optional <hopcount> parameter was removed in RFC 2812. 
