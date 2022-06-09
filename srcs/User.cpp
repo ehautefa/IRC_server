@@ -83,5 +83,6 @@ void	User::print_user(void)
 
 int	User::send_message(std::string rpl, std::string to_send) {
 	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send;
+	std::cout << BLU << "Sending: " << to_send << NC << std::endl;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }

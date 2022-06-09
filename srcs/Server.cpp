@@ -6,7 +6,7 @@
 /*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/08 17:47:09 by ehautefa         ###   ########.fr       */
+/*   Updated: 2022/06/09 11:29:47 by ehautefa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,25 +79,42 @@ std::vector<struct pollfd> Server::get_pfds()
 
 // COMMANDS
 
+
+
 void	Server::user(std::vector<User>::iterator user, std::string username) {
-	if (user->get_nickName().size() == 0) {
-		user->send_message(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
+	if (username == "")
 		return ;
-	}
-	if (username.size() == 0) {
+	std::cout << GR << "USER" << NC << std::endl;
+	std::vector<std::string> tab = split(username, ' ');
+	if (username.size() == 0 || tab.size() < 4) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
 		return ;
 	}
-	
-	if (user->get_isConnected() == false)
-		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network, " + user->get_nickName() + "!"+ username+"@"+ user->get_hostName() +"\r\n");
+	if (user->get_nickName().compare(tab[0]) == 0 && user->get_hostName().compare(tab[2]) == 0) {
+		user->set_userName(tab[1]);
+		std::string	fullname = "";
+		for (size_t i = 3; i < tab.size(); i++) {
+			fullname += tab[i];
+			if (i != tab.size() - 1)
+				fullname += " ";
+		}
+		user->set_fullName(fullname.erase(0, 1));
+	} else {
+		user->send_message(to_string(ERRALREADYREGISTERED), ":Unauthorized command (already registered)");
+		return ;
+	}
+	if (user->get_isConnected() == false) {
+		user->set_isConnected(true);		
+		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName() +"\r\n");
+	}
 	user->print_user();
 }
 
 void	Server::nick(std::vector<User>::iterator user, std::string nickname) {
-	if (this->get_user(nickname)->get_fd() == 0)
-	{
-		std::cout << RED << "ERROR: " << NC << "User " << nickname << " already exists" << std::endl;
+	if (nickname == "")
+		return ;
+	std::cout << GR << "NICK" << NC << std::endl;
+	if (this->get_user(nickname)->get_fd() == 0) {
 		user->send_message(to_string(ERRNICKNAMEINUSE), nickname + " :Nickname is already in use.");
 		return ;
 	}
@@ -105,6 +122,9 @@ void	Server::nick(std::vector<User>::iterator user, std::string nickname) {
 }
 
 void	Server::ping(std::vector<User>::iterator user, std::string server) {
+	if (server == "")
+		return ;
+	std::cout << GR << "PING" << NC << std::endl;
 	if (server.compare("localhost") != 0)
 		user->send_message(to_string(ERRNOSUCHSERVER), server + " :No such server");
 	else if (user->get_isConnected() == false)
@@ -116,6 +136,9 @@ void	Server::ping(std::vector<User>::iterator user, std::string server) {
 }
 
 void	Server::whois(std::vector<User>::iterator user, std::string who) {
+	if (who == "")
+		return ;
+	std::cout << GR << "WHOIS" << NC << std::endl;
 	if (who.size() == 0) {
 		user->send_message(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
 		return ;
@@ -212,8 +235,7 @@ void	Server::receive() {
 				_pfds.erase(_pfds.begin() + i);
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
-			else  if (pass.size() > 0) {
-				
+			else {
 				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
 				this->parse_packets(packets, _pfds[i].fd);
 			}
