@@ -99,13 +99,13 @@ https://datatracker.ietf.org/doc/html/rfc1459
 	contenant une adresse Internet qui puisse être indiquée dans un appel à bind(2) ou connect(2).
 	La structure addrinfo utilisée par getaddrinfo() contient les membres suivants :
 	struct addrinfo {
-		int              ai_flags;
-		int              ai_family;
-		int              ai_socktype;
-		int              ai_protocol;
-		size_t           ai_addrlen;
+		int			  ai_flags;
+		int			  ai_family;
+		int			  ai_socktype;
+		int			  ai_protocol;
+		size_t		   ai_addrlen;
 		struct sockaddr *ai_addr;
-		char            *ai_canonname;
+		char			*ai_canonname;
 		struct addrinfo *ai_next;
 	};
 - void freeaddrinfo(struct addrinfo *res);
@@ -116,7 +116,7 @@ https://datatracker.ietf.org/doc/html/rfc1459
 	addrlen indique la taille, en octets, de la structure d`adresse pointée par addr.
 	struct sockaddr {
 	sa_family_t sa_family;
-	char        sa_data[14];
+	char		sa_data[14];
 	}
 - int connect(int sockfd, const struct sockaddr *serv_addr,
 		socklen_t addrlen);
@@ -130,9 +130,9 @@ https://datatracker.ietf.org/doc/html/rfc1459
 	L`ensemble des descripteurs de fichier à surveiller est indiqué dans l`argument
 	fds qui est un tableau de structures nfds du type :
 	struct pollfd {
-		int   fd;         /* Descripteur de fichier */
-		short events;     /* Événements attendus    */
-		short revents;    /* Événements détectés    */
+		int   fd;		 /* Descripteur de fichier */
+		short events;	 /* Événements attendus	*/
+		short revents;	/* Événements détectés	*/
 	};
 	Le champ fd contient un descripteur de fichier ouvert.
 	Le champ events est un paramètre d`entrée, un masque de bits indiquant les événements 
@@ -248,7 +248,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 (J`ai rien compris je crois que mon cerveau peut plus comprendre l`anglais la)
 □ Connection : 
 					1. Pass message
-	2. Nick message                 2. Service message
+	2. Nick message				 2. Service message
 	3. User message
 	Upon success, the client will receive an RPL_WELCOME (for users) or
 	RPL_YOURESERVICE (for services) message indicating that the
@@ -262,7 +262,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Param : <password>
 	Cette commande permet de set une connection avec mdp.
 	Numeric Replies:
-		ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+		ERR_NEEDMOREPARAMS			  ERR_ALREADYREGISTRED
 	Example:
 		PASS secretpasswordhere
 □ Nick message : 
@@ -288,7 +288,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	si jamais le bit 3 est setm le mode+i (marks a users as invisible) est active.
 	Le <realname> peut contenir des espaces.
 	Numeric Replies:
-		ERR_NEEDMOREPARAMS              ERR_ALREADYREGISTRED
+		ERR_NEEDMOREPARAMS			  ERR_ALREADYREGISTRED
 	Example:
 		USER guest 0 * :Ronnie Reagan   ; User registering themselves with a
 								username of "guest" and real name
@@ -354,7 +354,7 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Numeric Replies:
 		None.
 	Example:
-		QUIT :Gone to have lunch        ; Preferred message format.
+		QUIT :Gone to have lunch		; Preferred message format.
 		:syrk!kalt@millennium.stealth.net QUIT :Gone to have lunch ; User syrk has quit IRC to have lunch.
 □ Squit :
 	Pour les OPERATEURS (donc a coder quoi)
@@ -383,11 +383,11 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	recoit le TOPIC du channel (RPL_TOPIC) et la liste des membres du chan (RPL_NAMREPLY), liste dans laquelle il 
 	est lui-meme inclu.
 	Numeric Replies:
-		ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-		ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-		ERR_CHANNELISFULL               ERR_BADCHANMASK
-		ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-		ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+		ERR_NEEDMOREPARAMS			  ERR_BANNEDFROMCHAN
+		ERR_INVITEONLYCHAN			  ERR_BADCHANNELKEY
+		ERR_CHANNELISFULL			   ERR_BADCHANMASK
+		ERR_NOSUCHCHANNEL			   ERR_TOOMANYCHANNELS
+		ERR_TOOMANYTARGETS			  ERR_UNAVAILRESOURCE
 		RPL_TOPIC
 	Examples:
 		JOIN #foobar					; Command to join channel #foobar.
@@ -395,12 +395,12 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 										key "fubar".
 		JOIN #foo,&bar fubar			; Command to join channel #foo using
 										key "fubar" and &bar using no key.
-		JOIN #foo,#bar fubar,foobar     ; Command to join channel #foo using
+		JOIN #foo,#bar fubar,foobar	 ; Command to join channel #foo using
 									   key "fubar", and channel #bar using
 									   key "foobar".
-		JOIN #foo,#bar                  ; Command to join channels #foo and
+		JOIN #foo,#bar				  ; Command to join channels #foo and
 									   #bar.
-		JOIN 0                          ; Leave all currently joined
+		JOIN 0						  ; Leave all currently joined
 									   channels.
 		:WiZ!jto@tolsun.oulu.fi JOIN #Twilight_zone ; JOIN message from WiZ
 									   on channel #Twilight_zone
@@ -414,9 +414,9 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 		ERR_NEEDMOREPARAMS			ERR_NOSUCHCHANNEL
 		ERR_NOTONCHANNEL
 	Examples:
-		PART #twilight_zone             ; Command to leave channel
+		PART #twilight_zone			 ; Command to leave channel
 								"#twilight_zone"
-		PART #oz-ops,&group5            ; Command to leave both channels
+		PART #oz-ops,&group5			; Command to leave both channels
 								"&group5" and "#oz-ops".
 		:WiZ!jto@tolsun.oulu.fi PART #playzone :I lost
 								; User WiZ leaving channel
@@ -428,22 +428,22 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	commande MODE permet de changer le(s) mode(s)/caracteristiques d`un channel.
 	Maximum trois modes par commandes.
 	Numeric Replies:
-		   ERR_NEEDMOREPARAMS              ERR_KEYSET
-		   ERR_NOCHANMODES                 ERR_CHANOPRIVSNEEDED
-		   ERR_USERNOTINCHANNEL            ERR_UNKNOWNMODE
+		   ERR_NEEDMOREPARAMS			  ERR_KEYSET
+		   ERR_NOCHANMODES				 ERR_CHANOPRIVSNEEDED
+		   ERR_USERNOTINCHANNEL			ERR_UNKNOWNMODE
 		   RPL_CHANNELMODEIS
-		   RPL_BANLIST                     RPL_ENDOFBANLIST
-		   RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
-		   RPL_INVITELIST                  RPL_ENDOFINVITELIST
+		   RPL_BANLIST					 RPL_ENDOFBANLIST
+		   RPL_EXCEPTLIST				  RPL_ENDOFEXCEPTLIST
+		   RPL_INVITELIST				  RPL_ENDOFINVITELIST
 		   RPL_UNIQOPIS
 	Examples:
-	MODE #Finnish +imI *!*@*.fi     ; Command to make #Finnish channel
+	MODE #Finnish +imI *!*@*.fi	 ; Command to make #Finnish channel
 								moderated and `invite-only` with user
 								with a hostname matching *.fi
 								automatically invited.
-	MODE #Finnish +o Kilroy         ; Command to give `chanop` privileges
+	MODE #Finnish +o Kilroy		 ; Command to give `chanop` privileges
 								to Kilroy on channel #Finnish.
-	MODE #Finnish +v Wiz            ; Command to allow WiZ to speak on
+	MODE #Finnish +v Wiz			; Command to allow WiZ to speak on
 								#Finnish.
 □ Names message : 
 	Command: NAMES
@@ -452,8 +452,8 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Si jamais aucun channel n`est passe en param, une list des channel et des 
 	users est retourne.
 	Numerics:
-		ERR_TOOMANYMATCHES              ERR_NOSUCHSERVER
-		RPL_NAMREPLY                    RPL_ENDOFNAMES
+		ERR_TOOMANYMATCHES			  ERR_NOSUCHSERVER
+		RPL_NAMREPLY					RPL_ENDOFNAMES
 	Examples:
 	NAMES #twilight_zone,#42	; Command to list visible users on
 								#twilight_zone and #42
@@ -464,8 +464,8 @@ crlf		=	%x0D %x0A   ; "carriage return" "linefeed"
 	Parameters: [ <channel> *( "," <channel> ) [ <target> ] ]
 	Permets de lister les channels et leurs topics.
 	Numeric Replies:
-		ERR_TOOMANYMATCHES              ERR_NOSUCHSERVER
-		RPL_LIST                        RPL_LISTEND
+		ERR_TOOMANYMATCHES			  ERR_NOSUCHSERVER
+		RPL_LIST						RPL_LISTEND
 	Examples:
 		LIST							; Command to list all channels.
 		LIST #twilight_zone,#42			; Command to list channels

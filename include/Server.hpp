@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ehautefa <ehautefa@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 17:27:46 by ehautefa         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   Server.hpp										 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: ehautefa <ehautefa@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2022/03/21 11:54:48 by ehautefa		  #+#	#+#			 */
+/*   Updated: 2022/06/10 14:22:45 by ehautefa		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
@@ -39,39 +39,41 @@ std::vector<std::string> split(const std::string &chaine, char delimiteur);
 class Server
 {
 	private:
-		int                         	_port;
-		std::string                		_password;
+		int						 	_port;
+		std::string						_password;
 		std::vector<struct pollfd>  	_pfds;
-		std::vector<User>           	_users;
+		std::vector<User>		   	_users;
 		std::map<std::string, Channel>  _channels;
-		int                         	_sockfd;
+		int						 	_sockfd;
 
-    public:
-        Server(int port, std::string password);
-        ~Server();
-        
-        bool        				set_sockfd(int sockfd);
-        std::string 				get_password();
+	public:
+		Server(int port, std::string password);
+		~Server();
+		
+		bool						set_sockfd(int sockfd);
+		std::string 				get_password();
 		int 						get_port();
-        std::vector<struct pollfd> 	get_pfds();
-        std::vector<User>::iterator	get_user(int fd);
-        std::vector<User>::iterator	get_user(std::string nickname);
-        
-        void                        server_loop();
-        std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
-        bool                        receive();
-        bool	       				parse_packets(char *packets, int size);
+		std::vector<struct pollfd> 	get_pfds();
+		std::vector<User>::iterator	get_user(int fd);
+		std::vector<User>::iterator	get_user(std::string nickname);
+		
+		void						server_loop();
+		std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
+		bool						receive();
+		bool		   				parse_packets(char *packets, int size);
 
-        // COMMANDS
+		// COMMANDS
 
-        
-        void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
-        void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
-        void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
-        void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
+		
+		void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
+		void	nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);	  
+		void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
+		void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
 		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
+		void	private_message(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 };
 
 
