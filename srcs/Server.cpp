@@ -114,11 +114,22 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	if (nickname.first == false)
 		return ;
 	std::cout << GR << "NICK" << NC << std::endl;
-	if (this->get_user(nickname.second) != this->_users.end()) {
+	if (nickname.second.size() == 0) {
+		user->send_message(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
+	} else if (nickname.second.size() > 9 || nickname.second.size() < 1
+			|| nickname.second.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}0123456789-") != std::string::npos
+			|| std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}").find(nickname.second[0]) == std::string::npos) {
+		user->send_error(to_string(ERRERRONEUSNICKNAME), nickname.second, ":Erroneous nickname");
+	} else if (user->get_mode('r') == true) {
+		user->send_message(to_string(ERRRESTRICTED), ":You are restricted");
+	} else if (this->get_user(nickname.second) != this->_users.end()) {
 		user->send_message(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
+	} else {
+		// std::string msg = ":" + user->get_nickName() + "!" + user->get_userName() + "@" + user->get_hostName() + " NICK :" + nickname.second;
+		// send(this->_sockfd, msg.c_str(), msg.size(), 0);
+		user->set_nickName(nickname.second);
 	}
-	user->set_nickName(nickname.second);
 }
  
 void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>  server) {

@@ -72,8 +72,8 @@ class Server
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
 		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+
 		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
-		void	private_message(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 };
 
 

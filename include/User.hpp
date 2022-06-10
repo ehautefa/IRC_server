@@ -30,6 +30,7 @@ class User
 		std::string _fullName;
 		bool		_isConnected;
 		bool		_isOperator;
+		std::string	_mode;
 
 	public:
 		User(int fd, std::string hostname);
@@ -40,6 +41,7 @@ class User
 		// GETTERS
 
 		int		 get_fd(void) const;
+		bool	 get_mode(char mode) const;
 		bool		get_isConnected(void) const;
 		std::string get_nickName(void) const;
 		std::string get_hostName(void) const;
@@ -49,6 +51,7 @@ class User
 
 		// SETTER	
 
+		bool		set_mode(char mode);
 		void		set_nickName(std::string nickName);
 		void		set_userName(std::string userName);
 		void		set_hostName(std::string hostName);
@@ -58,6 +61,7 @@ class User
 
 		void		print_user(void); // for debug
 		int 		send_message(std::string rpl, std::string to_send);
+		int 		send_error(std::string rpl, std::string arg, std::string to_send);
 		
 };
 
