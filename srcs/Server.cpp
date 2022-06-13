@@ -289,6 +289,7 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 	msg.erase(0, 1);
 	(void)chan_dest;
 	std::cout << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
+<<<<<<< HEAD
 	if (user_dest->get_mode('a') == true) {
         user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
 	}
@@ -299,6 +300,16 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		chan_dest->second.send_message(*user, msg, false);
 	}
 	else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
+=======
+	if (user_dest != this->_users.end()) {
+		if (user_dest->get_mode('a') == true)
+			user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
+		else
+			user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
+	} else if (chan_dest != this->_channels.end()) {
+		chan_dest->second.send_message(msg);
+	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
+>>>>>>> pika
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
 }
@@ -322,6 +333,38 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else {
 		user->set_mode(tab[1][1]);
 		user->send_message(to_string(RPL_UMODEIS), "i");
+	}
+}
+
+void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string> part) {
+	if (part.first == false)
+		return ;
+	std::string msg = "Part Message";
+	std::cout << GR << "PART" << NC << std::endl;
+	std::vector<std::string> tab = split(part.second, ' ');
+	if (tab.size() < 1) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
+		return ;
+	} else if (tab.size() > 1) {
+		msg = tab[1];
+		for (size_t i = 2; i < tab.size(); i++) {
+			msg += " " + tab[i];
+		}
+		msg.erase(0, 1);
+	}
+	std::vector<std::string> tab_chan = split(tab[0], ',');
+	std::map<std::string, Channel>::iterator chan_dest;
+	for (size_t i = 0; i < tab_chan.size(); i++) {
+		chan_dest = this->_channels.find(tab[0]);
+		if (chan_dest == this->_channels.end()) {
+			user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
+		} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
+			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
+		} else {
+			chan_dest->second.users.erase(user->get_nickName());
+
+			// TO DO : Send part message to all users in the channel
+		}
 	}
 }
 

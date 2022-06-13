@@ -29,6 +29,7 @@ class Channel
 		std::vector<std::string>		_modeChannel;
 
 	public:
+		std::map<std::string, User>		users;
 
 		std::map<std::string, User>		users;
 		Channel();
