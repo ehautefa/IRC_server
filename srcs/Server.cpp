@@ -197,15 +197,18 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	}
 	else if (channel.second.size() > 200 || (channel.second[0] != '#' && channel.second[0] != '&')
-			|| this->isInStr(' ', channel.second) != 0)
+			|| channel.second.find(' ', 0) != std::string::npos)
 	{
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
-		return ;		
+		return ;
 	}
-	else if (findChannel(channel.second) == 1)
-		std::cout << "ALREADY EXIST" << std::endl;
+	else if (this->_channels.count(channel.second) > 0)
+		std::cout << "ALREADY EXISTS" << std::endl;
 	else
+	{
 		this->_channels[channel.second] = Channel(channel.second);
+		
+	}
 	this->get_channel();
 }
 
