@@ -334,6 +334,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		msg.erase(0, 1);
 	}
 	std::vector<std::string> tab_chan = split(tab[0], ',');
+	std::cout << YEL << "CHANNELS :" << tab_chan[0] << NC << std::endl;
 	std::map<std::string, Channel>::iterator chan_dest;
 	for (size_t i = 0; i < tab_chan.size(); i++) {
 		chan_dest = this->_channels.find(tab[0]);
@@ -342,7 +343,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
 		} else {
-			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, false);
+			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, true);
 			chan_dest->second.users.erase(user->get_nickName());
 		}
 	}
