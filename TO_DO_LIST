@@ -1,5 +1,5 @@
-╔══╗╔═══╗╔═══╗		  ╔════╗		  ╔╗		╔╗		╔╗ 
-╚╣╠╝║╔═╗║║╔═╗║		  ║╔╗╔╗║		  ║║		║║	   ╔╝╚╗
+╔══╗╔═══╗╔═══╗		╔════╗		  ╔╗		╔╗        ╔╗ 
+╚╣╠╝║╔═╗║║╔═╗║		║╔╗╔╗║		  ║║		║║       ╔╝╚╗
  ║║ ║╚═╝║║║ ╚╝	╔╗	╚╝║║╚╝╔══╗	╔═╝║╔══╗	║║ ╔╗╔══╗╚╗╔╝
  ║║ ║╔╗╔╝║║ ╔╗	╚╝	  ║║  ║╔╗║	║╔╗║║╔╗║	║║ ╠╣║══╣ ║║ 
 ╔╣╠╗║║║╚╗║╚═╝║	╔╗	 ╔╝╚╗ ║╚╝║	║╚╝║║╚╝║	║╚╗║║╠══║ ║╚╗
@@ -9,19 +9,14 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 ❌ END
-	❌	Handling multiple clients at the same time		
-	❌	Authentification								
-	❌	Authentification								
+	✅	Handling multiple clients at the same time										
+	✅	Authentification								
 	✅	Set a Nickname
 	✅	Set a username
-	❌	Join a channel
-	❌	Send a private msg
-	❌	Receive a private msg
-	❌	Specific operators commands :
-		❌	Forcibly disconnect users (Kill)
-		❌	Ban (K-line or G-line) users
-		❌	Change network routing by disconnecting (squitting) or connecting servers
-	❌ Test with NC
+	✅	Join a channel
+	✅	Send a private msg
+		Receive a private msg
+	❌ 	Test with NC
 
 COMMAND :
 	✅	CONNECT :
@@ -53,13 +48,13 @@ COMMAND :
 		NICK <nickname> [<hopcount>] (RFC 1459)
 		NICK <nickname> (RFC 2812)
 			Allows a client to change their IRC nickname. Hopcount is for use between servers to specify how far away a nickname is from its home server.[23][24] Defined in RFC 1459; the optional <hopcount> parameter was removed in RFC 2812. 
-	❌	OPER : 
+	✅	OPER : 
 		OPER <username> <password>
 			Authenticates a user as an IRC operator on that server/network.[26] Defined in RFC 1459. 
-	❌	PART : 
+	🔘	PART : 
 		PART <channels> [<message>]
 			Causes a user to leave the channels in the comma-separated list <channels>.[27] Defined in RFC 14
-	❌	PRIVMSG : 
+	✅	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
 	❌	QUIT : 
@@ -69,9 +64,6 @@ COMMAND :
 		SETNAME <new real name>
 			Allows a client to change the "real name" specified when registering a connection.
 			This command is not formally defined by an RFC, but is in use by some IRC daemons. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with the SETNAME keyword 
-	❌	USERS : 
-		USERS [<server>]
-			Returns a list of users and information about those users in a format similar to the UNIX commands who, rusers and finger.[46] Defined in RFC 1459. 
 
 USER MODES :
 	❌	a :
