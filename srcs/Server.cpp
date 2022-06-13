@@ -6,11 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/08 11:26:29 by ehautefa          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/06/09 16:54:21 by hlucie           ###   ########.fr       */
-=======
-/*   Updated: 2022/06/09 16:40:17 by ehautefa         ###   ########.fr       */
->>>>>>> master
+/*   Updated: 2022/06/13 12:31:09 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +121,7 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 	user->print_user();
 }
 
+
 void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname) {
 	if (nickname.first == false)
 		return ;
@@ -150,45 +147,49 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-int	Server::isInStr(std::string toFind, std::string channelName)
+int	Server::findChannel(std::string name)
 {
-	int i = 0;
-	int j = 1;
-	while (toFind[i] != '\0')
+	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
+	while (it != this->_channels.end())
 	{
-		while (channelName[j] != '\0')
-		{
-			if (toFind[i] == channelName[j] || channelName[j] == 7)
-				return (1);
-			j++;
-		}
-		j = 1;
-		i++;
+		if (it->first == name)
+			return (1);
+		it++;
 	}
 	return (0);
 }
 
-void	Server::join(std::vector <User>::iterator user, std::string channel) {
-	if (channel == "")
+int	Server::isInStr(char toFind, std::string channelName)
+{
+	for (int i = 0; channelName[i]; i++) {
+		if (toFind == channelName[i])
+			return (1);
+	}
+	return (0);
+}
+
+
+void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string> channel) {
+	if (channel.first == false)
 		return ;
 	std::cout << GR << "JOIN" << NC << std::endl;
-	if (channel.size() == 0) {
-		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params");
+	if (channel.second.size() == 0) {
+		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params\r\n");
 		return ;
 	}
-	else if (channel.size() > 200 || channel[0] != '#' || channel[0] != '&'
-			|| this->isInStr(" ,", channel))
+	else if (channel.second.size() > 200 || (channel.second[0] != '#' && channel.second[0] != '&')
+			|| this->isInStr(' ', channel.second) != 0)
 	{
-		user->send_message(to_string(ERRBADCHANMASK), ": WRONG PARAMS");
+		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;		
 	}
+	else if (findChannel(channel.second) == 1)
+		std::cout << "ALREADY EXIST" << std::endl;
 	else
-		this->_channels[channel] = Channel(channel);
+		this->_channels[channel.second] = Channel(channel.second);
 	this->get_channel();
 }
 
-void	Server::whois(std::vector<User>::iterator user, std::string who) {
-	if (who == "")
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
 		return ;
@@ -249,10 +250,11 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->user(user, this->getInfo("USER", std::string(packets)));
 	this->ping(user, this->getInfo("PING", std::string(packets)));
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
-	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->list(user, this->getInfo("LIST", std::string(packets)));
+	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
+
 
 std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer)
 {

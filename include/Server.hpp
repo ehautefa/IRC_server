@@ -6,7 +6,7 @@
 /*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/09 16:59:39 by hlucie           ###   ########.fr       */
+/*   Updated: 2022/06/13 12:25:52 by hlucie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ class Server
         std::vector<User>::iterator	get_user(std::string nickname);
 		
         std::map<std::string, Channel>::iterator	get_channel();
-        int	isInStr(std::string toFind, std::string channelName);
-
+        int	isInStr(char toFind, std::string channelName);
+        int	findChannel(std::string name);
 
         void                        server_loop();
         std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
@@ -70,12 +70,7 @@ class Server
 
         // COMMANDS
 
-        
-        void	user(std::vector<User>::iterator user, std::string username);  
-        void    nick(std::vector<User>::iterator user, std::string nickname);      
-        void	ping(std::vector<User>::iterator user, std::string server);
-        void	whois(std::vector<User>::iterator user, std::string who);
-		void	join(std::vector <User>::iterator user, std::string channel);
+        void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
         void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
         void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
         void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);

@@ -20,8 +20,3 @@ const std::string Channel::getTopic()
 {
 	return (this->_topic);
 }
-
-// void	Channel::setTopic(std::string topic)
-// {
-	
-// }
