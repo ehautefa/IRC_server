@@ -188,11 +188,14 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	}
 	else if (_channels.count(channel.second) == 1)
+	{
 		std::cout << "ALREADY EXIST" << std::endl;
+		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("v", *user);
+	}
 	else {
 		this->_channels[channel.second] = Channel(channel.second);
+		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("Oo", *user);
 	}
-	this->_channels[channel.second].users[user->get_nickName()] = *user;
 	this->get_channel();
 }
 

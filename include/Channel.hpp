@@ -10,6 +10,7 @@
 #include <cstring>
 #include <string>
 #include <fstream>
+#include <utility>
 #include <sys/select.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -29,7 +30,8 @@ class Channel
 		std::vector<std::string>		_modeChannel;
 
 	public:
-		std::map<std::string, User>		users;
+		typedef std::pair<std::string, User> modeUser;
+		std::map<std::string, modeUser>	users;
 		Channel();
 		Channel(std::string name);
 		~Channel();
