@@ -102,6 +102,14 @@ std::vector<User>::iterator	Server::find_user(std::string str) {
     return (it);
 }
 
+int	Server::isInStr(char toFind, std::string channelName)
+{
+	for (int i = 0; channelName[i]; i++) {
+		if (toFind == channelName[i])
+			return (1);
+	}
+	return (0);
+}
 
 // COMMANDS
 
@@ -130,7 +138,6 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_error(to_string(ERRALREADYREGISTERED), ":Unauthorized command (already registered)");
 	}
 }
-
 
 void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname) {
 	if (nickname.first == false)
@@ -166,28 +173,6 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-int	Server::findChannel(std::string name)
-{
-	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
-	while (it != this->_channels.end())
-	{
-		if (it->first == name)
-			return (1);
-		it++;
-	}
-	return (0);
-}
-
-int	Server::isInStr(char toFind, std::string channelName)
-{
-	for (int i = 0; channelName[i]; i++) {
-		if (toFind == channelName[i])
-			return (1);
-	}
-	return (0);
-}
-
-
 void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string> channel) {
 	if (channel.first == false)
 		return ;
@@ -202,8 +187,8 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
 	}
-	else if (this->_channels.count(channel.second) > 0)
-		std::cout << "ALREADY EXISTS" << std::endl;
+	else if (_channels.count(channel.second) == 1)
+		std::cout << "ALREADY EXIST" << std::endl;
 	else
 	{
 		this->_channels[channel.second] = Channel(channel.second);
@@ -307,18 +292,12 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 	if (user_dest->get_mode('a') == true) {
         user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
 	} else if (user_dest != this->_users.end()) {
-		user_dest->send_message("", msg);
+		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
 		chan_dest->second.send_message(msg);
 	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
-
-    // ERR_NORECIPIENT
-    // ERR_CANNOTSENDTOCHAN
-	// ERR_NOTOPLEVEL
-    // ERR_WILDTOPLEVEL
-	// ERR_TOOMANYTARGETS
 }
 
 void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string> mode) {
