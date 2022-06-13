@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hlucie <hlucie@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 11:54:48 by ehautefa          #+#    #+#             */
-/*   Updated: 2022/06/13 12:25:52 by hlucie           ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   Server.hpp										 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: ehautefa <ehautefa@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2022/03/21 11:54:48 by ehautefa		  #+#	#+#			 */
+/*   Updated: 2022/06/10 14:22:45 by ehautefa		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
@@ -35,31 +35,29 @@
 #include "User.hpp"
 #include "Channel.hpp"
 
-std::vector<std::string> split(const std::string &chaine, char delimiteur);
-
-
 class Server
 {
 	private:
-		int                         	_port;
-		std::string                		_password;
+		int						 		_port;
+		std::string						_password;
 		std::vector<struct pollfd>  	_pfds;
-		std::vector<User>           	_users;
+		std::vector<User>		   		_users;
 		std::map<std::string, Channel>  _channels;
-		int                         	_sockfd;
+		int						 		_sockfd;
 
     public:
         Server(int port, std::string password);
         ~Server();
         
         bool        				set_sockfd(int sockfd);
-        std::string 				get_password();
-		int 						get_port();
-        std::vector<struct pollfd> 	get_pfds();
+        std::string 				get_password() const;
+		int 						get_port() const;
+        std::vector<struct pollfd> 	get_pfds() const;
         std::vector<User>::iterator	get_user(int fd);
         std::vector<User>::iterator	get_user(std::string nickname);
-		
-        std::map<std::string, Channel>::iterator	get_channel();
+		std::vector<User>::iterator	find_user(std::string str);
+
+        std::map<std::string, Channel>::iterator    get_channel();
         int	isInStr(char toFind, std::string channelName);
         int	findChannel(std::string name);
 
@@ -68,7 +66,7 @@ class Server
         bool                        receive();
         bool	       				parse_packets(char *packets, int size);
 
-        // COMMANDS
+		// COMMANDS
 
         void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
         void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
@@ -77,6 +75,10 @@ class Server
         void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
+		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+        void    privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str);
+
+		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 };
 
 
