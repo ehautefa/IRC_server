@@ -24,10 +24,10 @@ class Channel
 {
 	private:
 
-		std::string									_name;
-		std::string									_topic;
-		std::map<std::vector<User>, std::string>	_users;
-		std::vector<std::string>					_modeChannel;
+		std::string						_name;
+		std::string						_topic;
+		std::map<User, std::string>		_users;
+		std::vector<std::string>		_modeChannel;
 
 	public:
 
@@ -38,6 +38,7 @@ class Channel
 		std::string			getTopic() const;
         std::string         getName() const;
 		void				setTopic(std::string topic);
+		void				send_message(std::string msg);
 };
 
 

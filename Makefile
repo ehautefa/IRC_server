@@ -1,7 +1,6 @@
 SRCS	=	srcs/main.cpp		\
 			srcs/User.cpp	\
 			srcs/Server.cpp		\
-			srcs/utils.cpp		\
 			srcs/Channel.cpp	\
 
 HEADER	=	include/Server.hpp	\

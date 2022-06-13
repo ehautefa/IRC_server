@@ -11,3 +11,10 @@ std::string Channel::getTopic() const { return (_topic); }
 std::string Channel::getName() const { return (_name); }
 
 void	Channel::setTopic(std::string topic) { _topic = topic; }
+
+void	Channel::send_message(std::string msg) {
+	std::map<User, std::string>::iterator	it = _users.begin();
+	for (; it != _users.end(); it++) {
+		it->first.send_message("", msg);
+	}
+}

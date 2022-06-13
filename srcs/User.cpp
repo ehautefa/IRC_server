@@ -3,7 +3,7 @@
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(true), _mode(), _away()
+User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(false), _mode(), _away()
 {
 	this->_nickName = "";
 	this->_userName = "";
