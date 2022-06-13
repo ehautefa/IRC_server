@@ -45,38 +45,38 @@ class Server
 		std::map<std::string, Channel>  _channels;
 		int						 		_sockfd;
 
-    public:
-        Server(int port, std::string password);
-        ~Server();
-        
-        bool        				set_sockfd(int sockfd);
-        std::string 				get_password() const;
+	public:
+		Server(int port, std::string password);
+		~Server();
+		
+		bool        				set_sockfd(int sockfd);
+		std::string 				get_password() const;
 		int 						get_port() const;
-        std::vector<struct pollfd> 	get_pfds() const;
-        std::vector<User>::iterator	get_user(int fd);
-        std::vector<User>::iterator	get_user(std::string nickname);
+		std::vector<struct pollfd> 	get_pfds() const;
+		std::vector<User>::iterator	get_user(int fd);
+		std::vector<User>::iterator	get_user(std::string nickname);
 		std::vector<User>::iterator	find_user(std::string str);
 
-        std::map<std::string, Channel>::iterator    get_channel();
-        int	isInStr(char toFind, std::string channelName);
-        int	findChannel(std::string name);
+		void	infoChannel(std::map<std::string, Channel>);
+		int		isInStr(char toFind, std::string channelName);
+		int		findChannel(std::string name);
 
-        void                        server_loop();
-        std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
-        bool                        receive();
-        bool	       				parse_packets(char *packets, int size);
+		void                        	server_loop();
+		std::pair<bool, std::string>	getInfo(std::string to_find, std::string buffer);
+		bool                        	receive();
+		bool	       					parse_packets(char *packets, int size);
 
 		// COMMANDS
 
-        void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
-        void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
-        void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
-        void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
-        void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
+		void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
+		void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
+		void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
+		void	whois(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
 		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
-        void    privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str);
+		void    privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 		void	part(std::vector<User>::iterator user, std::pair<bool, std::string> part);
 };

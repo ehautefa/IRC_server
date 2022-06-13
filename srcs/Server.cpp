@@ -48,7 +48,7 @@ bool	Server::set_sockfd(int sockfd) {
 
 // GETTERS
 
-std::map<std::string, Channel>::iterator	Server::get_channel()
+void	Server::infoChannel(std::map<std::string, Channel>)
 {
 	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
 	while (it != this->_channels.end())
@@ -56,7 +56,7 @@ std::map<std::string, Channel>::iterator	Server::get_channel()
 		std::cout << it->first << std::endl;
 		it++;
 	}
-	return (it);
+	// return (it);
 }
 
 std::vector<User>::iterator	Server::get_user(int fd)
@@ -177,13 +177,11 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	}
 	else if (channel.second.size() > 200 || (channel.second[0] != '#' && channel.second[0] != '&')
-			|| channel.second.find(' ', 0) != std::string::npos)
-	{
+			|| channel.second.find(' ', 0) != std::string::npos) {
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
 	}
-	else if (_channels.count(channel.second) == 1)
-	{
+	else if (_channels.count(channel.second) == 1) {
 		std::cout << "ALREADY EXIST" << std::endl;
 		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("v", *user);
 	}
@@ -191,7 +189,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		this->_channels[channel.second] = Channel(channel.second);
 		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("Oo", *user);
 	}
-	this->get_channel();
+	// this->infoChannel(this->_channels);
 }
 
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
@@ -303,20 +301,35 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout << GR << "MODE" << NC << std::endl;
 	std::vector<std::string> tab = split(mode.second, ' ');
-	std::vector<User>::iterator user_dest = this->get_user(tab[0]);
-
 	if (tab.size() < 2) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
-	} else if (user_dest == this->_users.end()) {
-		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
-	} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
-		user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
-	} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
-		|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
-		user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
-	} else {
-		user->set_mode(tab[1][1]);
-		user->send_message(to_string(RPL_UMODEIS), "i");
+	}
+	else if (tab[0][0] == '#' || tab[0][0] == '&') {
+		// C'est un channel
+    	std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
+		if (chan_dest == _channels.end())  {
+			user->send_error(to_string(ERRNOSUCHCHANNEL), " : No such channel");
+			return ;
+		}
+		else if ((tab[1][0] != '+' && tab[1][0] != '-') || (tab[1].find_first_not_of("+-Oovimnptkl") != std::string::npos)
+		|| tab[1].size() < 2) {
+			user->send_error(to_string(ERRUNKNOWNMODE), " : Unknown mode");
+			return ;
+		}
+	} 
+	else {
+		std::vector<User>::iterator user_dest = this->get_user(tab[0]);
+		if (user_dest == this->_users.end()) {
+			user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
+		} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
+			user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
+		} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
+			|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
+			user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
+		} else {
+			user->set_mode(tab[1][1]);
+			user->send_message(to_string(RPL_UMODEIS), "i");
+		}
 	}
 }
 
