@@ -189,11 +189,10 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	else if (_channels.count(channel.second) == 1)
 		std::cout << "ALREADY EXIST" << std::endl;
-	else
-	{
+	else {
 		this->_channels[channel.second] = Channel(channel.second);
-		
 	}
+	this->_channels[channel.second].users[user->get_nickName()] = *user;
 	this->get_channel();
 }
 
@@ -288,14 +287,18 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		msg += " " + tab[i];
 	}
 	msg.erase(0, 1);
+	(void)chan_dest;
 	std::cout << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
 	if (user_dest->get_mode('a') == true) {
         user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
-	} else if (user_dest != this->_users.end()) {
+	}
+	else if (user_dest != this->_users.end()) {
 		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
-	} else if (chan_dest != this->_channels.end()) {
-		chan_dest->second.send_message(msg);
-	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
+	}
+	else if (chan_dest != this->_channels.end()) {
+		chan_dest->second.send_message(*user, msg, false);
+	}
+	else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
 }
@@ -335,6 +338,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->list(user, this->getInfo("LIST", std::string(packets)));
 	this->oper(user, this->getInfo("OPER", std::string(packets)));
 	this->privmsg(user, this->getInfo("PRIVMSG", std::string(packets)));
+	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }

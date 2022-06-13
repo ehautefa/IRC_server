@@ -26,11 +26,11 @@ class Channel
 
 		std::string						_name;
 		std::string						_topic;
-		std::vector<User>				_users;
 		std::vector<std::string>		_modeChannel;
 
 	public:
 
+		std::map<std::string, User>		users;
 		Channel();
 		Channel(std::string name);
 		~Channel();
@@ -38,7 +38,8 @@ class Channel
 		std::string			getTopic() const;
         std::string         getName() const;
 		void				setTopic(std::string topic);
-		void				send_message(std::string msg);
+		void				send_message(User fromWho, std::string msg, bool toWho);
+		void				addUser(User user);
 };
 
 

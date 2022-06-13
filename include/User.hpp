@@ -34,6 +34,7 @@ class User
         std::string _away;
 
 	public:
+		User();
 		User(int fd, std::string hostname);
 		// User(const User &src);
 		// User &operator=(const User &rhs);
