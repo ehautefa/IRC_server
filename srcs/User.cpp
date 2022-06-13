@@ -88,3 +88,9 @@ int User::send_error(std::string rpl, std::string to_send) {
 	std::cout << RED << "Sending: " << to_send << NC << std::endl;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
+
+int User::send_other_error(std::string rpl, std::string to_send) {
+	to_send = ":" + this->get_hostName() + " " + rpl + " * " + to_send + "\r\n";
+	std::cout << RED << "Sending: " << to_send << NC << std::endl;
+	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
+}

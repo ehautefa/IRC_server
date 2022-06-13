@@ -65,6 +65,7 @@ class User
 		void		print_user(void); // for debug
 		int 		send_message(std::string rpl, std::string to_send);
 		int 		send_error(std::string rpl, std::string to_send);
+		int 		send_other_error(std::string rpl, std::string to_send);
 		
 };
 
