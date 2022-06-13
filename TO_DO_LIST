@@ -17,6 +17,7 @@
 	✅	Send a private msg
 		Receive a private msg
 	❌ 	Test with NC
+	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
 COMMAND :
 	✅	CONNECT :
