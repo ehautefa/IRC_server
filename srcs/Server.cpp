@@ -145,11 +145,10 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else if (user->get_mode('r') == true) {
 		user->send_error(to_string(ERRRESTRICTED), ":You are restricted");
 	} else if (this->get_user(nickname.second) != this->_users.end()) {
-		user->send_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
+		user->send_other_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
 	} else {
-		// TO DO :: FIND MSG TO SEND
-		user->send_error("", "NICK :" + nickname.second);
+		user->send_message("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
 	}
 }
