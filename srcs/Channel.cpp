@@ -13,8 +13,8 @@ std::string Channel::getName() const { return (_name); }
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 void	Channel::send_message(std::string msg) {
-	std::map<User, std::string>::iterator	it = _users.begin();
+	std::map<std::string, User>::iterator	it = _users.begin();
 	for (; it != _users.end(); it++) {
-		it->first.send_message("", msg);
+		it->second.send_message("", msg);
 	}
 }

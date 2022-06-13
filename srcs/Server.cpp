@@ -12,8 +12,11 @@
 
 #include "../include/Server.hpp"
 
+
 std::vector<std::string> split(const std::string &chaine, char delimiteur)
 {
+	if (chaine.empty())
+		return std::vector<std::string>();
 	std::vector<std::string> elements;
 	std::stringstream ss(chaine);
 	std::string sousChaine;
@@ -71,7 +74,7 @@ int							Server::get_port() const { return (_port); }
 
 std::vector<struct pollfd>	Server::get_pfds() const { return (_pfds); }
 
-// std::map<std::string, Channel>	Server::get_channel() { return (this->_channels); }
+std::map<std::string, Channel>	Server::get_channel() { return (this->_channels); }
 
 std::vector<User>::iterator	Server::find_user(std::string str) {
     std::vector<User>::iterator	it = this->_users.begin();
@@ -170,16 +173,16 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout << GR << "LIST" << NC << std::endl;
 	std::vector<std::string> tab = split(list.second, ' ');
-	std::vector<std::string> channel = split(tab[0], ',');
-	if (tab.size() == 2 && tab[1].compare("localhost") != 0) {
+	if ((tab.size() == 2 && !tab[1].empty() && tab[1].compare("localhost") != 0) || tab.size() > 2) {
 		user->send_error(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
-	} else if (tab.size() == 1) {
+	} else if (tab.size() == 1 || (tab.size() == 2 && tab[1].compare("localhost") == 0)) {
+		std::vector<std::string> channel = split(tab[0], ',');
 		for (size_t i = 0; i < channel.size(); i++) {
 			if (this->_channels.count(channel[i]))
 				user->send_message(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
 		}
 		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
-	} else {
+	} else if (tab.size() == 0) {
 		std::map<std::string, Channel>::iterator it = this->_channels.begin();
 		for(; it != this->_channels.end(); it++) {
 			user->send_message(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
@@ -264,19 +267,21 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout << GR << "MODE" << NC << std::endl;
 	std::vector<std::string> tab = split(mode.second, ' ');
-	std::vector<User>::iterator user_dest = this->find_user(tab[0]);
+	std::vector<User>::iterator user_dest = this->get_user(tab[0]);
 
 	if (tab.size() < 2) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
+	} else if (user_dest == this->_users.end()) {
+		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
 	} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
-		user->send_error(to_string(ERRUSERSDONTMATCH), ":You can't change the mode of other users");
-	} else if ()
-
-ERR_NEEDMOREPARAMS              ERR_USERSDONTMATCH
-
-           ERR_UMODEUNKNOWNFLAG            RPL_UMODEIS
-	if (user_dest != this->_users.end()) {
-		
+		user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
+	} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
+		|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
+		user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
+	} else {
+		user->set_mode(tab[1][1]);
+		user->send_message(to_string(RPL_UMODEIS), "i");
+	}
 }
 
 
@@ -291,11 +296,12 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
 	this->list(user, this->getInfo("LIST", std::string(packets)));
 	this->oper(user, this->getInfo("OPER", std::string(packets)));
+	this->privmsg(user, this->getInfo("PRIVMSG", std::string(packets)));
+	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
 
-std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer)
-{
+std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer) {
 	size_t begin = buffer.find(to_find);
 	if (to_find[begin - 1] && to_find[begin - 1] != '\n')
 		return (std::make_pair(false, ""));

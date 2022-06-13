@@ -41,9 +41,10 @@ class User
 
 		// GETTERS
 
-		int		 get_fd(void) const;
-		bool	 get_mode(char mode) const;
-		bool		get_isConnected(void) const;
+		int		get_fd(void) const;
+		bool	get_isConnected(void) const;
+		bool	get_mode(char mode) const;
+		std::string get_mode(void) const;
 		std::string get_nickName(void) const;
 		std::string get_hostName(void) const;
 		std::string get_fullName(void) const;

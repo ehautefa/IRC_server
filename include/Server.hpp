@@ -33,9 +33,6 @@
 #include "User.hpp"
 #include "Channel.hpp"
 
-std::vector<std::string> split(const std::string &chaine, char delimiteur);
-
-
 class Server
 {
 	private:
