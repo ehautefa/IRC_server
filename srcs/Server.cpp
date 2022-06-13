@@ -135,7 +135,7 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	} else {
 		// TO DO :: FIND MSG TO SEND
-		user->send_message("", "NICK :" + nickname.second);
+		user->send_error("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
 	}
 }
