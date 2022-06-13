@@ -30,8 +30,6 @@ class Channel
 
 	public:
 		std::map<std::string, User>		users;
-
-		std::map<std::string, User>		users;
 		Channel();
 		Channel(std::string name);
 		~Channel();

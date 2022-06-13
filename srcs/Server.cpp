@@ -287,29 +287,15 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		msg += " " + tab[i];
 	}
 	msg.erase(0, 1);
-	(void)chan_dest;
 	std::cout << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
-<<<<<<< HEAD
-	if (user_dest->get_mode('a') == true) {
-        user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
-	}
-	else if (user_dest != this->_users.end()) {
-		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
-	}
-	else if (chan_dest != this->_channels.end()) {
-		chan_dest->second.send_message(*user, msg, false);
-	}
-	else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
-=======
 	if (user_dest != this->_users.end()) {
 		if (user_dest->get_mode('a') == true)
 			user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
 		else
 			user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
-		chan_dest->second.send_message(msg);
+		chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
 	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
->>>>>>> pika
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
 }
