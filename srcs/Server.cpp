@@ -120,7 +120,7 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 	std::vector<std::string> tab = split(username.second, ' ');
 	if (username.second.size() == 0 || tab.size() < 4) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
-	} else if (user->get_nickName().compare(tab[0]) == 0 && user->get_hostName().compare(tab[2]) == 0) {
+	} else if (!this->get_user(user->get_fd())->get_isConnected() == true) {
 		user->set_userName(tab[1]);
 		std::string	fullname = "";
 		for (size_t i = 3; i < tab.size(); i++) {
@@ -129,11 +129,6 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 				fullname += " ";
 		}
 		user->set_fullName(fullname.erase(0, 1));
-		if (user->get_isConnected() == false) {
-			user->set_isConnected(true);		
-			user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
-			user->print_user();
-		}
 	} else {
 		user->send_error(to_string(ERRALREADYREGISTERED), ":Unauthorized command (already registered)");
 	}
@@ -347,9 +342,8 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
 		} else {
+			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, false);
 			chan_dest->second.users.erase(user->get_nickName());
-
-			// TO DO : Send part message to all users in the channel
 		}
 	}
 }
@@ -369,6 +363,12 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->privmsg(user, this->getInfo("PRIVMSG", std::string(packets)));
 	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
+	this->part(user, this->getInfo("PART", std::string(packets)));
+	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
+		user->set_isConnected(true);		
+		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
+		user->print_user();
+	}
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
 
