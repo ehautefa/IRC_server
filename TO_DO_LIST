@@ -9,13 +9,13 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 ❌ END
-	❌	Handling multiple clients at the same time										
-	❌	Authentification								
+	✅	Handling multiple clients at the same time										
+	✅	Authentification								
 	✅	Set a Nickname
 	✅	Set a username
-	❌	Join a channel
-	❌	Send a private msg
-	❌	Receive a private msg
+	✅	Join a channel
+	✅	Send a private msg
+		Receive a private msg
 	❌ 	Test with NC
 
 COMMAND :
