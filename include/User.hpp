@@ -31,6 +31,7 @@ class User
 		bool		_isConnected;
 		bool		_isOperator;
 		std::string	_mode;
+        std::string _away;
 
 	public:
 		User(int fd, std::string hostname);
@@ -47,6 +48,7 @@ class User
 		std::string get_hostName(void) const;
 		std::string get_fullName(void) const;
 		std::string get_userName(void) const;
+		std::string	get_away(void) const;
 		bool		get_isOperator(void) const;
 
 		// SETTER	
@@ -61,7 +63,7 @@ class User
 
 		void		print_user(void); // for debug
 		int 		send_message(std::string rpl, std::string to_send);
-		int 		send_error(std::string rpl, std::string arg, std::string to_send);
+		int 		send_error(std::string rpl, std::string to_send);
 		
 };
 

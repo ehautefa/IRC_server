@@ -50,7 +50,7 @@ std::vector<User>::iterator	Server::get_user(int fd)
 	return (it);
 }
 
-std::vector<User>::iterator	Server::get_user(std::string nickname)
+std::vector<User>::iterator	Server::get_user(std::string nickname) 
 {
 	std::vector<User>::iterator	it = this->_users.begin();
 	while (it != this->_users.end())
@@ -62,19 +62,28 @@ std::vector<User>::iterator	Server::get_user(std::string nickname)
 	return (it);
 }
 
-std::string Server::get_password()
-{
-	return (this->_password);
-}
+std::string Server::get_password() const { return (_password); }
 
-int		Server::get_port()
-{
-	return (this->_port);
-}
+int		Server::get_port() const { return (_port); }
 
-std::vector<struct pollfd> Server::get_pfds()
+std::vector<struct pollfd> Server::get_pfds() const { return (_pfds); }
+
+// std::map<std::string, Channel>	Server::get_channel() { return (this->_channels); }
+
+std::vector<User>::iterator	Server::find_user(std::string str)
 {
-	return (this->_pfds);
+    std::vector<User>::iterator	it = this->_users.begin();
+    while (it != this->_users.end())
+    {
+        if (it->get_nickName().compare(str) == 0)
+            return (it);
+        else if (str.compare(it->get_userName() + "@" + it->get_hostName()) == 0)
+            return (it);
+        else if (str.compare(it->get_nickName() + "!" + it->get_userName() + "@" + it->get_hostName()) == 0)
+            return (it);
+        it++;
+    }
+    return (it);
 }
 
 // COMMANDS
@@ -119,11 +128,11 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else if (nickname.second.size() > 9 || nickname.second.size() < 1
 			|| nickname.second.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}0123456789-") != std::string::npos
 			|| std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}").find(nickname.second[0]) == std::string::npos) {
-		user->send_error(to_string(ERRERRONEUSNICKNAME), nickname.second, ":Erroneous nickname");
+		user->send_error(to_string(ERRERRONEUSNICKNAME), nickname.second + ":Erroneous nickname");
 	} else if (user->get_mode('r') == true) {
-		user->send_message(to_string(ERRRESTRICTED), ":You are restricted");
+		user->send_error(to_string(ERRRESTRICTED), ":You are restricted");
 	} else if (this->get_user(nickname.second) != this->_users.end()) {
-		user->send_message(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
+		user->send_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
 	} else {
 		// std::string msg = ":" + user->get_nickName() + "!" + user->get_userName() + "@" + user->get_hostName() + " NICK :" + nickname.second;
@@ -219,6 +228,33 @@ bool	Server::die(std::vector<User>::iterator user, std::pair<bool, std::string> 
 		return false;
 	}
 	return true;
+}
+
+void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+    if (str.first == false)
+        return ;
+    std::cout << GR << "PRIVMSG" << NC << std::endl;
+    std::vector<std::string> tab = split(str.second, ' ');
+    if (tab.size() < 2) {
+        user->send_error(to_string(ERRNOTEXTTOSEND), ":No text to send");
+        return ;
+    }
+    std::vector<User>::iterator user_dest = this->find_user(tab[0]);
+    std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
+	if (user_dest->get_mode('a') == true) {
+        user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
+	} else if (user_dest != this->_users.end()) {
+		std::cout << "hu" << std::endl;
+	} else if (chan_dest != this->_channels.end()) {
+		std::cout << "hu" << std::endl;
+	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
+        user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
+    } 
+
+
+    // ERR_NORECIPIENT
+    // ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
+    // ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
 }
 
 

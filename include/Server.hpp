@@ -39,28 +39,30 @@ std::vector<std::string> split(const std::string &chaine, char delimiteur);
 class Server
 {
 	private:
-		int						 	_port;
+		int						 		_port;
 		std::string						_password;
 		std::vector<struct pollfd>  	_pfds;
-		std::vector<User>		   	_users;
+		std::vector<User>		   		_users;
 		std::map<std::string, Channel>  _channels;
-		int						 	_sockfd;
+		int						 		_sockfd;
 
 	public:
 		Server(int port, std::string password);
 		~Server();
 		
-		bool						set_sockfd(int sockfd);
-		std::string 				get_password();
-		int 						get_port();
-		std::vector<struct pollfd> 	get_pfds();
-		std::vector<User>::iterator	get_user(int fd);
-		std::vector<User>::iterator	get_user(std::string nickname);
+		bool						    	set_sockfd(int sockfd);
+		std::string 				    	get_password() const;
+		int 						    	get_port() const;
+		std::vector<struct pollfd> 	    	get_pfds() const;
+		std::vector<User>::iterator	    	get_user(int fd);
+		std::vector<User>::iterator	    	get_user(std::string nickname);
+		std::map<std::string, Channel>		get_channel();
+        std::vector<User>::iterator	    	find_user(std::string str);
 		
-		void						server_loop();
-		std::pair<bool, std::string> getInfo(std::string to_find, std::string buffer);
-		bool						receive();
-		bool		   				parse_packets(char *packets, int size);
+		void							server_loop();
+		std::pair<bool, std::string>	getInfo(std::string to_find, std::string buffer);
+		bool							receive();
+		bool		   					parse_packets(char *packets, int size);
 
 		// COMMANDS
 
@@ -72,6 +74,7 @@ class Server
 		void	list(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		bool	die(std::vector<User>::iterator user, std::pair<bool, std::string> reason);
 		void	oper(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+        void    privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 
 		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 };

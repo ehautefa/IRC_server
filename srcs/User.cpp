@@ -3,7 +3,7 @@
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(true), _mode()
+User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(true), _mode(), _away()
 {
 	this->_nickName = "";
 	this->_userName = "";
@@ -17,45 +17,23 @@ User::~User(void)
 
 // GETTERS
 
-bool	User::get_mode(char mode) const
-{
-	return (this->_mode.find(mode) != std::string::npos);
-}
+bool	User::get_mode(char mode) const { return(_mode.find(mode) != std::string::npos); }
 
-int		User::get_fd(void) const
-{
-	return (this->_fd);
-}
+int		User::get_fd(void) const { return(_fd); }
 
-std::string	User::get_nickName(void) const
-{
-	return (this->_nickName);
-}
+std::string	User::get_nickName(void) const { return(_nickName); }
 
-std::string	User::get_hostName(void) const
-{
-	return (this->_hostName);
-}
+std::string	User::get_hostName(void) const { return(_hostName); }
 
-std::string	User::get_fullName(void) const
-{
-	return (this->_fullName);
-}
+std::string	User::get_fullName(void) const { return(_fullName); }
 
-std::string	User::get_userName(void) const
-{
-	return (this->_userName);
-}
+std::string	User::get_userName(void) const { return(_userName); }
 
-bool	User::get_isConnected(void) const
-{
-	return (this->_isConnected);
-}
+std::string	User::get_away(void) const { return(_away); }
 
-bool	User::get_isOperator(void) const
-{
-	return (this->_isOperator);
-}
+bool	User::get_isConnected(void) const { return(_isConnected); }
+
+bool	User::get_isOperator(void) const { return(_isOperator); }
 
 // SETTER
 
@@ -109,8 +87,8 @@ int	User::send_message(std::string rpl, std::string to_send) {
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
 
-int User::send_error(std::string rpl, std::string arg, std::string to_send) {
-	to_send = ":" + this->get_nickName() + "!" + this->get_userName() + "@" + this->get_hostName() + rpl + arg + to_send + "\r\n";
+int User::send_error(std::string rpl, std::string to_send) {
+	to_send = ":" + this->get_nickName() + "!" + this->get_userName() + "@" + this->get_hostName() + rpl + to_send + "\r\n";
 	std::cout << RED << "Sending: " << to_send << NC << std::endl;
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
