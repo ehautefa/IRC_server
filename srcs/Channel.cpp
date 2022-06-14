@@ -14,7 +14,7 @@ std::string	Channel::userIsOn(void){
 
 	std::string ret = "";
 
-	std::map<std::string, User>::iterator	it = users.begin();
+	std::map<int, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
 		// std::cout << it->second.get_nickName() << std::endl;
 		ret += it->second.get_nickName() + " ";

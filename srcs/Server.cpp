@@ -184,7 +184,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
 	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
 	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
-	user->send_message(to_string(RPL_NAMEREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
+	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
 
