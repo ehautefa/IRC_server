@@ -48,18 +48,6 @@ bool	Server::set_sockfd(int sockfd) {
 
 // GETTERS
 
-void	Server::infoChannel(std::pair<bool, std::string> channel)
-{
-	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
-	while (it != this->_channels.end())
-    {
-		this->_channels[channel.second].userIsOn();
-		std::cout << it->first << std::endl;
-		it++;
-	}
-	// return (it);
-}
-
 std::vector<User>::iterator	Server::get_user(int fd)
 {
 	std::vector<User>::iterator	it = this->_users.begin();
@@ -193,8 +181,10 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	this->_channels[channel.second].users[user->get_nickName()] = *user;
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
-	user->send_message(to_string(RPL_NAMEREPLY), " LIST OF USERS : ");
-	this->infoChannel(channel);
+	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
+	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
+	user->send_message(to_string(RPL_NAMEREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
+	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
 
 
@@ -210,7 +200,7 @@ void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string
 	if (to_ret == this->_users.end()) {
 		user->send_error(to_string(ERRNOSUCHNICK), who.second + " :There was no such nickname");
 	} else
-		user->send_message(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
+		user->send_other_error(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
 }
 
 void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>  list) {
@@ -323,11 +313,6 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 			user->send_error(to_string(ERRNOSUCHCHANNEL), " : No such channel");
 			return ;
 		}
-		else if ((tab[1][0] != '+' && tab[1][0] != '-') || (tab[1].find_first_not_of("+-Oovimnptkl") != std::string::npos)
-		|| tab[1].size() < 2) {
-			user->send_error(to_string(ERRUNKNOWNMODE), " : Unknown mode");
-			return ;
-		}
 	} 
 	else {
 		std::vector<User>::iterator user_dest = this->get_user(tab[0]);
@@ -391,19 +376,40 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
 	} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
 		user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
-	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED  
+	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED
 		if (tab.size() == 1 && chan_dest->second.getTopic().empty()) {
 			user->send_message(to_string(RPL_NOTOPIC), tab[0] + " :No topic is set");
 		} else  if (tab.size() == 1) {
 			user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
 		} else {
+			for (size_t i = 2; i < tab.size(); i++)
+				tab[1] += " " + tab[i];
 			chan_dest->second.setTopic(tab[1]);
 			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
-			// user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
 		}
 	}                     
 }
 
+void	Server::motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd) {
+	if (motd.first == false)
+		return ;
+	std::cout << GR << "MOTD" << NC << std::endl;
+	if (motd.second.empty() || motd.second.compare("localhost") == 0) 
+		this->motd(user);
+	else	
+		user->send_error(to_string(ERRNOSUCHSERVER), motd.second + " :No such server");
+}
+
+void	Server::motd(std::vector<User>::iterator user) {
+	user->send_message(to_string(RPL_MOTDSTART), "MOTD :- " + user->get_hostName() + " Message of the day -");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	__          _______ _______ _____ _    _ ______  _____ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	\\ \\        / /_   _|__   __/ ____| |  | |  ____|/ ____|");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	 \\ \\  /\\  / /  | |    | | | |    | |__| | |__  | (___  ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	  \\ \\/  \\/ /   | |    | | | |    |  __  |  __|  \\___ \\ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	   \\  /\\  /   _| |_   | | | |____| |  | | |____ ____) |");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	    \\/  \\/   |_____|  |_|  \\_____|_|  |_|______|_____/ ");
+	user->send_message(to_string(RPL_ENDOFMOTD), "MOTD :End of MOTD command");
+}
 // METHODS
 
 bool	Server::parse_packets(char *packets, int fd) {
@@ -420,10 +426,12 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
 	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
+	this->motd(user, this->getInfo("motd", std::string(packets)));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
 		user->print_user();
+		this->motd(user);
 	}
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }

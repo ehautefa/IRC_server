@@ -40,7 +40,7 @@ class Channel
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
 		void				addUser(User user);
-		void				userIsOn(void);
+		std::string			userIsOn(void);
 };
 
 

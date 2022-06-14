@@ -10,13 +10,16 @@ std::string Channel::getTopic() const { return (_topic); }
 
 std::string Channel::getName() const { return (_name); }
 
-void	Channel::userIsOn(void){
+std::string	Channel::userIsOn(void){
+
+	std::string ret = "";
 
 	std::map<std::string, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
-		std::cout << it->second.get_nickName() << std::endl;
+		// std::cout << it->second.get_nickName() << std::endl;
+		ret += it->second.get_nickName() + " ";
 	}
-	return ;
+	return (ret);
 }
 
 

@@ -29,7 +29,7 @@ enum Reply
 	RPL_MOTD				= 372,				  // :- <info>
 	RPL_MOTDALT				= 377,				  // :- <info>																		(some)
 	RPL_MOTDALT2			= 378,				  // :- <info>																		(some)
-	RPL_MOTDENF				= 376,				  // :End of /MOTD command.
+	RPL_ENDOFMOTD			= 376,				  // :End of /MOTD command.
 	RPL_UMODEIS				= 221,				  // <mode>
 
 	// IsOn/UserHost
