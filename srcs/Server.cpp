@@ -323,7 +323,7 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
 	} else {
 		user->set_mode(tab[1][1]);
-		user->send_message(to_string(RPL_UMODEIS), "i");
+		user->send_message(to_string(RPL_UMODEIS), "MODE :" + user->get_mode());
 	}
 }
 
