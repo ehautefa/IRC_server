@@ -9,15 +9,11 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 TDL 14/06 PIKA :
-	❌ PART
+	✅ PART
 	❌ Your user mode is [] to fix
-	❌ SETNAME
 	❌ PRIVMSG with client to Test
 	
-	❌ ISON
-	❌ KILL
-	❌ KICK
-	❌ SETTOPIC
+	❌ TOPIC
 	❌ AWAY
 
 
@@ -27,12 +23,34 @@ TDL 14/06 PIKA :
 	✅	Set a Nickname
 	✅	Set a username
 	✅	Join a channel
-	✅	Send a private msg
-		Receive a private msg
+	🔘	Send a private msg
+	🔘	Receive a private msg
 	❌ 	Test with NC
 	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
 COMMAND :
+	✅	PASS
+	✅	NICK
+	✅	USER
+	✅	OPER
+	✅	JOIN
+	✅	PART
+	✅	PING
+	✅	PONG
+	✅	DIE
+	🔘	MODE
+	🔘	PRIVMSG
+	🔘	LIST
+	🔘	WHO/WHOIS
+	❌	QUIT
+	❌	ERROR
+	❌	KILL
+	❌	MOTD
+	❌	NOTICE
+	❌	NAMES
+	❌	INVITE
+	❌	TOPIC
+
 	✅	CONNECT :
 		CONNECT <target server> [<port> [<remote server>]] (RFC 1459)
 		CONNECT <target server> <port> [<remote server>] (RFC 2812)

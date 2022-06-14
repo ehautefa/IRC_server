@@ -150,7 +150,10 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_other_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
 	} else {
-		user->send_message("", "NICK :" + nickname.second);
+		if (user->get_nickName().size() > 0) {
+			user->send_error("","NICK :" + nickname.second);
+		} else
+			user->send_message("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
 	}
 }
@@ -242,15 +245,18 @@ void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else {
 		std::vector<User>::iterator it = this->_users.begin();
 		for (; it != this->_users.end(); it++) {
-			if (it->get_userName().compare(tab[0]) == 0) {
+			if (it->get_nickName().compare(tab[0]) == 0) {
 				if (this->get_password().compare(tab[1]) == 0) {
 					user->set_isOperator(true);
-					user->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
+					it->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
 				} else {
 					user->send_error(to_string(ERRNOOPERHOST), ":Password incorrect");
 				}
 				return ;
-			}
+			} 
+		}
+		if (it == this->_users.end()) {
+			user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
 		}
 	}
 }
