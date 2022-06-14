@@ -8,6 +8,17 @@
 		   
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
+TDL 14/06 PIKA :
+	❌ PART
+	❌ ISON
+	❌ KILL
+	❌ KICK
+	❌ SETNAME
+	❌ SETTOPIC
+	❌ PRIVMSG
+	❌ AWAY
+
+
 ❌ END
 	✅	Handling multiple clients at the same time										
 	✅	Authentification								
