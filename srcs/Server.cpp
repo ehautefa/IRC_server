@@ -410,6 +410,27 @@ void	Server::motd(std::vector<User>::iterator user) {
 	user->send_message(to_string(RPL_MOTD), "MOTD :	    \\/  \\/   |_____|  |_|  \\_____|_|  |_|______|_____/ ");
 	user->send_message(to_string(RPL_ENDOFMOTD), "MOTD :End of MOTD command");
 }
+
+void	Server::notice(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	if (str.first == false)
+		return ;
+	std::cout << GR << "NOTICE" << NC << std::endl;
+	std::vector<std::string> tab = split(str.second, ' ');
+	std::string	msg;
+    if (tab.size() < 2) { return ;}
+    std::vector<User>::iterator user_dest = this->find_user(tab[0]);
+    std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
+	msg = tab[1];
+	for (size_t i = 2; i < tab.size(); i++) {
+		msg += " " + tab[i];
+	}
+	msg.erase(0, 1);
+	if (user_dest != this->_users.end())
+		user_dest->relay_message(*user, "NOTICE " + user_dest->get_nickName() + " :" + msg);
+	else if (chan_dest != _channels.end() && chan_dest->second.users.find(user->get_nickName()) != chan_dest->second.users.end()) 
+			chan_dest->second.send_message(*user, "NOTICE " + tab[0] + " :" + msg, true);
+}
+
 // METHODS
 
 bool	Server::parse_packets(char *packets, int fd) {
@@ -427,6 +448,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->part(user, this->getInfo("PART", std::string(packets)));
 	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
 	this->motd(user, this->getInfo("motd", std::string(packets)));
+	this->notice(user, this->getInfo("NOTICE", std::string(packets)));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());

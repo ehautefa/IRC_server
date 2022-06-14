@@ -64,7 +64,7 @@ COMMAND :
 	🔘	MODE :
 	🔘	TOPIC :
 	✅	MOTD :
-	❌	NOTICE :
+	✅	NOTICE :
 	❌	NAMES :
 	❌	INVITE : 
 		INVITE <nickname> <channel>
