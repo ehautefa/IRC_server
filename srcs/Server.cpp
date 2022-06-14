@@ -379,6 +379,8 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		} else  if (tab.size() == 1) {
 			user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
 		} else {
+			for (size_t i = 2; i < tab.size(); i++)
+				tab[1] += " " + tab[i];
 			chan_dest->second.setTopic(tab[1]);
 			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
 		}

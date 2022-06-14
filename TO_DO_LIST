@@ -12,9 +12,9 @@ TDL 14/06 PIKA :
 	✅ PART
 	✅ Your user mode is [] to fix
 	✅ LIST
-	✅	WHO/WHOIS
+	✅ WHO/WHOIS
+	✅ PRIVMSG with client
 	🔘	TOPIC : check if user is op ERR_CHANOPRIVSNEEDED  
-	❌ PRIVMSG with client
 
 
 ❌ END
@@ -23,8 +23,8 @@ TDL 14/06 PIKA :
 	✅	Set a Nickname
 	✅	Set a username
 	✅	Join a channel
-	🔘	Send a private msg
-	🔘	Receive a private msg
+	✅	Send a private msg
+	✅	Receive a private msg
 	❌ 	Test with NC
 	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
@@ -58,10 +58,10 @@ COMMAND :
 		LIST [<channels> [<server>]]
 			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
 	✅	WHO/WHOIS :
-	🔘	MODE :
-	🔘	PRIVMSG : 
+	✅	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
+	🔘	MODE :
 	🔘	TOPIC :
 	❌	ERROR :
 	❌	MOTD :
