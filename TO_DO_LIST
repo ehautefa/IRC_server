@@ -65,7 +65,7 @@ COMMAND :
 	🔘	TOPIC :
 	✅	MOTD :
 	✅	NOTICE :
-	❌	NAMES :
+	✅	NAMES :
 	❌	INVITE : 
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
@@ -83,8 +83,6 @@ COMMAND :
 USER MODES :
 	❌	a : away
 	❌	i : invisible
-	❌	w : wallops
-	❌	r : restricted
 	❌	o : operator
 
 CHANNEL MODES : 
@@ -95,8 +93,3 @@ for users :
 for channels : 
 	❌	i : invite only
 	❌	m : moderated
-	❌	n : outside privmsg disabled
-	❌	p : private
-	❌	t : topic locked
-	❌	k : key locked
-	❌	l : user limit

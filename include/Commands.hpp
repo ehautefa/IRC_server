@@ -71,7 +71,7 @@ enum Reply
 	RPL_NOTOPIC				= 331,				  // <channel> :No topic is set.
 	RPL_TOPIC				= 332,				  // <channel> :<topic>
 	RPL_TOPICSETBY			= 333,				  // <channel> <nickname> <time>
-	RPL_NAMEREPLY			= 353,				  // = <channel> :<names>
+	RPL_NAMREPLY			= 353,				  // = <channel> :<names>
 	RPL_ENDOFNAMES			= 366,				  // <channel> :End of /NAMES list.
 
 	// Invitational

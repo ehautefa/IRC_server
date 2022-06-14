@@ -428,6 +428,27 @@ void	Server::notice(std::vector<User>::iterator user, std::pair<bool, std::strin
 			chan_dest->second.send_message(*user, "NOTICE " + tab[0] + " :" + msg, true);
 }
 
+void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	if (str.first == false)
+		return ;
+	std::cout << GR << "NAMES" << NC << std::endl;
+	std::vector<std::string> tab = split(str.second, ' ');
+	if ((tab.size() == 2 && !tab[1].empty() && tab[1].compare("localhost") != 0) || tab.size() > 2) {
+		user->send_error(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
+	} else if (tab.size() == 1 || (tab.size() == 2 && tab[1].compare("localhost") == 0)) {
+		std::vector<std::string> channel = split(tab[0], ',');
+		for (size_t i = 0; i < channel.size(); i++) {
+			if (this->_channels.count(channel[i])) {
+				std::map<std::string, User>::iterator users = this->_channels.find(channel[i])->second.users.begin();
+				for (; users != this->_channels.find(channel[i])->second.users.end(); users++) {
+					user->send_message(to_string(RPL_NAMREPLY), "=" + channel[i] + " :" + users->second.get_nickName());
+				}
+			}
+		}
+		user->send_other_error(to_string(RPL_ENDOFNAMES), "NAMES :End of NAMES list");
+	} 
+}
+
 // METHODS
 
 bool	Server::parse_packets(char *packets, int fd) {
