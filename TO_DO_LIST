@@ -10,9 +10,10 @@
 
 TDL 14/06 PIKA :
 	✅ PART
-	❌ Your user mode is [] to fix
+	✅ Your user mode is [] to fix
 	❌ PRIVMSG with client to Test
-	❌ TOPIC
+	🔘	LIST
+	🔘	WHO/WHOIS
 
 
 ❌ END
@@ -27,28 +28,11 @@ TDL 14/06 PIKA :
 	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
 COMMAND :
-	✅	PASS
-	✅	NICK
-	✅	USER
-	✅	OPER
-	✅	JOIN
-	✅	PART
-	✅	PING
-	✅	PONG
-	✅	DIE
-	🔘	MODE
-	🔘	PRIVMSG
-	🔘	LIST
-	🔘	WHO/WHOIS
-	❌	QUIT
-	❌	ERROR
-	❌	KILL
-	❌	MOTD
-	❌	NOTICE
-	❌	NAMES
-	❌	INVITE
-	❌	TOPIC
-
+	✅	PASS :
+	✅	NICK :
+	✅	USER :
+	✅	PING :
+	✅	PONG :
 	✅	CONNECT :
 		CONNECT <target server> [<port> [<remote server>]] (RFC 1459)
 		CONNECT <target server> <port> [<remote server>] (RFC 2812)
@@ -56,24 +40,6 @@ COMMAND :
 	✅	DIE :
 		DIE
 			Instructs the server to shut down.[5] This command may only be issued by IRC server operators. Defined in RFC 2812.
-	❌	INVITE : 
-		INVITE <nickname> <channel>
-			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
-	❌	ISON : 
-		ISON <nicknames>
-			Queries the server to see if the clients in the space-separated list <nicknames> are currently on the network.[10] The server returns only the nicknames that are on the network in a space-separated list. If none of the clients are on the network the server returns an empty list. Defined in RFC 1459. 
-	🔘	JOIN : 
-		JOIN <channels> [<keys>]
-			Makes the client join the channels in the comma-separated list <channels>, specifying the passwords, if needed, in the comma-separated list <keys>.[11] If the channel(s) do not exist then they will be created. Defined in RFC 1459.
-	❌	KICK :
-		KICK <channel> <client> :[<message>]
-			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
-	❌	KILL : 
-		KILL <client> <comment>
-			Forcibly removes <client> from the network.[13] This command may only be issued by IRC operators. Defined in RFC 1459. 
-	🔘	LIST : 
-		LIST [<channels> [<server>]]
-			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
 	✅	NICK : 
 		NICK <nickname> [<hopcount>] (RFC 1459)
 		NICK <nickname> (RFC 2812)
@@ -81,52 +47,55 @@ COMMAND :
 	✅	OPER : 
 		OPER <username> <password>
 			Authenticates a user as an IRC operator on that server/network.[26] Defined in RFC 1459. 
-	🔘	PART : 
+	✅	PART : 
 		PART <channels> [<message>]
 			Causes a user to leave the channels in the comma-separated list <channels>.[27] Defined in RFC 14
-	✅	PRIVMSG : 
+	✅	JOIN : 
+		JOIN <channels> [<keys>]
+			Makes the client join the channels in the comma-separated list <channels>, specifying the passwords, if needed, in the comma-separated list <keys>.[11] If the channel(s) do not exist then they will be created. Defined in RFC 1459.
+	🔘	MODE :
+	🔘	WHO/WHOIS :
+	🔘	LIST : 
+		LIST [<channels> [<server>]]
+			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
+	🔘	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
+	❌	ERROR :
+	❌	MOTD :
+	❌	NOTICE :
+	❌	NAMES :
+	❌	TOPIC :
+	❌	INVITE : 
+		INVITE <nickname> <channel>
+			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
+	❌	KICK :
+		KICK <channel> <client> :[<message>]
+			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
+	❌	KILL : 
+		KILL <client> <comment>
+			Forcibly removes <client> from the network.[13] This command may only be issued by IRC operators. Defined in RFC 1459. 
 	❌	QUIT : 
 		QUIT [<message>]
 			Disconnects the user from the server.[32] Defined in RFC 14
-	❌	SETNAME : 
-		SETNAME <new real name>
-			Allows a client to change the "real name" specified when registering a connection.
-			This command is not formally defined by an RFC, but is in use by some IRC daemons. Support is indicated in a RPL_ISUPPORT reply (numeric 005) with the SETNAME keyword 
 
 USER MODES :
-	❌	a :
-		away
-	❌	i : 
-		invisible
-	❌	w :
-		wallops
-	❌	r : 
-		restricted
-	❌	o :
-		operator
+	❌	a : away
+	❌	i : invisible
+	❌	w : wallops
+	❌	r : restricted
+	❌	o : operator
 
 CHANNEL MODES : 
-	for users : 
-	❌	O :
-		channel creator
-	❌	o : 
-		channel operator 
-	❌	v : 
-		voice 
-	for channels : 
-	❌	i :
-		invite only
-	❌	m :
-		moderated
-	❌	n :
-		outside privmsg disabled
-	❌	p :
-		private
-	❌	t :
-		topic locked
-	❌	k :
-		key locked
-	❌	l :
-		user limit
+for users : 
+	❌	O : channel creator
+	❌	o : channel operator 
+	❌	v : voice 
+for channels : 
+	❌	i : invite only
+	❌	m : moderated
+	❌	n : outside privmsg disabled
+	❌	p : private
+	❌	t : topic locked
+	❌	k : key locked
+	❌	l : user limit

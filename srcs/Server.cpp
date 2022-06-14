@@ -221,15 +221,15 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 		std::vector<std::string> channel = split(tab[0], ',');
 		for (size_t i = 0; i < channel.size(); i++) {
 			if (this->_channels.count(channel[i]))
-				user->send_message(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
+				user->send_other_error(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
 		}
-		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+		user->send_other_error(to_string(RPL_LISTEND), ":End of LIST");
 	} else if (tab.size() == 0) {
 		std::map<std::string, Channel>::iterator it = this->_channels.begin();
 		for(; it != this->_channels.end(); it++) {
-			user->send_message(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
+			user->send_other_error(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
 		}
-		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+		user->send_other_error(to_string(RPL_LISTEND), ":End of LIST");
 	}
 }
 
