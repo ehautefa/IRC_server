@@ -48,17 +48,6 @@ bool	Server::set_sockfd(int sockfd) {
 
 // GETTERS
 
-std::map<std::string, Channel>::iterator	Server::get_channel()
-{
-	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
-	while (it != this->_channels.end())
-    {
-		std::cout << it->first << std::endl;
-		it++;
-	}
-	return (it);
-}
-
 std::vector<User>::iterator	Server::get_user(int fd)
 {
 	std::vector<User>::iterator	it = this->_users.begin();
@@ -193,8 +182,12 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		this->_channels[channel.second].addUser(*user, 'O');
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
-	this->get_channel();
+	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
+	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
+	user->send_message(to_string(RPL_NAMEREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
+	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
+
 
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
@@ -308,20 +301,30 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout << GR << "MODE" << NC << std::endl;
 	std::vector<std::string> tab = split(mode.second, ' ');
-	std::vector<User>::iterator user_dest = this->get_user(tab[0]);
-
 	if (tab.size() < 2) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
-	} else if (user_dest == this->_users.end()) {
-		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
-	} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
-		user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
-	} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
-		|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
-		user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
-	} else {
-		user->set_mode(tab[1][1]);
-		user->send_message(to_string(RPL_UMODEIS), "MODE :" + user->get_mode());
+	}
+	else if (tab[0][0] == '#' || tab[0][0] == '&') {
+		// C'est un channel
+    	std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
+		if (chan_dest == _channels.end())  {
+			user->send_error(to_string(ERRNOSUCHCHANNEL), " : No such channel");
+			return ;
+		}
+	} 
+	else {
+		std::vector<User>::iterator user_dest = this->get_user(tab[0]);
+		if (user_dest == this->_users.end()) {
+			user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
+		} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
+			user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
+		} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
+			|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
+			user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
+		} else {
+			user->set_mode(tab[1][1]);
+			user->send_message(to_string(RPL_UMODEIS), "i");
+		}
 	}
 }
 
@@ -371,7 +374,7 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
 	} else if (chan_dest->second.users.find(user->get_fd()) == chan_dest->second.users.end()) {
 		user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
-	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED  
+	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED
 		if (tab.size() == 1 && chan_dest->second.getTopic().empty()) {
 			user->send_message(to_string(RPL_NOTOPIC), tab[0] + " :No topic is set");
 		} else  if (tab.size() == 1) {

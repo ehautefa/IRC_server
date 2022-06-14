@@ -10,6 +10,19 @@ std::string Channel::getTopic() const { return (_topic); }
 
 std::string Channel::getName() const { return (_name); }
 
+std::string	Channel::userIsOn(void){
+
+	std::string ret = "";
+
+	std::map<std::string, User>::iterator	it = users.begin();
+	for (; it != users.end(); it++) {
+		// std::cout << it->second.get_nickName() << std::endl;
+		ret += it->second.get_nickName() + " ";
+	}
+	return (ret);
+}
+
+
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 bool	Channel::isOperator(int fd) {
