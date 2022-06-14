@@ -37,10 +37,10 @@ class Channel
 
 		std::string			getTopic() const;
         std::string         getName() const;
+		std::string			userIsOn(void);
+		void				addUser(User user);
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
-		void				addUser(User user);
-		std::string			userIsOn(void);
 };
 
 

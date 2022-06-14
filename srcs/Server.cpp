@@ -181,7 +181,6 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	this->_channels[channel.second].users[user->get_nickName()] = *user;
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
-	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
 	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
 	user->send_message(to_string(RPL_NAMEREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
@@ -308,9 +307,14 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	else if (tab[0][0] == '#' || tab[0][0] == '&') {
 		// C'est un channel
+		std::cout << "HERE" << std::endl;
     	std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
 		if (chan_dest == _channels.end())  {
-			user->send_error(to_string(ERRNOSUCHCHANNEL), " : No such channel");
+			user->send_error(to_string(ERRNOSUCHCHANNEL), " :No such channel");
+			return ;
+		}
+		else if (chan_dest->second.userIsOn().find(tab[2]) == std::string::npos) {
+			user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
 			return ;
 		}
 	} 
