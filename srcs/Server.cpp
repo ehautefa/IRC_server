@@ -188,6 +188,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		this->_channels[channel.second] = Channel(channel.second);
 	}
 	this->_channels[channel.second].users[user->get_nickName()] = *user;
+	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
 	this->get_channel();
 }
 
@@ -289,7 +290,10 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		else
 			user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
-		chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
+		if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) 
+			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
+		else
+			chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
 	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
@@ -365,7 +369,6 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
-	std::cout << "TRY TO CONNECT" << std::endl;
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
