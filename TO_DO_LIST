@@ -8,13 +8,12 @@
 		   
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
-TDL 14/06 PIKA :
-	✅ PART
-	✅ Your user mode is [] to fix
-	✅ LIST
-	✅ WHO/WHOIS
-	✅ PRIVMSG with client
+TDL 15/06 PIKA :
 	🔘	TOPIC : check if user is op ERR_CHANOPRIVSNEEDED  
+	❌ 	Resolve segfault when deconnecting one user and reconnecting
+	🔘	FINIR INVITE
+	❌ 	gerer les modes en dehrs de channel avec names et list
+
 
 
 ❌ END
@@ -26,7 +25,6 @@ TDL 14/06 PIKA :
 	✅	Send a private msg
 	✅	Receive a private msg
 	❌ 	Test with NC
-	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
 COMMAND :
 	✅	PASS :
@@ -66,7 +64,7 @@ COMMAND :
 	✅	MOTD :
 	✅	NOTICE :
 	✅	NAMES :
-	❌	INVITE : 
+	🔘	INVITE : 
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
 	❌	KICK :
@@ -81,7 +79,6 @@ COMMAND :
 
 
 USER MODES :
-	❌	a : away
 	❌	i : invisible
 	❌	o : operator
 
