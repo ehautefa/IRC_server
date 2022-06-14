@@ -34,13 +34,13 @@ class Channel
 		Channel();
 		Channel(std::string name);
 		~Channel();
-		
+
 		std::string			getTopic() const;
         std::string         getName() const;
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
 		void				addUser(User user);
-
+		void				userIsOn(void);
 };
 
 

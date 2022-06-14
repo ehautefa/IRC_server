@@ -10,6 +10,16 @@ std::string Channel::getTopic() const { return (_topic); }
 
 std::string Channel::getName() const { return (_name); }
 
+void	Channel::userIsOn(void){
+
+	std::map<std::string, User>::iterator	it = users.begin();
+	for (; it != users.end(); it++) {
+		std::cout << it->second.get_nickName() << std::endl;
+	}
+	return ;
+}
+
+
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 void	Channel::send_message(User fromWho, std::string msg, bool toWho) {

@@ -48,11 +48,12 @@ bool	Server::set_sockfd(int sockfd) {
 
 // GETTERS
 
-void	Server::infoChannel(std::map<std::string, Channel>)
+void	Server::infoChannel(std::pair<bool, std::string> channel)
 {
 	std::map<std::string, Channel>::iterator	it = this->_channels.begin();
 	while (it != this->_channels.end())
     {
+		this->_channels[channel.second].userIsOn();
 		std::cout << it->first << std::endl;
 		it++;
 	}
@@ -192,7 +193,8 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	this->_channels[channel.second].users[user->get_nickName()] = *user;
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
-	// this->get_channel();
+	user->send_message(to_string(RPL_NAMEREPLY), " LIST OF USERS : ");
+	this->infoChannel(channel);
 }
 
 

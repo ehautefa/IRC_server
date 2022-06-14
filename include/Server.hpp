@@ -57,7 +57,7 @@ class Server
 		std::vector<User>::iterator	get_user(std::string nickname);
 		std::vector<User>::iterator	find_user(std::string str);
 
-		void	infoChannel(std::map<std::string, Channel>);
+		void	infoChannel(std::pair<bool, std::string> channel);
 		int		isInStr(char toFind, std::string channelName);
 		int		findChannel(std::string name);
 
