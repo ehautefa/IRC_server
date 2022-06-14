@@ -473,7 +473,7 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 		user->send_error(to_string(ERRCHANOPRIVSNEED), tab[1] + " :You're not channel operator");
 		return ;
 	} else {
-		user->send_message(to_string(RPL_INVITING), tab[1] + " " + tab[0]);
+		user_dest->send_message(to_string(RPL_INVITING), tab[1] + " " + tab[0]);
 		chan_dest->second.addUser(*user_dest, ' ');
 	}
 }
