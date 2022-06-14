@@ -83,6 +83,7 @@ class Server
 		void	motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd);
 		void	notice(std::vector<User>::iterator user, std::pair<bool, std::string> notice);
 		void	names(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	invite(std::vector<User>::iterator user, std::pair<bool, std::string> invite);
 		void	motd(std::vector<User>::iterator user);
 };
 

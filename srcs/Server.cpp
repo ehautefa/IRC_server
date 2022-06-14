@@ -291,10 +291,7 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 	msg.erase(0, 1);
 	std::cout << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
 	if (user_dest != this->_users.end()) {
-		if (user_dest->get_mode('a') == true)
-			user->send_message(to_string(RPL_AWAY), user_dest->get_nickName() + " :" + user_dest->get_away());
-		else
-			user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
+		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
 		if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) 
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
@@ -447,6 +444,36 @@ void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string
 		}
 		user->send_other_error(to_string(RPL_ENDOFNAMES), "NAMES :End of NAMES list");
 	} 
+}
+
+void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	if (str.first == false)
+		return ;
+	std::cout << GR << "INVITE" << NC << std::endl;
+	std::map<std::string, Channel>::iterator chan_dest;
+	std::vector<std::string> tab = split(str.second, ' ');
+	if (tab.size() != 2) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), "INVITE :Not enough parameters");
+		return ;
+	} else if ((chan_dest = this->_channels.find(tab[1])) == this->_channels.end()) {
+		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[1] + " :No such channel");
+		return ;
+	} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
+		user->send_error(to_string(ERRNOTONCHANNEL), tab[1] + " :You're not on that channel");
+		return ;
+	} else if (this->find_user(tab[0]) == this->_users.end()) {
+		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
+		return ;
+	} else if (chan_dest->second.users.find(tab[0]) != chan_dest->second.users.end()) {
+		user->send_error(to_string(ERRUSERONCHANNEL), tab[0] + " :is already on channel");
+		return ;
+	} else if (chan_dest->second.users.find(user->get_nickName())->first != 'o') {
+		user->send_error(to_string(ERRCHANOPRIVSNEED), tab[1] + " :You're not channel operator");
+		return ;
+	} else {
+		user->send_message(to_string(RPL_INVITING), tab[0] + " " + tab[1]);
+		// chan_dest->second.users->second[tab[0]] = this->find_user(tab[0]);
+	}
 }
 
 // METHODS
