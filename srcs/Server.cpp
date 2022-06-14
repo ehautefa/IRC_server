@@ -207,7 +207,7 @@ void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string
 	if (to_ret == this->_users.end()) {
 		user->send_error(to_string(ERRNOSUCHNICK), who.second + " :There was no such nickname");
 	} else
-		user->send_message(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
+		user->send_other_error(to_string(RPL_WHOISUSER), to_ret->get_nickName() + " " + to_ret->get_userName() + " " + to_ret->get_hostName() + " * :" + to_ret->get_fullName());
 }
 
 void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>  list) {
@@ -381,7 +381,6 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		} else {
 			chan_dest->second.setTopic(tab[1]);
 			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
-			// user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
 		}
 	}                     
 }

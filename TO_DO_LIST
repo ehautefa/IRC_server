@@ -12,9 +12,9 @@ TDL 14/06 PIKA :
 	✅ PART
 	✅ Your user mode is [] to fix
 	✅ LIST
-	❌	TOPIC :
-	❌ PRIVMSG with client to Test
-	🔘	WHO/WHOIS
+	✅	WHO/WHOIS
+	🔘	TOPIC : check if user is op ERR_CHANOPRIVSNEEDED  
+	❌ PRIVMSG with client
 
 
 ❌ END
@@ -54,19 +54,19 @@ COMMAND :
 	✅	JOIN : 
 		JOIN <channels> [<keys>]
 			Makes the client join the channels in the comma-separated list <channels>, specifying the passwords, if needed, in the comma-separated list <keys>.[11] If the channel(s) do not exist then they will be created. Defined in RFC 1459.
-	🔘	MODE :
-	🔘	WHO/WHOIS :
-	🔘	LIST : 
+	✅	LIST : 
 		LIST [<channels> [<server>]]
 			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
+	✅	WHO/WHOIS :
+	🔘	MODE :
 	🔘	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
+	🔘	TOPIC :
 	❌	ERROR :
 	❌	MOTD :
 	❌	NOTICE :
 	❌	NAMES :
-	❌	TOPIC :
 	❌	INVITE : 
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
@@ -79,6 +79,7 @@ COMMAND :
 	❌	QUIT : 
 		QUIT [<message>]
 			Disconnects the user from the server.[32] Defined in RFC 14
+
 
 USER MODES :
 	❌	a : away
