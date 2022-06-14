@@ -10,6 +10,7 @@
 #include <cstring>
 #include <string>
 #include <fstream>
+#include <utility>
 #include <sys/select.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -24,21 +25,27 @@ class Channel
 {
 	private:
 
-		std::string						_name;
-		std::string						_topic;
-		std::vector<std::string>		_modeChannel;
+		std::string				_name;
+		std::string				_topic;
+		std::string				_modeChannel;
+		std::map<int, char>		_users_modes;
 
 	public:
-		std::map<char, User>		users;
+		std::map<int, User>		users;
 		Channel();
 		Channel(std::string name);
 		~Channel();
-		
+
 		std::string			getTopic() const;
         std::string         getName() const;
+		bool				isOperator(int fd);
+		bool				isCreator(int fd);
+		bool				isVoice(int fd);
+		void				set_userMode(int fd, char mode);
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
-		void				addUser(User user);
+		void				addUser(User user, char mode);
+		std::string			userIsOn(void);
 };
 
 
