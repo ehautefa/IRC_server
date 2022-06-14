@@ -359,6 +359,32 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
+void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string> topic) {
+	if (topic.first == false)
+		return ;
+	std::cout << GR << "TOPIC" << NC << std::endl;
+	std::vector<std::string> tab = split(topic.second, ' ');
+	if (tab.size() < 1) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
+		return ;
+	}
+	std::map<std::string, Channel>::iterator chan_dest = this->_channels.find(tab[0]);
+	if (chan_dest == this->_channels.end()) {
+		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
+	} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
+		user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
+	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED  
+		if (tab.size() == 1 && chan_dest->second.getTopic().empty()) {
+			user->send_message(to_string(RPL_NOTOPIC), tab[0] + " :No topic is set");
+		} else  if (tab.size() == 1) {
+			user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
+		} else {
+			chan_dest->second.setTopic(tab[1]);
+			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
+			// user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
+		}
+	}                     
+}
 
 // METHODS
 
@@ -375,6 +401,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
+	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
