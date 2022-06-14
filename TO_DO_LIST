@@ -57,14 +57,13 @@ COMMAND :
 	✅	LIST : 
 		LIST [<channels> [<server>]]
 			Lists all channels on the server.[15] If the comma-separated list <channels> is given, it will return the channel topics. If <server> is given, the command will be forwarded to <server> for evaluation. Defined in RFC 1459. 
-	✅	WHO/WHOIS :
+	✅	WHOIS :
 	✅	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
 	🔘	MODE :
 	🔘	TOPIC :
-	❌	ERROR :
-	❌	MOTD :
+	✅	MOTD :
 	❌	NOTICE :
 	❌	NAMES :
 	❌	INVITE : 

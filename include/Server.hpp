@@ -80,6 +80,8 @@ class Server
 		void	mode(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 		void	part(std::vector<User>::iterator user, std::pair<bool, std::string> part);
 		void	topic(std::vector<User>::iterator user, std::pair<bool, std::string> topic);
+		void	motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd);
+		void	motd(std::vector<User>::iterator user);
 };
 
 

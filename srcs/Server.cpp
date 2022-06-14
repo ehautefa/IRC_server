@@ -387,6 +387,26 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 	}                     
 }
 
+void	Server::motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd) {
+	if (motd.first == false)
+		return ;
+	std::cout << GR << "MOTD" << NC << std::endl;
+	if (motd.second.empty() || motd.second.compare("localhost") == 0) 
+		this->motd(user);
+	else	
+		user->send_error(to_string(ERRNOSUCHSERVER), motd.second + " :No such server");
+}
+
+void	Server::motd(std::vector<User>::iterator user) {
+	user->send_message(to_string(RPL_MOTDSTART), "MOTD :- " + user->get_hostName() + " Message of the day -");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	__          _______ _______ _____ _    _ ______  _____ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	\\ \\        / /_   _|__   __/ ____| |  | |  ____|/ ____|");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	 \\ \\  /\\  / /  | |    | | | |    | |__| | |__  | (___  ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	  \\ \\/  \\/ /   | |    | | | |    |  __  |  __|  \\___ \\ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	   \\  /\\  /   _| |_   | | | |____| |  | | |____ ____) |");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	    \\/  \\/   |_____|  |_|  \\_____|_|  |_|______|_____/ ");
+	user->send_message(to_string(RPL_ENDOFMOTD), "MOTD :End of MOTD command");
+}
 // METHODS
 
 bool	Server::parse_packets(char *packets, int fd) {
@@ -403,10 +423,12 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
 	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
+	this->motd(user, this->getInfo("motd", std::string(packets)));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
 		user->print_user();
+		this->motd(user);
 	}
 	return (this->die(user, this->getInfo("die", std::string(packets))));
 }
