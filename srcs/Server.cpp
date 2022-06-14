@@ -150,7 +150,10 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_other_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
 	} else {
-		user->send_message("", "NICK :" + nickname.second);
+		if (user->get_nickName().size() > 0) {
+			user->send_error("","NICK :" + nickname.second);
+		} else
+			user->send_message("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
 	}
 }
@@ -177,20 +180,21 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	}
 	else if (channel.second.size() > 200 || (channel.second[0] != '#' && channel.second[0] != '&')
-			|| channel.second.find(' ', 0) != std::string::npos) {
+			|| channel.second.find(' ', 0) != std::string::npos)
+	{
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
 	}
-	else if (_channels.count(channel.second) == 1) {
+	else if (_channels.count(channel.second) == 1)
 		std::cout << "ALREADY EXIST" << std::endl;
-		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("v", *user);
-	}
 	else {
 		this->_channels[channel.second] = Channel(channel.second);
-		this->_channels[channel.second].users[user->get_nickName()] = std::make_pair("Oo", *user);
 	}
-	// this->infoChannel(this->_channels);
+	this->_channels[channel.second].users[user->get_nickName()] = *user;
+	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
+	// this->get_channel();
 }
+
 
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
@@ -218,15 +222,15 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 		std::vector<std::string> channel = split(tab[0], ',');
 		for (size_t i = 0; i < channel.size(); i++) {
 			if (this->_channels.count(channel[i]))
-				user->send_message(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
+				user->send_other_error(to_string(RPL_LIST), channel[i] + " :" + this->_channels[channel[i]].getTopic());
 		}
-		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+		user->send_other_error(to_string(RPL_LISTEND), ":End of LIST");
 	} else if (tab.size() == 0) {
 		std::map<std::string, Channel>::iterator it = this->_channels.begin();
 		for(; it != this->_channels.end(); it++) {
-			user->send_message(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
+			user->send_other_error(to_string(RPL_LIST), it->first + " :" + it->second.getTopic());
 		}
-		user->send_message(to_string(RPL_LISTEND), ":End of LIST");
+		user->send_other_error(to_string(RPL_LISTEND), ":End of LIST");
 	}
 }
 
@@ -242,15 +246,18 @@ void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else {
 		std::vector<User>::iterator it = this->_users.begin();
 		for (; it != this->_users.end(); it++) {
-			if (it->get_userName().compare(tab[0]) == 0) {
+			if (it->get_nickName().compare(tab[0]) == 0) {
 				if (this->get_password().compare(tab[1]) == 0) {
 					user->set_isOperator(true);
-					user->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
+					it->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
 				} else {
 					user->send_error(to_string(ERRNOOPERHOST), ":Password incorrect");
 				}
 				return ;
-			}
+			} 
+		}
+		if (it == this->_users.end()) {
+			user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
 		}
 	}
 }
@@ -290,7 +297,10 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		else
 			user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
-		chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
+		if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) 
+			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
+		else
+			chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
 	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
     } 
@@ -350,6 +360,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		msg.erase(0, 1);
 	}
 	std::vector<std::string> tab_chan = split(tab[0], ',');
+	std::cout << YEL << "CHANNELS :" << tab_chan[0] << NC << std::endl;
 	std::map<std::string, Channel>::iterator chan_dest;
 	for (size_t i = 0; i < tab_chan.size(); i++) {
 		chan_dest = this->_channels.find(tab[0]);
@@ -358,12 +369,38 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
 		} else {
-			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, false);
+			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, true);
 			chan_dest->second.users.erase(user->get_nickName());
 		}
 	}
 }
 
+void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string> topic) {
+	if (topic.first == false)
+		return ;
+	std::cout << GR << "TOPIC" << NC << std::endl;
+	std::vector<std::string> tab = split(topic.second, ' ');
+	if (tab.size() < 1) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
+		return ;
+	}
+	std::map<std::string, Channel>::iterator chan_dest = this->_channels.find(tab[0]);
+	if (chan_dest == this->_channels.end()) {
+		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
+	} else if (chan_dest->second.users.find(user->get_nickName()) == chan_dest->second.users.end()) {
+		user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
+	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED  
+		if (tab.size() == 1 && chan_dest->second.getTopic().empty()) {
+			user->send_message(to_string(RPL_NOTOPIC), tab[0] + " :No topic is set");
+		} else  if (tab.size() == 1) {
+			user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
+		} else {
+			chan_dest->second.setTopic(tab[1]);
+			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
+			// user->send_message(to_string(RPL_TOPIC), "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic());
+		}
+	}                     
+}
 
 // METHODS
 
@@ -380,7 +417,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->join(user, this->getInfo("JOIN", std::string(packets)));
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
-	std::cout << "TRY TO CONNECT" << std::endl;
+	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());

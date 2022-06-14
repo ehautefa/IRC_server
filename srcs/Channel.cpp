@@ -13,12 +13,11 @@ std::string Channel::getName() const { return (_name); }
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 void	Channel::send_message(User fromWho, std::string msg, bool toWho) {
-
 	// toWho false : tout le monde sauf soi
 	// toWho true : tout le monde inclu soi
-	std::map<std::string, modeUser>::iterator	it = users.begin();
+	std::map<std::string, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
 		if (it->first.compare(fromWho.get_nickName()) != 0 || toWho != false)
-			it->second.second.relay_message(fromWho, msg);
+			it->second.relay_message(fromWho, msg);
 	}
 }

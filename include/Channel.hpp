@@ -30,8 +30,7 @@ class Channel
 		std::vector<std::string>		_modeChannel;
 
 	public:
-		typedef std::pair<std::string, User> modeUser;
-		std::map<std::string, modeUser>	users;
+		std::map<std::string, User>		users;
 		Channel();
 		Channel(std::string name);
 		~Channel();
@@ -41,6 +40,7 @@ class Channel
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
 		void				addUser(User user);
+
 };
 
 
