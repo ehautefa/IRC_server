@@ -68,7 +68,7 @@ class Server
 
 		// COMMANDS
 
-		void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel, bool invite);
 		void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
 		void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
 		void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);

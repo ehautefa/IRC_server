@@ -55,6 +55,13 @@ void	Channel::addUser(User user, char mode) {
 	this->_users_modes[user.get_fd()] = mode;
 }
 
+bool	Channel::getChannelMode(char c) const {
+	if (_modeChannel.find(c) != std::string::npos)
+		return (true);
+	return (false);
+}
+
+
 
 void	Channel::send_message(User fromWho, std::string msg, bool toWho) {
 	// toWho false : tout le monde sauf soi

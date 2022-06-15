@@ -160,7 +160,7 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string> channel) {
+void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string> channel, bool invite) {
 	if (channel.first == false)
 		return ;
 	std::cout << GR << "JOIN" << NC << std::endl;
@@ -173,8 +173,10 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	{
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
-	}
-	else if (_channels.count(channel.second) == 1) {
+	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
+		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
+		return ;
+	} else if (_channels.count(channel.second) == 1) {
 		std::cout << "ALREADY EXIST" << std::endl;
 		this->_channels[channel.second].addUser(*user, ' ');
 	} else {
@@ -187,7 +189,6 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
-
 
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
@@ -289,7 +290,7 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 	} else if (chan_dest != this->_channels.end()) {
 		if (chan_dest->second.users.find(user->get_fd()) == chan_dest->second.users.end()) 
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
-		else
+		else if (chan_dest->second.getChannelMode('m') == false || chan_dest->second.isVoice(user->get_fd()))
 			chan_dest->second.send_message(*user, "PRIVMSG " + chan_dest->first + " :" + msg, false);
 	} else if (user_dest == this->_users.end() && chan_dest == this->_channels.end()) {
         user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick/channel");
@@ -297,6 +298,7 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 }
 
 void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string> mode) {
+	// TO DO : est-ce que mode peut te faire devenir operator -> je ne pense pas -> a check !
 	if (mode.first == false)
 		return ;
 	std::cout << GR << "MODE" << NC << std::endl;
@@ -319,7 +321,7 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else if (user_dest->get_nickName().compare(user->get_nickName()) != 0) {
 			user->send_error(to_string(ERRUSERSDONTMATCH), ":Cannot change mode for other users");
 		} else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
-			|| (tab[1].find_first_not_of("iwoOr+-") != std::string::npos)) {
+			|| (tab[1].find_first_not_of("io+-") != std::string::npos)) {
 			user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
 		} else {
 			user->set_mode(tab[1][1]);
@@ -374,7 +376,10 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
 	} else if (chan_dest->second.users.find(user->get_fd()) == chan_dest->second.users.end()) {
 		user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
-	} else { // TO DO : check if user is op ERR_CHANOPRIVSNEEDED
+	} else if (chan_dest->second.isOperator(user->get_fd()) == false) {
+		user->send_error(to_string(ERRCHANOPRIVSNEED), tab[1] + " :You're not channel operator");
+		return ;
+	} else {
 		if (tab.size() == 1 && chan_dest->second.getTopic().empty()) {
 			user->send_message(to_string(RPL_NOTOPIC), tab[0] + " :No topic is set");
 		} else  if (tab.size() == 1) {
@@ -442,7 +447,8 @@ void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string
 			if (this->_channels.count(channel[i])) {
 				std::map<int, User>::iterator users = this->_channels.find(channel[i])->second.users.begin();
 				for (; users != this->_channels.find(channel[i])->second.users.end(); users++) {
-					user->send_message(to_string(RPL_NAMREPLY), "=" + channel[i] + " :" + users->second.get_nickName());
+					if (users->second.get_mode('i') == false || user->get_mode('o') == true)
+						user->send_message(to_string(RPL_NAMREPLY), "=" + channel[i] + " :" + users->second.get_nickName());
 				}
 			}
 		}
@@ -476,8 +482,9 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 		user->send_error(to_string(ERRCHANOPRIVSNEED), tab[1] + " :You're not channel operator");
 		return ;
 	} else {
-		user_dest->send_message(to_string(RPL_INVITING), tab[1] + " " + tab[0]);
-		chan_dest->second.addUser(*user_dest, ' ');
+		user->send_message(to_string(RPL_INVITING), "INVITE " + tab[0] + " " + tab[1]);
+		user_dest->relay_message(*user, "INVITE " + tab[0] + " " + tab[1]);
+		this->join(user_dest, std::pair<bool, std::string>(true, tab[1]), true);
 	}
 }
 
@@ -493,7 +500,7 @@ bool	Server::parse_packets(char *packets, int fd) {
 	this->list(user, this->getInfo("LIST", std::string(packets)));
 	this->oper(user, this->getInfo("OPER", std::string(packets)));
 	this->privmsg(user, this->getInfo("PRIVMSG", std::string(packets)));
-	this->join(user, this->getInfo("JOIN", std::string(packets)));
+	this->join(user, this->getInfo("JOIN", std::string(packets)), false);
 	this->mode(user, this->getInfo("MODE", std::string(packets)));
 	this->part(user, this->getInfo("PART", std::string(packets)));
 	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
