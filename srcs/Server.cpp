@@ -182,6 +182,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else {
 		this->_channels[channel.second] = Channel(channel.second);
 		this->_channels[channel.second].addUser(*user, 'O');
+		std::cout << "JOIN IS OP " << _channels[channel.second].isOperator(user->get_fd()) << std::endl;
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
 	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
@@ -564,6 +565,10 @@ void	Server::server_loop() {
 				stop = this->receive();
 			}
 		}
+	}
+	while (_pfds.size() > 0) {
+		close(_pfds.back().fd);
+		_pfds.pop_back();
 	}
 }
 

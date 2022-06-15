@@ -8,11 +8,13 @@
 		   
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
-TDL 15/06 PIKA :
-	✅	TOPIC : check if user is op ERR_CHANOPRIVSNEEDED  
-	✅	FINIR INVITE
+BUG
 	❌ 	Resolve segfault when deconnecting one user and reconnecting
-	❌ 	gerer les modes en dehrs de channel avec names et list
+	❌	double message when sending a message to a channel
+	❌	Irssi: Join to #C was synced in 552 secs
+	❌	Part echoue des fois
+	❌	topic not operator always
+
 
 
 
@@ -59,8 +61,6 @@ COMMAND :
 	✅	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
-	🔘	MODE :
-	🔘	TOPIC :
 	✅	MOTD :
 	✅	NOTICE :
 	✅	NAMES :
@@ -68,6 +68,8 @@ COMMAND :
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
 	✅	QUIT : Gerer par irssi
+	🔘	MODE :
+	🔘	TOPIC :
 		QUIT [<message>]
 			Disconnects the user from the server.[32] Defined in RFC 14
 	❌	KICK :
