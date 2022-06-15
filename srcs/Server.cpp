@@ -302,12 +302,23 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout << GR << "MODE" << NC << std::endl;
 	std::vector<std::string> tab = split(mode.second, ' ');
+	std::cout << tab.size() << std::endl;
 	if (tab.size() < 2) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
 	}
-	else if (tab[0][0] == '#' || tab[0][0] == '&') {
+	if (tab[0][0] == '#' || tab[0][0] == '&') {
 		// C'est un channel
     	std::map<std::string, Channel>::iterator chan_dest = _channels.find(tab[0]);
+		// if (tab.size() == 2) {
+		// 	if (chan_dest == _channels.end())
+		// 		user->send_error(to_string(ERRNOSUCHCHANNEL), " :No such channel");
+		// 	else
+		// 	{
+		// 		// std::cout << "HERE" << std::endl;
+		// 		user->send_message(to_string(RPL_CHANNELMODEIS), " o");
+		// 		return ;
+		// 	}
+		// }
 		if (chan_dest == _channels.end())
 			user->send_error(to_string(ERRNOSUCHCHANNEL), " :No such channel");
 		else if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
@@ -320,13 +331,13 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		else {
 			if (tab.size() >= 3) {
 				chan_dest->second.set_userMode(user->get_fd(), tab[1][1]);
-				chan_dest->send_message(to_string(RPL_UMODEIS), "o");
+				user->send_message(to_string(RPL_UMODEIS), "o");
 			}
-			else {
-				std::cout << "HERE" << std::endl;
-				chan_dest->second.setMode(tab[1]);
-				chan_dest->second.send_message(*user, to_string(RPL_CHANNELMODEIS), true);
-			}
+			// else {
+			// 	std::cout << "HERE" << std::endl;
+			// 	chan_dest->second.setMode(tab[1]);
+			// 	chan_dest->second.send_message(*user, to_string(RPL_CHANNELMODEIS), true);
+			// }
 		}
 	} 
 	else {

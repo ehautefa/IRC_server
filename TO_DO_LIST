@@ -88,7 +88,7 @@ CHANNEL MODES :
 for users : 
 	❌	O : channel creator
 	❌	o : channel operator 
-	❌	v : voice 
+	❌	v : voice
 for channels : 
 	❌	i : invite only
 	❌	m : moderated

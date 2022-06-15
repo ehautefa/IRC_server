@@ -43,10 +43,10 @@ class Channel
 		bool				isCreator(int fd);
 		bool				isVoice(int fd);
 		void				setMode(std::string mode);
-		void				set_userMode(int fd, char mode);
 		void				setTopic(std::string topic);
-		void				send_message(User fromWho, std::string msg, bool toWho);
 		void				addUser(User user, char mode);
+		void				set_userMode(int fd, char mode);
+		void				send_message(User fromWho, std::string msg, bool toWho);
 		std::string			userIsOn(void);
 };
 
