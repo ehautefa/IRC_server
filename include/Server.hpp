@@ -68,7 +68,7 @@ class Server
 
 		// COMMANDS
 
-		void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	join(std::vector<User>::iterator user, std::pair<bool, std::string> channel, bool invite);
 		void	user(std::vector<User>::iterator user, std::pair<bool, std::string> username);  
 		void    nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname);      
 		void	ping(std::vector<User>::iterator user, std::pair<bool, std::string> server);
@@ -81,6 +81,9 @@ class Server
 		void	part(std::vector<User>::iterator user, std::pair<bool, std::string> part);
 		void	topic(std::vector<User>::iterator user, std::pair<bool, std::string> topic);
 		void	motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd);
+		void	notice(std::vector<User>::iterator user, std::pair<bool, std::string> notice);
+		void	names(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
+		void	invite(std::vector<User>::iterator user, std::pair<bool, std::string> invite);
 		void	motd(std::vector<User>::iterator user);
 };
 

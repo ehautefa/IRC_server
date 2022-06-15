@@ -15,7 +15,7 @@ DIR_OBJ	=	./compiled_srcs/
 
 FLAG	=	-Wall -Werror -Wextra -Wshadow
 
-FLAG_DEBUG	=	-fsanitize=address -g3
+FLAG_DEBUG	=	-g3
 
 NAME	=	ircserv
 

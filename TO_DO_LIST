@@ -8,13 +8,14 @@
 		   
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
-TDL 14/06 PIKA :
-	✅ PART
-	✅ Your user mode is [] to fix
-	✅ LIST
-	✅ WHO/WHOIS
-	✅ PRIVMSG with client
-	🔘	TOPIC : check if user is op ERR_CHANOPRIVSNEEDED  
+BUG
+	❌ 	Resolve segfault when deconnecting one user and reconnecting
+	❌	double message when sending a message to a channel
+	❌	Irssi: Join to #C was synced in 552 secs
+	❌	Part echoue des fois
+	❌	topic not operator always
+
+
 
 
 ❌ END
@@ -26,7 +27,6 @@ TDL 14/06 PIKA :
 	✅	Send a private msg
 	✅	Receive a private msg
 	❌ 	Test with NC
-	❌ 	Resolve segfault when deconnecting one user and reconnecting
 
 COMMAND :
 	✅	PASS :
@@ -61,30 +61,27 @@ COMMAND :
 	✅	PRIVMSG : 
 		PRIVMSG <msgtarget> :<message>
 			Sends <message> to <msgtarget>, which is usually a user or channel.[31] Defined in RFC 1459. 
-	🔘	MODE :
-	🔘	TOPIC :
 	✅	MOTD :
-	❌	NOTICE :
-	❌	NAMES :
-	❌	INVITE : 
+	✅	NOTICE :
+	✅	NAMES :
+	✅	INVITE : 
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
+	✅	QUIT : Gerer par irssi
+	🔘	MODE :
+	🔘	TOPIC :
+		QUIT [<message>]
+			Disconnects the user from the server.[32] Defined in RFC 14
 	❌	KICK :
 		KICK <channel> <client> :[<message>]
 			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
 	❌	KILL : 
 		KILL <client> <comment>
 			Forcibly removes <client> from the network.[13] This command may only be issued by IRC operators. Defined in RFC 1459. 
-	❌	QUIT : 
-		QUIT [<message>]
-			Disconnects the user from the server.[32] Defined in RFC 14
 
 
 USER MODES :
-	❌	a : away
 	❌	i : invisible
-	❌	w : wallops
-	❌	r : restricted
 	❌	o : operator
 
 CHANNEL MODES : 
@@ -95,8 +92,3 @@ for users :
 for channels : 
 	❌	i : invite only
 	❌	m : moderated
-	❌	n : outside privmsg disabled
-	❌	p : private
-	❌	t : topic locked
-	❌	k : key locked
-	❌	l : user limit

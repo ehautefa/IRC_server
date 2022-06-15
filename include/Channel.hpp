@@ -25,22 +25,29 @@ class Channel
 {
 	private:
 
-		std::string						_name;
-		std::string						_topic;
-		std::vector<std::string>		_modeChannel;
+		std::string				_name;
+		std::string				_topic;
+		std::string				_modeChannel;
+		std::map<int, char>		_users_modes;
 
 	public:
-		std::map<std::string, User>		users;
+		std::map<int, User>		users;
 		Channel();
 		Channel(std::string name);
 		~Channel();
 
 		std::string			getTopic() const;
         std::string         getName() const;
-		std::string			userIsOn(void);
-		void				addUser(User user);
+		bool				getChannelMode(char c) const;
+		bool				isOperator(int fd);
+		bool				isCreator(int fd);
+		bool				isVoice(int fd);
+		void				setMode(std::string mode);
+		void				set_userMode(int fd, char mode);
 		void				setTopic(std::string topic);
 		void				send_message(User fromWho, std::string msg, bool toWho);
+		void				addUser(User user, char mode);
+		std::string			userIsOn(void);
 };
 
 
