@@ -13,7 +13,7 @@ BUG
 	✅	double message when sending a message to a channel
 	❌	Irssi: Join to #C was synced in 552 secs
 	❌	Part echoue des fois
-	❌	topic not operator always
+	✅	topic not operator always
 
 
 
