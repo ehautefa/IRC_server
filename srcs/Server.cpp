@@ -491,23 +491,23 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 
 // METHODS
 
-bool	Server::parse_packets(char *packets, int fd) {
+bool	Server::parse_packets(std::string packets, int fd) {
 	std::vector<User>::iterator user = this->get_user(fd);
 	
-	this->nick(user, this->getInfo("NICK", std::string(packets)));
-	this->user(user, this->getInfo("USER", std::string(packets)));
-	this->ping(user, this->getInfo("PING", std::string(packets)));
-	this->whois(user, this->getInfo("WHOIS", std::string(packets)));
-	this->list(user, this->getInfo("LIST", std::string(packets)));
-	this->oper(user, this->getInfo("OPER", std::string(packets)));
-	this->privmsg(user, this->getInfo("PRIVMSG", std::string(packets)));
-	this->join(user, this->getInfo("JOIN", std::string(packets)), false);
-	this->mode(user, this->getInfo("MODE", std::string(packets)));
-	this->part(user, this->getInfo("PART", std::string(packets)));
-	this->topic(user, this->getInfo("TOPIC", std::string(packets)));
-	this->motd(user, this->getInfo("motd", std::string(packets)));
-	this->notice(user, this->getInfo("NOTICE", std::string(packets)));
-	this->invite(user, this->getInfo("INVITE", std::string(packets)));
+	this->nick(user, this->getInfo("NICK", packets));
+	this->user(user, this->getInfo("USER", packets));
+	this->ping(user, this->getInfo("PING", packets));
+	this->whois(user, this->getInfo("WHOIS", packets));
+	this->list(user, this->getInfo("LIST", packets));
+	this->oper(user, this->getInfo("OPER", packets));
+	this->privmsg(user, this->getInfo("PRIVMSG", packets));
+	this->join(user, this->getInfo("JOIN", packets), false);
+	this->mode(user, this->getInfo("MODE", packets));
+	this->part(user, this->getInfo("PART", packets));
+	this->topic(user, this->getInfo("TOPIC", packets));
+	this->motd(user, this->getInfo("motd", packets));
+	this->notice(user, this->getInfo("NOTICE", packets));
+	this->invite(user, this->getInfo("INVITE", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
@@ -574,10 +574,11 @@ void	Server::server_loop() {
 
 bool	Server::receive() {
 	bool	stop = false;
-	for (size_t i = 1; i < _pfds.size(); i++) {
+	for (size_t i = 1; i < _users.size(); i++) {
 		if (_pfds[i].revents == POLLIN) {
-			char packets[LEN_MAX_PACKETS];
-			int size = recv(_pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
+			char buffer[LEN_MAX_PACKETS];
+			int size = recv(_users[i].get_fd(), buffer , LEN_MAX_PACKETS, MSG_WAITALL);
+			_users[i].packets += std::string(buffer);
 			if (size == -1)
 				std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
 			else if (size == 0) {
@@ -585,20 +586,23 @@ bool	Server::receive() {
 				close(_pfds[i].fd);
 				_pfds.erase(_pfds.begin() + i);
 				_users.erase(this->get_user(_pfds[i].fd));
-			}
-			std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(packets));
-			if (pass.first == true  && pass.second.compare(_password) != 0){
-				std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
-				close(_pfds[i].fd);
-				_pfds.erase(_pfds.begin() + i);
-				_users.erase(this->get_user(_pfds[i].fd));
-			}
-			else {
-				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
-				stop = this->parse_packets(packets, _pfds[i].fd);
 			} 
-			for (int j = 0; packets[j] != '\0'; j++)
-				packets[j] = '\0';
+			// else if (_users[i].packets.find("\n") != std::string::npos) {
+				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(_users[i].packets));
+				if (pass.first == true  && pass.second.compare(_password) != 0){
+					std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
+					close(_pfds[i].fd);
+					_pfds.erase(_pfds.begin() + i);
+					_users.erase(this->get_user(_pfds[i].fd));
+				}
+				else {
+					std::cout << GRN << "RECEIVE: " << _users[i].packets << NC << std::endl;
+					stop = this->parse_packets(_users[i].packets, _pfds[i].fd);
+				}
+				_users[i].packets.clear();
+			// }
+			for (int j = 0; buffer[j] != '\0'; j++)
+				buffer[j] = '\0';
 		}
 	}
 	return (stop);

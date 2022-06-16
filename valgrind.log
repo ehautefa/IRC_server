@@ -1,111 +1,76 @@
-==710550== Memcheck, a memory error detector
-==710550== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==710550== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==710550== Command: ./ircserv 6667 p
-==710550== Parent PID: 710547
-==710550== 
-==710550== 
-==710550== Process terminating with default action of signal 2 (SIGINT)
-==710550==    at 0x4CC3997: poll (poll.c:29)
-==710550==    by 0x413782: Server::server_loop() (Server.cpp:545)
-==710550==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550== 
-==710550== FILE DESCRIPTORS: 6 open at exit.
-==710550== Open AF_INET socket 5: 127.0.0.1:6667 <-> 127.0.0.1:51784
-==710550==    at 0x4CD1107: accept (accept.c:26)
-==710550==    by 0x41382E: Server::server_loop() (Server.cpp:552)
-==710550==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550== 
-==710550== Open AF_INET socket 4: 0.0.0.0:6667 <-> unbound
-==710550==    at 0x4CD17DB: socket (syscall-template.S:78)
-==710550==    by 0x403880: init_socket(char*) (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550==    by 0x403D80: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550== 
-==710550== Open file descriptor 3: /mnt/nfs/homes/ehautefa/Desktop/ircserver/valgrind.log
-==710550==    <inherited from parent>
-==710550== 
-==710550== Open file descriptor 2: /dev/pts/0
-==710550==    <inherited from parent>
-==710550== 
-==710550== Open file descriptor 1: /dev/pts/0
-==710550==    <inherited from parent>
-==710550== 
-==710550== Open file descriptor 0: /dev/pts/0
-==710550==    <inherited from parent>
-==710550== 
-==710550== 
-==710550== HEAP SUMMARY:
-==710550==     in use at exit: 768 bytes in 5 blocks
-==710550==   total heap usage: 203 allocs, 198 frees, 99,175 bytes allocated
-==710550== 
-==710550== 16 bytes in 1 blocks are still reachable in loss record 1 of 5
-==710550==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==710550==    by 0x4190E6: __gnu_cxx::new_allocator<pollfd>::allocate(unsigned long, void const*) (new_allocator.h:115)
-==710550==    by 0x419090: __gnu_cxx::__alloc_traits<std::allocator<pollfd>, pollfd>::allocate(std::allocator<pollfd>&, unsigned long) (alloc_traits.h:133)
-==710550==    by 0x41904F: std::_Vector_base<pollfd, std::allocator<pollfd> >::_M_allocate(unsigned long) (stl_vector.h:346)
-==710550==    by 0x41BB4B: std::vector<pollfd, std::allocator<pollfd> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >, pollfd const&) (vector.tcc:440)
-==710550==    by 0x41550C: std::vector<pollfd, std::allocator<pollfd> >::push_back(pollfd const&) (stl_vector.h:1198)
-==710550==    by 0x413946: Server::server_loop() (Server.cpp:559)
-==710550==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550== 
-==710550== 40 bytes in 1 blocks are still reachable in loss record 2 of 5
-==710550==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==710550==    by 0x416883: __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<int const, char> > >::allocate(unsigned long, void const*) (new_allocator.h:115)
-==710550==    by 0x416830: __gnu_cxx::__alloc_traits<std::allocator<std::_Rb_tree_node<std::pair<int const, char> > >, std::_Rb_tree_node<std::pair<int const, char> > >::allocate(std::allocator<std::_Rb_tree_node<std::pair<int const, char> > >&, unsigned long) (alloc_traits.h:133)
-==710550==    by 0x416801: std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_M_get_node() (stl_tree.h:584)
-==710550==    by 0x41660C: std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_M_create_node(std::pair<int const, char> const&) (stl_tree.h:606)
-==710550==    by 0x41ABEF: std::_Rb_tree_node<std::pair<int const, char> >* std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_Alloc_node::operator()<std::pair<int const, char> >(std::pair<int const, char> const&) const (stl_tree.h:552)
-==710550==    by 0x41EB13: std::_Rb_tree_iterator<std::pair<int const, char> > std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_M_insert_<std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_Alloc_node>(std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::pair<int const, char> const&, std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_Alloc_node&) (stl_tree.h:1816)
-==710550==    by 0x41E6C0: std::_Rb_tree_iterator<std::pair<int const, char> > std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_M_insert_unique_<std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_Alloc_node>(std::_Rb_tree_const_iterator<std::pair<int const, char> >, std::pair<int const, char> const&, std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_Alloc_node&) (stl_tree.h:2267)
-==710550==    by 0x41E621: std::_Rb_tree<int, std::pair<int const, char>, std::_Select1st<std::pair<int const, char> >, std::less<int>, std::allocator<std::pair<int const, char> > >::_M_insert_unique_(std::_Rb_tree_const_iterator<std::pair<int const, char> >, std::pair<int const, char> const&) (stl_tree.h:1153)
-==710550==    by 0x41E539: std::map<int, char, std::less<int>, std::allocator<std::pair<int const, char> > >::insert(std::_Rb_tree_iterator<std::pair<int const, char> >, std::pair<int const, char> const&) (stl_map.h:864)
-==710550==    by 0x41DE39: std::map<int, char, std::less<int>, std::allocator<std::pair<int const, char> > >::operator[](int const&) (stl_map.h:505)
-==710550==    by 0x41DAA9: Channel::addUser(User, char) (Channel.cpp:55)
-==710550== 
-==710550== 208 bytes in 1 blocks are still reachable in loss record 3 of 5
-==710550==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==710550==    by 0x41C946: __gnu_cxx::new_allocator<User>::allocate(unsigned long, void const*) (new_allocator.h:115)
-==710550==    by 0x41C8F0: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::allocate(std::allocator<User>&, unsigned long) (alloc_traits.h:133)
-==710550==    by 0x41C75F: std::_Vector_base<User, std::allocator<User> >::_M_allocate(unsigned long) (stl_vector.h:346)
-==710550==    by 0x41C34B: std::vector<User, std::allocator<User> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, User const&) (vector.tcc:440)
-==710550==    by 0x41560F: std::vector<User, std::allocator<User> >::push_back(User const&) (stl_vector.h:1198)
-==710550==    by 0x4139F6: Server::server_loop() (Server.cpp:562)
-==710550==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==710550== 
-==710550== 248 bytes in 1 blocks are still reachable in loss record 4 of 5
-==710550==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==710550==    by 0x417676: __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<int const, User> > >::allocate(unsigned long, void const*) (new_allocator.h:115)
-==710550==    by 0x417620: __gnu_cxx::__alloc_traits<std::allocator<std::_Rb_tree_node<std::pair<int const, User> > >, std::_Rb_tree_node<std::pair<int const, User> > >::allocate(std::allocator<std::_Rb_tree_node<std::pair<int const, User> > >&, unsigned long) (alloc_traits.h:133)
-==710550==    by 0x4175F1: std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_M_get_node() (stl_tree.h:584)
-==710550==    by 0x41737C: std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_M_create_node(std::pair<int const, User> const&) (stl_tree.h:606)
-==710550==    by 0x41B0BF: std::_Rb_tree_node<std::pair<int const, User> >* std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_Alloc_node::operator()<std::pair<int const, User> >(std::pair<int const, User> const&) const (stl_tree.h:552)
-==710550==    by 0x41F453: std::_Rb_tree_iterator<std::pair<int const, User> > std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_M_insert_<std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_Alloc_node>(std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::pair<int const, User> const&, std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_Alloc_node&) (stl_tree.h:1816)
-==710550==    by 0x41F000: std::_Rb_tree_iterator<std::pair<int const, User> > std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_M_insert_unique_<std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_Alloc_node>(std::_Rb_tree_const_iterator<std::pair<int const, User> >, std::pair<int const, User> const&, std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_Alloc_node&) (stl_tree.h:2267)
-==710550==    by 0x41EF81: std::_Rb_tree<int, std::pair<int const, User>, std::_Select1st<std::pair<int const, User> >, std::less<int>, std::allocator<std::pair<int const, User> > >::_M_insert_unique_(std::_Rb_tree_const_iterator<std::pair<int const, User> >, std::pair<int const, User> const&) (stl_tree.h:1153)
-==710550==    by 0x41EE89: std::map<int, User, std::less<int>, std::allocator<std::pair<int const, User> > >::insert(std::_Rb_tree_iterator<std::pair<int const, User> >, std::pair<int const, User> const&) (stl_map.h:864)
-==710550==    by 0x41DF62: std::map<int, User, std::less<int>, std::allocator<std::pair<int const, User> > >::operator[](int const&) (stl_map.h:505)
-==710550==    by 0x41DA72: Channel::addUser(User, char) (Channel.cpp:54)
-==710550== 
-==710550== 256 bytes in 1 blocks are still reachable in loss record 5 of 5
-==710550==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==710550==    by 0x41A436: __gnu_cxx::new_allocator<std::_Rb_tree_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::allocate(unsigned long, void const*) (new_allocator.h:115)
-==710550==    by 0x41A3E0: __gnu_cxx::__alloc_traits<std::allocator<std::_Rb_tree_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >, std::_Rb_tree_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::allocate(std::allocator<std::_Rb_tree_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >&, unsigned long) (alloc_traits.h:133)
-==710550==    by 0x41A2C1: std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_M_get_node() (stl_tree.h:584)
-==710550==    by 0x41A27C: std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_M_create_node(std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&) (stl_tree.h:606)
-==710550==    by 0x41A24F: std::_Rb_tree_node<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >* std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_Alloc_node::operator()<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >(std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&) const (stl_tree.h:552)
-==710550==    by 0x419EF3: std::_Rb_tree_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_M_insert_<std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_Alloc_node>(std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&, std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_Alloc_node&) (stl_tree.h:1816)
-==710550==    by 0x419AA0: std::_Rb_tree_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_M_insert_unique_<std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_Alloc_node>(std::_Rb_tree_const_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&, std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_Alloc_node&) (stl_tree.h:2267)
-==710550==    by 0x4199E1: std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::_M_insert_unique_(std::_Rb_tree_const_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&) (stl_tree.h:1153)
-==710550==    by 0x4197C9: std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, Channel, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::insert(std::_Rb_tree_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> const&) (stl_map.h:864)
-==710550==    by 0x414C72: std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, Channel, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, Channel> > >::operator[](std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (stl_map.h:505)
-==710550==    by 0x408445: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:179)
-==710550== 
-==710550== LEAK SUMMARY:
-==710550==    definitely lost: 0 bytes in 0 blocks
-==710550==    indirectly lost: 0 bytes in 0 blocks
-==710550==      possibly lost: 0 bytes in 0 blocks
-==710550==    still reachable: 768 bytes in 5 blocks
-==710550==         suppressed: 0 bytes in 0 blocks
-==710550== 
-==710550== For lists of detected and suppressed errors, rerun with: -s
-==710550== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==727203== Memcheck, a memory error detector
+==727203== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==727203== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==727203== Command: ./ircserv 6667 p
+==727203== Parent PID: 727195
+==727203== 
+==727203== 
+==727203== Process terminating with default action of signal 2 (SIGINT)
+==727203==    at 0x4CBF0A5: write (write.c:26)
+==727203==    by 0x4C3FEBC: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1181)
+==727203==    by 0x4C41980: new_do_write (fileops.c:449)
+==727203==    by 0x4C41980: _IO_new_do_write (fileops.c:426)
+==727203==    by 0x4C41980: _IO_do_write@@GLIBC_2.2.5 (fileops.c:423)
+==727203==    by 0x4C41EC2: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:784)
+==727203==    by 0x4998258: std::ostream::put(char) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==727203==    by 0x49984D7: std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==727203==    by 0x413333: Server::server_loop() (Server.cpp:544)
+==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203== 
+==727203== FILE DESCRIPTORS: 6 open at exit.
+==727203== Open AF_INET socket 5: 127.0.0.1:6667 <-> 127.0.0.1:53220
+==727203==    at 0x4CD1107: accept (accept.c:26)
+==727203==    by 0x41341E: Server::server_loop() (Server.cpp:552)
+==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203== 
+==727203== Open AF_INET socket 4: 0.0.0.0:6667 <-> unbound
+==727203==    at 0x4CD17DB: socket (syscall-template.S:78)
+==727203==    by 0x403880: init_socket(char*) (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203==    by 0x403D80: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203== 
+==727203== Open file descriptor 3: /mnt/nfs/homes/ehautefa/Desktop/ircserver/valgrind.log
+==727203==    <inherited from parent>
+==727203== 
+==727203== Open file descriptor 2: /dev/pts/0
+==727203==    <inherited from parent>
+==727203== 
+==727203== Open file descriptor 1: /dev/pts/0
+==727203==    <inherited from parent>
+==727203== 
+==727203== Open file descriptor 0: /dev/pts/0
+==727203==    <inherited from parent>
+==727203== 
+==727203== 
+==727203== HEAP SUMMARY:
+==727203==     in use at exit: 256 bytes in 2 blocks
+==727203==   total heap usage: 23 allocs, 21 frees, 89,968 bytes allocated
+==727203== 
+==727203== 16 bytes in 1 blocks are still reachable in loss record 1 of 2
+==727203==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==727203==    by 0x418F06: __gnu_cxx::new_allocator<pollfd>::allocate(unsigned long, void const*) (new_allocator.h:115)
+==727203==    by 0x418EB0: __gnu_cxx::__alloc_traits<std::allocator<pollfd>, pollfd>::allocate(std::allocator<pollfd>&, unsigned long) (alloc_traits.h:133)
+==727203==    by 0x418E6F: std::_Vector_base<pollfd, std::allocator<pollfd> >::_M_allocate(unsigned long) (stl_vector.h:346)
+==727203==    by 0x41B96B: std::vector<pollfd, std::allocator<pollfd> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >, pollfd const&) (vector.tcc:440)
+==727203==    by 0x41530C: std::vector<pollfd, std::allocator<pollfd> >::push_back(pollfd const&) (stl_vector.h:1198)
+==727203==    by 0x413536: Server::server_loop() (Server.cpp:559)
+==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203== 
+==727203== 240 bytes in 1 blocks are still reachable in loss record 2 of 2
+==727203==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==727203==    by 0x41C766: __gnu_cxx::new_allocator<User>::allocate(unsigned long, void const*) (new_allocator.h:115)
+==727203==    by 0x41C710: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::allocate(std::allocator<User>&, unsigned long) (alloc_traits.h:133)
+==727203==    by 0x41C57F: std::_Vector_base<User, std::allocator<User> >::_M_allocate(unsigned long) (stl_vector.h:346)
+==727203==    by 0x41C16B: std::vector<User, std::allocator<User> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, User const&) (vector.tcc:440)
+==727203==    by 0x41540F: std::vector<User, std::allocator<User> >::push_back(User const&) (stl_vector.h:1198)
+==727203==    by 0x4135E6: Server::server_loop() (Server.cpp:562)
+==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
+==727203== 
+==727203== LEAK SUMMARY:
+==727203==    definitely lost: 0 bytes in 0 blocks
+==727203==    indirectly lost: 0 bytes in 0 blocks
+==727203==      possibly lost: 0 bytes in 0 blocks
+==727203==    still reachable: 256 bytes in 2 blocks
+==727203==         suppressed: 0 bytes in 0 blocks
+==727203== 
+==727203== For lists of detected and suppressed errors, rerun with: -s
+==727203== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
