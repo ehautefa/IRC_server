@@ -13,9 +13,9 @@ OBJS	=	${SRCS:%.cpp=${DIR_OBJ}%.o}
 
 DIR_OBJ	=	./compiled_srcs/
 
-FLAG	=	-Wall -Werror -Wextra -Wshadow
+FLAG	=	-Wall -Werror -Wextra -Wshadow -g3
 
-FLAG_DEBUG	=	-g3
+# FLAG_DEBUG	=	-g3
 
 NAME	=	ircserv
 

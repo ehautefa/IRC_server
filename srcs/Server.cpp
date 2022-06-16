@@ -519,8 +519,8 @@ bool	Server::parse_packets(char *packets, int fd) {
 
 std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer) {
 	size_t begin = buffer.find(to_find);
-	if (to_find[begin - 1] && to_find[begin - 1] != '\n')
-		return (std::make_pair(false, ""));
+	// if (begin != 0 && (to_find[begin - 1] && to_find[begin - 1] != '\n'))
+	// 	return (std::make_pair(false, "")); => genere erreur valgrind
 	size_t end = buffer.find("\r\n", begin);
 	if (begin == std::string::npos || end == std::string::npos || begin >= end)
 		return (std::make_pair(false, ""));
