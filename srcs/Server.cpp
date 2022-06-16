@@ -326,7 +326,7 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 			user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
 		} else {
 			user->set_mode(tab[1][1]);
-			user->send_message(to_string(RPL_UMODEIS), "i");
+			user->send_message(to_string(RPL_UMODEIS), " MODE :" + user->get_mode());
 		}
 	}
 }
@@ -574,7 +574,6 @@ void	Server::server_loop() {
 
 bool	Server::receive() {
 	bool	stop = false;
-	std::cout << CYN << "Check receive box ..." << NC << std::endl;
 	for (size_t i = 1; i < _pfds.size(); i++) {
 		if (_pfds[i].revents == POLLIN) {
 			char packets[LEN_MAX_PACKETS];
@@ -595,9 +594,9 @@ bool	Server::receive() {
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
 			else {
-				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
 				stop = this->parse_packets(packets, _pfds[i].fd);
-			}
+				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+			} 
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';
 		}
