@@ -173,12 +173,12 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	{
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
-	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
-		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
-		return ;
 	} else if (_channels.count(channel.second) == 1) {
 		std::cout << "ALREADY EXIST" << std::endl;
 		this->_channels[channel.second].addUser(*user, ' ');
+	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
+		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
+		return ;
 	} else {
 		this->_channels[channel.second] = Channel(channel.second);
 		this->_channels[channel.second].addUser(*user, 'O');
@@ -594,8 +594,8 @@ bool	Server::receive() {
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
 			else {
-				stop = this->parse_packets(packets, _pfds[i].fd);
 				std::cout << GRN << "RECEIVE: " << packets << NC << std::endl;
+				stop = this->parse_packets(packets, _pfds[i].fd);
 			} 
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';
