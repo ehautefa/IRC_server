@@ -186,7 +186,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
 	std::cout << this->_channels[channel.second].userIsOn() << std::endl;
-	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
+	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
 	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
@@ -388,6 +388,7 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		} else {
 			for (size_t i = 2; i < tab.size(); i++)
 				tab[1] += " " + tab[i];
+			tab[1].erase(0, 1);
 			chan_dest->second.setTopic(tab[1]);
 			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
 		}
@@ -592,6 +593,8 @@ bool	Server::receive() {
 			if (buffer.find("\n") != std::string::npos) {
 				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(buffer));
 				if (pass.first == true  && pass.second.compare(_password) != 0){
+					if (pass.second.size() == 0)
+						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");
 					std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
 					close(_pfds[i].fd);
 					_pfds.erase(_pfds.begin() + i);

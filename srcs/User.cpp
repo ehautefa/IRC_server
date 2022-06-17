@@ -37,7 +37,10 @@ bool	User::get_isConnected(void) const { return(_isConnected); }
 
 bool	User::get_isOperator(void) const { return(_isOperator); }
 
-void	User::clear_buffer(void) { _buffer.clear(); }
+void	User::clear_buffer(void) { 
+	if (!_buffer.empty() )
+		_buffer.clear(); 
+}
 
 
 // SETTER

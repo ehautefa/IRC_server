@@ -1,76 +1,973 @@
-==727203== Memcheck, a memory error detector
-==727203== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==727203== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==727203== Command: ./ircserv 6667 p
-==727203== Parent PID: 727195
-==727203== 
-==727203== 
-==727203== Process terminating with default action of signal 2 (SIGINT)
-==727203==    at 0x4CBF0A5: write (write.c:26)
-==727203==    by 0x4C3FEBC: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1181)
-==727203==    by 0x4C41980: new_do_write (fileops.c:449)
-==727203==    by 0x4C41980: _IO_new_do_write (fileops.c:426)
-==727203==    by 0x4C41980: _IO_do_write@@GLIBC_2.2.5 (fileops.c:423)
-==727203==    by 0x4C41EC2: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:784)
-==727203==    by 0x4998258: std::ostream::put(char) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
-==727203==    by 0x49984D7: std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
-==727203==    by 0x413333: Server::server_loop() (Server.cpp:544)
-==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203== 
-==727203== FILE DESCRIPTORS: 6 open at exit.
-==727203== Open AF_INET socket 5: 127.0.0.1:6667 <-> 127.0.0.1:53220
-==727203==    at 0x4CD1107: accept (accept.c:26)
-==727203==    by 0x41341E: Server::server_loop() (Server.cpp:552)
-==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203== 
-==727203== Open AF_INET socket 4: 0.0.0.0:6667 <-> unbound
-==727203==    at 0x4CD17DB: socket (syscall-template.S:78)
-==727203==    by 0x403880: init_socket(char*) (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203==    by 0x403D80: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203== 
-==727203== Open file descriptor 3: /mnt/nfs/homes/ehautefa/Desktop/ircserver/valgrind.log
-==727203==    <inherited from parent>
-==727203== 
-==727203== Open file descriptor 2: /dev/pts/0
-==727203==    <inherited from parent>
-==727203== 
-==727203== Open file descriptor 1: /dev/pts/0
-==727203==    <inherited from parent>
-==727203== 
-==727203== Open file descriptor 0: /dev/pts/0
-==727203==    <inherited from parent>
-==727203== 
-==727203== 
-==727203== HEAP SUMMARY:
-==727203==     in use at exit: 256 bytes in 2 blocks
-==727203==   total heap usage: 23 allocs, 21 frees, 89,968 bytes allocated
-==727203== 
-==727203== 16 bytes in 1 blocks are still reachable in loss record 1 of 2
-==727203==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==727203==    by 0x418F06: __gnu_cxx::new_allocator<pollfd>::allocate(unsigned long, void const*) (new_allocator.h:115)
-==727203==    by 0x418EB0: __gnu_cxx::__alloc_traits<std::allocator<pollfd>, pollfd>::allocate(std::allocator<pollfd>&, unsigned long) (alloc_traits.h:133)
-==727203==    by 0x418E6F: std::_Vector_base<pollfd, std::allocator<pollfd> >::_M_allocate(unsigned long) (stl_vector.h:346)
-==727203==    by 0x41B96B: std::vector<pollfd, std::allocator<pollfd> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >, pollfd const&) (vector.tcc:440)
-==727203==    by 0x41530C: std::vector<pollfd, std::allocator<pollfd> >::push_back(pollfd const&) (stl_vector.h:1198)
-==727203==    by 0x413536: Server::server_loop() (Server.cpp:559)
-==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203== 
-==727203== 240 bytes in 1 blocks are still reachable in loss record 2 of 2
-==727203==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==727203==    by 0x41C766: __gnu_cxx::new_allocator<User>::allocate(unsigned long, void const*) (new_allocator.h:115)
-==727203==    by 0x41C710: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::allocate(std::allocator<User>&, unsigned long) (alloc_traits.h:133)
-==727203==    by 0x41C57F: std::_Vector_base<User, std::allocator<User> >::_M_allocate(unsigned long) (stl_vector.h:346)
-==727203==    by 0x41C16B: std::vector<User, std::allocator<User> >::_M_realloc_insert(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, User const&) (vector.tcc:440)
-==727203==    by 0x41540F: std::vector<User, std::allocator<User> >::push_back(User const&) (stl_vector.h:1198)
-==727203==    by 0x4135E6: Server::server_loop() (Server.cpp:562)
-==727203==    by 0x403E42: main (in /mnt/nfs/homes/ehautefa/Desktop/ircserver/ircserv)
-==727203== 
-==727203== LEAK SUMMARY:
-==727203==    definitely lost: 0 bytes in 0 blocks
-==727203==    indirectly lost: 0 bytes in 0 blocks
-==727203==      possibly lost: 0 bytes in 0 blocks
-==727203==    still reachable: 256 bytes in 2 blocks
-==727203==         suppressed: 0 bytes in 0 blocks
-==727203== 
-==727203== For lists of detected and suppressed errors, rerun with: -s
-==727203== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==892807== Memcheck, a memory error detector
+==892807== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==892807== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==892807== Command: ./ircserv 6667 p
+==892807== Parent PID: 892801
+==892807== 
+==892807== Invalid write of size 8
+==892807==    at 0x48401E9: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0510 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 1
+==892807==    at 0x49A9B2C: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0520 is 16 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401E6: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0510 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 1
+==892807==    at 0x49A899F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::clear() (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x4047D7: User::clear_buffer() (User.cpp:42)
+==892807==    by 0x414627: Server::receive() (Server.cpp:607)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0510 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 1
+==892807==    at 0x4840273: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 1
+==892807==    at 0x4840270: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401E6: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4088E6: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:185)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0510 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 1
+==892807==    at 0x4840270: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4088E6: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:185)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401E6: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4089D1: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:187)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0510 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 1
+==892807==    at 0x4840270: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4089D1: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:187)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 2
+==892807==    at 0x4840243: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x4840240: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de0518 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x484024F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4de051c is 12 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x4840240: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4088E6: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:185)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x4840240: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4089D1: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:187)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 8
+==892807==    at 0x4840193: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda060 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 8
+==892807==    at 0x484019B: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 8
+==892807==    at 0x48401A3: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda070 is 16 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid write of size 8
+==892807==    at 0x48401AB: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A9B1F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda078 is 24 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x484018C: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda060 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x4840197: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x484019F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda070 is 16 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401A7: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404709: User::get_buffer[abi:cxx11]() const (User.cpp:32)
+==892807==    by 0x413B8A: Server::receive() (Server.cpp:582)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda078 is 24 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x484018C: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda060 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x4840197: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x484019F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda070 is 16 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401A7: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda078 is 24 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 1
+==892807==    at 0x4840270: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda080 is 32 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401E6: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40D567: Server::part(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:360)
+==892807==    by 0x411ED8: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:506)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda060 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x4840240: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40D567: Server::part(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:360)
+==892807==    by 0x411ED8: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:506)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda068 is 8 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x484024F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4088E6: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:185)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda06c is 12 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x484024F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x4089D1: Server::join(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, bool) (Server.cpp:187)
+==892807==    by 0x411D2A: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:504)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda06c is 12 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 8
+==892807==    at 0x48401E6: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda060 is 0 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x4840240: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda070 is 16 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== Invalid read of size 2
+==892807==    at 0x484024F: memcpy@GLIBC_2.2.5 (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49AABE5: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x415267: User::User(User const&) (User.hpp:22)
+==892807==    by 0x40BB58: Server::privmsg(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:295)
+==892807==    by 0x411C51: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:503)
+==892807==    by 0x4144DD: Server::receive() (Server.cpp:604)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Address 0x4dda074 is 20 bytes inside a block of size 83 free'd
+==892807==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x4043A4: User::~User() (User.cpp:13)
+==892807==    by 0x41CF68: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==892807==    by 0x41CC6C: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==892807==    by 0x41D2BB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==892807==    by 0x415BB4: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==892807==    by 0x413EAC: Server::receive() (Server.cpp:590)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807==  Block was alloc'd at
+==892807==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==892807==    by 0x49A835D: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x49A9B52: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==892807==    by 0x404825: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==892807==    by 0x413B24: Server::receive() (Server.cpp:581)
+==892807==    by 0x413973: Server::server_loop() (Server.cpp:565)
+==892807==    by 0x403E42: main (main.cpp:97)
+==892807== 
+==892807== 
+==892807== FILE DESCRIPTORS: 4 open at exit.
+==892807== Open file descriptor 3: /mnt/nfs/homes/ehautefa/Desktop/ircserver/valgrind.log
+==892807==    <inherited from parent>
+==892807== 
+==892807== Open file descriptor 2: /dev/pts/2
+==892807==    <inherited from parent>
+==892807== 
+==892807== Open file descriptor 1: /dev/pts/2
+==892807==    <inherited from parent>
+==892807== 
+==892807== Open file descriptor 0: /dev/pts/2
+==892807==    <inherited from parent>
+==892807== 
+==892807== 
+==892807== HEAP SUMMARY:
+==892807==     in use at exit: 0 bytes in 0 blocks
+==892807==   total heap usage: 4,893 allocs, 4,893 frees, 271,912 bytes allocated
+==892807== 
+==892807== All heap blocks were freed -- no leaks are possible
+==892807== 
+==892807== For lists of detected and suppressed errors, rerun with: -s
+==892807== ERROR SUMMARY: 303 errors from 35 contexts (suppressed: 0 from 0)

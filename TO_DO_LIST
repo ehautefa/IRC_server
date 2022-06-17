@@ -9,12 +9,9 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 BUG
-	❌ 	Resolve segfault when deconnecting one user and reconnecting
-	✅	double message when sending a message to a channel
-	❌	Irssi: Join to #C was synced in 552 secs
-	❌	Part echoue des fois
-	✅	topic not operator always
-
+	❌ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
+	❌ peut pas join un deuxieme channel en premier
+	❌ des fois oper dit qu'il ne connait pas l'user ou envoie un mag positif mais tu n'a pas les droits operator
 
 
 
@@ -26,7 +23,7 @@ BUG
 	✅	Join a channel
 	✅	Send a private msg
 	✅	Receive a private msg
-	❌ 	Test with NC
+	✅ 	Test with NC
 
 COMMAND :
 	✅	PASS :
@@ -68,10 +65,10 @@ COMMAND :
 		INVITE <nickname> <channel>
 			Invites <nickname> to the channel <channel>.[9] <channel> does not have to exist, but if it does, only members of the channel are allowed to invite other clients. If the channel mode i is set, only channel operators may invite other clients. Defined in RFC 1459. 
 	✅	QUIT : Gerer par irssi
-	🔘	MODE :
-	🔘	TOPIC :
 		QUIT [<message>]
 			Disconnects the user from the server.[32] Defined in RFC 14
+	✅	TOPIC :
+	🔘	MODE :
 	❌	KICK :
 		KICK <channel> <client> :[<message>]
 			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
@@ -85,10 +82,10 @@ USER MODES :
 	❌	o : operator
 
 CHANNEL MODES : 
-for users : 
-	❌	O : channel creator
-	❌	o : channel operator 
-	❌	v : voice 
-for channels : 
-	❌	i : invite only
-	❌	m : moderated
+	for users : 
+		❌	O : channel creator
+		❌	o : channel operator 
+		❌	v : voice 
+	for channels : 
+		❌	i : invite only
+		❌	m : moderated
