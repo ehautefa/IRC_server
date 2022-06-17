@@ -514,7 +514,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
-	return (this->die(user, this->getInfo("die", std::string(packets))));
+	return (this->die(user, this->getInfo("die", packets)));
 }
 
 std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer) {
@@ -573,12 +573,14 @@ void	Server::server_loop() {
 }
 
 bool	Server::receive() {
-	bool	stop = false;
+	bool		stop = false;
 	for (size_t i = 1; i < _pfds.size(); i++) {
 		if (_pfds[i].revents == POLLIN) {
-			char buffer[LEN_MAX_PACKETS];
-			int size = recv(_pfds[i].fd,  buffer, LEN_MAX_PACKETS, MSG_WAITALL);
-			get_user(_pfds[i].fd)->packets = std::string(buffer);
+			char packets[LEN_MAX_PACKETS];
+			int size = recv(_pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
+			this->get_user(_pfds[i].fd)->set_buffer(packets);
+			std::string buffer = this->get_user(_pfds[i].fd)->get_buffer();
+			std::cout << YEL << buffer << NC << std::endl;
 			if (size == -1)
 				std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
 			else if (size == 0) {
@@ -587,56 +589,24 @@ bool	Server::receive() {
 				_pfds.erase(_pfds.begin() + i);
 				_users.erase(this->get_user(_pfds[i].fd));
 			}
-			std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(buffer));
-			if (pass.first == true  && pass.second.compare(_password) != 0){
-				std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
-				close(_pfds[i].fd);
-				_pfds.erase(_pfds.begin() + i);
-				_users.erase(this->get_user(_pfds[i].fd));
+			if (buffer.find("\n") != std::string::npos) {
+				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(buffer));
+				if (pass.first == true  && pass.second.compare(_password) != 0){
+					std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
+					close(_pfds[i].fd);
+					_pfds.erase(_pfds.begin() + i);
+					_users.erase(this->get_user(_pfds[i].fd));
+				}
+				else {
+					std::cout << GRN << "RECEIVE: " << buffer << NC << std::endl;
+					stop = this->parse_packets(buffer, _pfds[i].fd);
+				}
+				std::cout << GR << buffer << NC << std::endl;
+				this->get_user(_pfds[i].fd)->clear_buffer();
 			}
-			else {
-				std::cout << GRN << "RECEIVE: " << buffer << NC << std::endl;
-				stop = this->parse_packets(buffer, _pfds[i].fd);
-			} 
-			for (int j = 0; buffer[j] != '\0'; j++)
-				buffer[j] = '\0';
+			for (int j = 0; packets[j] != '\0'; j++)
+				packets[j] = '\0';
 		}
 	}
 	return (stop);
 }
-
-// bool	Server::receive() {
-// 	bool	stop = false;
-// 	for (size_t i = 0; i < _users.size(); i++) {
-// 		if (_pfds[i].revents == POLLIN) {
-// 			char buffer[LEN_MAX_PACKETS];
-// 			int size = recv(_pfds[i + 1].fd, buffer , LEN_MAX_PACKETS, MSG_WAITALL);
-// 			_users[i].packets = std::string(buffer);
-// 			if (size == -1)
-// 				std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
-// 			else if (size == 0) {
-// 				std::cerr << RED << "ERROR: Client disconnected" << NC << std::endl;
-// 				close(_pfds[i].fd);
-// 				_pfds.erase(_pfds.begin() + i);
-// 				_users.erase(this->get_user(_pfds[i].fd));
-// 			} 
-// 			// else if (_users[i].packets.find("\n") != std::string::npos) {
-// 				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(_users[i].packets));
-// 				if (pass.first == true  && pass.second.compare(_password) != 0){
-// 					std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
-// 					close(_pfds[i].fd);
-// 					_pfds.erase(_pfds.begin() + i);
-// 					_users.erase(this->get_user(_pfds[i].fd));
-// 				}
-// 				else {
-// 					std::cout << GRN << "RECEIVE: " << _users[i].packets << NC << std::endl;
-// 					stop = this->parse_packets(_users[i].packets, _pfds[i].fd);
-// 				}
-// 				_users[i].packets.clear();
-// 			// }
-// 			for (int j = 0; buffer[j] != '\0'; j++)
-// 				buffer[j] = '\0';
-// 		}
-// 	}
-// 	return (stop);
-// }
