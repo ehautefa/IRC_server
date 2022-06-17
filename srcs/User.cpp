@@ -3,9 +3,9 @@
 # define WRONG_INPUT 2
 # define UNKNOWN_CMD 3
 
-User::User() : _fd(), _nickName(), _userName(), _hostName(), _fullName(), _isConnected(false), _isOperator(false), _mode(""), _away(), packets() {}
+User::User() : _fd(), _nickName(), _userName(), _hostName(), _fullName(), _isConnected(false), _isOperator(false), _mode(""), _away(), packets("") {}
 
-User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(false), _mode(""), _away(), packets() {}
+User::User(int fd, std::string hostname) : _fd(fd), _hostName(hostname), _isConnected(false), _isOperator(false), _mode(""), _away(), packets("") {}
 
 User::~User(void)
 {
