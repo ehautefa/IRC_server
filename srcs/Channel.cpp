@@ -60,14 +60,12 @@ bool	Channel::getChannelMode(char c) const {
 	return (false);
 }
 
-
-
 void	Channel::send_message(User fromWho, std::string msg, bool toWho) {
 	// toWho false : tout le monde sauf soi
 	// toWho true : tout le monde inclu soi
 	std::map<int, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
-		if (it->first == fromWho.get_fd() || toWho != false)
+		if (it->first != fromWho.get_fd() || toWho != false)
 			it->second.relay_message(fromWho, msg);
 	}
 }

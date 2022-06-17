@@ -4,7 +4,7 @@ EXEC=./ircserv # Put your executable's path here.
 LOG=valgrind
 
 # Compile and set executable rights
-make fclean && make debug && chmod +x $EXEC
+make && chmod +x $EXEC
 
 valgrind 								\
 	--tool=memcheck 					\
