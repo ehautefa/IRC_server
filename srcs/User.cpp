@@ -34,13 +34,23 @@ std::string	User::get_fullName(void) const { return(_fullName); }
 
 std::string	User::get_userName(void) const { return(_userName); }
 
+std::string User::get_buffer(void) const { return(_buffer); }
+
 std::string	User::get_away(void) const { return(_away); }
 
 bool	User::get_isConnected(void) const { return(_isConnected); }
 
 bool	User::get_isOperator(void) const { return(_isOperator); }
 
+void	User::clear_buffer(void) { _buffer.clear(); }
+
+
 // SETTER
+
+void	User::set_buffer(std::string buffer) {
+	if (buffer.size() > 0)
+		_buffer += buffer;
+}
 
 bool	User::set_mode(char mode) {
 	if (this->_mode.find(mode) != std::string::npos)

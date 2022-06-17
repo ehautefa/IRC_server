@@ -64,7 +64,7 @@ class Server
 		void                        	server_loop();
 		std::pair<bool, std::string>	getInfo(std::string to_find, std::string buffer);
 		bool                        	receive();
-		bool	       					parse_packets(char *packets, int size);
+		bool	       					parse_packets(std::string packets, int size);
 
 		// COMMANDS
 

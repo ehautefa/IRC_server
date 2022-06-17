@@ -32,6 +32,7 @@ class User
 		bool		_isOperator;
 		std::string	_mode;
         std::string _away;
+		std::string _buffer;
 
 	public:
 		User();
@@ -52,6 +53,8 @@ class User
 		std::string get_userName(void) const;
 		std::string	get_away(void) const;
 		bool		get_isOperator(void) const;
+		std::string	get_buffer(void) const;
+		void		clear_buffer(void);
 
 		// SETTER	
 
@@ -62,6 +65,7 @@ class User
 		void		set_fullName(std::string fullName);
 		void		set_isConnected(bool isConnected);
 		void		set_isOperator(bool isOperator);
+		void		set_buffer(std::string buffer);
 
 		void		print_user(void); // for debug
 		int 		send_message(std::string rpl, std::string to_send);
