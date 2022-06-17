@@ -12,7 +12,7 @@ BUG
 	❌ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
 	❌ peut pas join un deuxieme channel en premier
 	❌ des fois oper dit qu'il ne connait pas l'user ou envoie un mag positif mais tu n'a pas les droits operator
-
+	❌ VALGRIND !!!!
 
 
 ❌ END
