@@ -16,7 +16,7 @@ std::string	Channel::userIsOn(void){
 
 	std::map<int, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
-		// std::cout << it->second.get_nickName() << std::endl;
+		std::cout   << it->second.get_nickName() << std::endl;
 		ret += it->second.get_nickName() + " ";
 	}
 	return (ret);
@@ -51,7 +51,7 @@ void	Channel::set_userMode(int fd, char mode) {
 }
 
 void	Channel::addUser(User user, char mode) {
-	std::cout << YEL << user.get_fd() << NC << std::endl;
+	std::cout  << YEL << user.get_fd() << NC << std::endl;
 	this->users[user.get_fd()] = user;
 	this->_users_modes[user.get_fd()] = mode;
 }

@@ -92,28 +92,28 @@ void	User::print_user(void) {
 
 int	User::send_message(std::string rpl, std::string to_send) {
 	to_send = ":" + this->get_hostName() + " " + rpl + " " + to_send;
-	std::cout << BLU << "Sending: " << to_send << NC << std::endl;
+	std::cout  << BLU << "Sending: " << to_send << NC << std::endl;
 	to_send += "\r\n";
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
 
 int User::send_error(std::string rpl, std::string to_send) {
 	to_send = ":" + this->get_nickName() + "!" + this->get_userName() + "@" + this->get_hostName() + " " + rpl + " " + to_send;
-	std::cout << RED << "Sending: " << to_send << NC << std::endl;
+	std::cout  << RED << "Sending: " << to_send << NC << std::endl;
 	to_send += "\r\n";
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
 
 int User::send_other_error(std::string rpl, std::string to_send) {
 	to_send = ":" + this->get_hostName() + " " + rpl + " * " + to_send;
-	std::cout << RED << "Sending: " << to_send << NC << std::endl;
+	std::cout  << RED << "Sending: " << to_send << NC << std::endl;
 	to_send += "\r\n";
 	return (send(this->_fd, to_send.c_str(), to_send.size(), 0));
 }
 
 int	User::relay_message(User from, std::string to_relay) {
 	to_relay = ":" + from.get_nickName() + "!" + from.get_userName() + "@" + from.get_hostName() + " " + to_relay;
-	std::cout << BLU << "Relaying from " << from.get_nickName() << " to " << this->get_nickName() << ":" << to_relay << NC << std::endl;
+	std::cout  << BLU << "Relaying from " << from.get_nickName() << " to " << this->get_nickName() << ":" << to_relay << NC << std::endl;
 	to_relay += "\r\n";
 	return (send(this->_fd, to_relay.c_str(), to_relay.size(), 0));
 }
