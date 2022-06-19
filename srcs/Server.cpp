@@ -319,11 +319,13 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 				user->send_message(to_string(RPL_CHANNELMODEIS), " MODE :" + chan_dest->second.getMode());
 			} else
 			{
-				if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false)
+				if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+					user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 					return ;
+				}
 				if (tab[1].size() < 2 || (tab[1][0] != '+' && tab[1][0] != '-')
 					|| (tab[1].find_first_not_of("Ooivm+-") != std::string::npos)) {
-					user->send_error(to_string(ERRUNKNOWNMODE), " :No such mode"); // IL y a un pb ici, mais je comprends pas.
+					user->send_error(to_string(ERRUNKNOWNMODE), " :No such mode"); 
 					return ;
 				} if (tab.size() >= 3) {
 					if (chan_dest->second.userIsOn().find(tab[2]) == std::string::npos)
@@ -515,6 +517,30 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 	}
 }
 
+void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	if (str.first == false)
+		return ;
+	std::cout  << GR << "KICK" << NC << std::endl;
+	std::vector<std::string> tab = split(str.second, ' ');
+	std::map<std::string, Channel>::iterator chan_dest;
+	std::vector<User>::iterator user_dest;
+	if (tab.size() < 3) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), "KICK :Not enough parameters");
+		return ;
+	}
+	// else if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+	// 	user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
+	// 	return ;
+	// }
+	// else if (chan_dest == _channels.end()) {
+	// 	user->send_error(to_string(ERRNOSUCHCHANNEL), " :No such channel");
+	// 	return ;
+	// { else if (chan_dest->second.userIsOn().find(tab[1]) == std::string::npos) {
+	// 	user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
+	// 	return ;
+	// }
+}
+
 // METHODS
 
 bool	Server::parse_packets(std::string packets, int fd) {
@@ -534,6 +560,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->motd(user, this->getInfo("motd", packets));
 	this->notice(user, this->getInfo("NOTICE", packets));
 	this->invite(user, this->getInfo("INVITE", packets));
+	this->kick(user, this->getInfo("KICK", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
