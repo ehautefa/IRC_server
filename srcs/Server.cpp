@@ -603,9 +603,8 @@ bool	Server::receive() {
 				else {
 					std::cout << GRN << "RECEIVE: " << buffer << NC << std::endl;
 					stop = this->parse_packets(buffer, _pfds[i].fd);
+					this->get_user(_pfds[i].fd)->clear_buffer();
 				}
-				std::cout << GR << buffer << NC << std::endl;
-				this->get_user(_pfds[i].fd)->clear_buffer();
 			}
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';

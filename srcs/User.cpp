@@ -38,7 +38,7 @@ bool	User::get_isConnected(void) const { return(_isConnected); }
 bool	User::get_isOperator(void) const { return(_isOperator); }
 
 void	User::clear_buffer(void) { 
-	if (!_buffer.empty() )
+	if (!_buffer.empty())
 		_buffer.clear(); 
 }
 
@@ -46,7 +46,9 @@ void	User::clear_buffer(void) {
 // SETTER
 
 void	User::set_buffer(std::string buffer) {
-	if (buffer.size() > 0)
+	if (_buffer.empty() )
+		_buffer = buffer;
+	else if (buffer.size() > 0)
 		_buffer += buffer;
 }
 
