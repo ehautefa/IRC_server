@@ -314,25 +314,30 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 		if (chan_dest == _channels.end())
 			user->send_error(to_string(ERRNOSUCHCHANNEL), " :No such channel");
 		else {
-			if (tab[1].size() != 2 || (tab[1][0] != '+' && tab[1][0] != '-')
-				|| (tab[1].find_first_not_of("Ooivm+-") != std::string::npos))
+			if (tab.size() == 1) {
+				std::cout << chan_dest->second.getMode() << std::endl;
+				user->send_message(to_string(RPL_CHANNELMODEIS), " MODE :" + chan_dest->second.getMode());
+			} else
+			{
+				if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false)
+					return ;
+				if (tab[1].size() < 2 || (tab[1][0] != '+' && tab[1][0] != '-')
+					|| (tab[1].find_first_not_of("Ooivm+-") != std::string::npos)) {
 					user->send_error(to_string(ERRUNKNOWNMODE), " :No such mode"); // IL y a un pb ici, mais je comprends pas.
-			if (tab.size() >= 3) {
-				if (chan_dest->second.userIsOn().find(tab[2]) == std::string::npos)
-					user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
-			}
-			else {
-				if (tab.size() >= 3) {
-					chan_dest->second.set_userMode(user->get_fd(), tab[1][1]);
-					user->send_message(to_string(RPL_UMODEIS), "o");
+					return ;
+				} if (tab.size() >= 3) {
+					if (chan_dest->second.userIsOn().find(tab[2]) == std::string::npos)
+						user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
+				} else {
+					if (tab.size() >= 3) {
+						chan_dest->second.set_userMode(user->get_fd(), tab[1][1]);
+						user->send_message(to_string(RPL_UMODEIS), " MODE :" + user->get_mode());
+					} else if (tab.size() == 2) {
+						chan_dest->second.setMode(tab[1]);
+						chan_dest->second.send_message(*user, to_string(RPL_CHANNELMODEIS), true);
+					}
 				}
-			else {
-				std::cout << "HERE" << std::endl;
-				// chan_dest->second.setMode(tab[1]);
-				chan_dest->second.send_message(*user, to_string(RPL_CHANNELMODEIS), true);
 			}
-		}
-
 		}
 	} 
 	else {

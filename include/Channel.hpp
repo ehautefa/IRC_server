@@ -36,6 +36,7 @@ class Channel
 		Channel(std::string name);
 		~Channel();
 
+		std::string			getMode() const;
 		std::string			getTopic() const;
         std::string         getName() const;
 		bool				getChannelMode(char c) const;

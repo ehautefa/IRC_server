@@ -10,9 +10,13 @@ std::string Channel::getTopic() const { return (_topic); }
 
 std::string Channel::getName() const { return (_name); }
 
+std::string	Channel::getMode() const { return (_modeChannel); }
+
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
-void	Channel::setMode(std::string mode) {_modeChannel += " " + mode;}
+void	Channel::setMode(std::string mode) {
+	std::cout << mode << std::endl;
+	_modeChannel += mode;}
 
 std::string	Channel::userIsOn(void){
 
@@ -54,6 +58,7 @@ void	Channel::addUser(User user, char mode) {
 	this->users[user.get_fd()] = user;
 	this->_users_modes[user.get_fd()] = mode;
 }
+
 
 bool	Channel::getChannelMode(char c) const {
 	if (_modeChannel.find(c) != std::string::npos)
