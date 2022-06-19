@@ -34,7 +34,7 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 // DESTRUCTOR
 
 Server::~Server() {
-	std::cout << "Server is closing" << std::endl;
+	std::cout  << "Server is closing" << std::endl;
 }
 
 // SETTERS
@@ -105,7 +105,7 @@ int	Server::isInStr(char toFind, std::string channelName)
 void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string> username) {
 	if (username.first == false)
 		return ;
-	std::cout << GR << "USER" << NC << std::endl;
+	std::cout  << GR << "USER" << NC << std::endl;
 	std::vector<std::string> tab = split(username.second, ' ');
 	if (username.second.size() == 0 || tab.size() < 4) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
@@ -126,7 +126,7 @@ void	Server::user(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string> nickname) {
 	if (nickname.first == false)
 		return ;
-	std::cout << GR << "NICK" << NC << std::endl;
+	std::cout  << GR << "NICK" << NC << std::endl;
 	if (nickname.second.size() == 0) {
 		user->send_error(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
 	} else if (nickname.second.size() > 9 || nickname.second.size() < 1
@@ -150,7 +150,7 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>  server) {
 	if (server.first == false)
 		return ;
-	std::cout << GR << "PING" << NC << std::endl;
+	std::cout  << GR << "PING" << NC << std::endl;
 	if (server.second.compare("localhost") != 0)
 		user->send_error(to_string(ERRNOSUCHSERVER), server.second + " :No such server");
 	else if (user->get_isConnected() == false)
@@ -163,7 +163,7 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string> channel, bool invite) {
 	if (channel.first == false)
 		return ;
-	std::cout << GR << "JOIN" << NC << std::endl;
+	std::cout  << GR << "JOIN" << NC << std::endl;
 	if (channel.second.size() == 0) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params\r\n");
 		return ;
@@ -174,17 +174,19 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
 		return ;
 	} else if (_channels.count(channel.second) == 1) {
+		std::cout  << "ALREADY EXIST" << std::endl;
 		this->_channels[channel.second].addUser(*user, ' ');
 	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
 		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
 		return ;
 	} else {
 		this->_channels[channel.second] = Channel(channel.second);
+		std::cout  << "JOIN IS OP " << _channels[channel.second].isOperator(user->get_fd()) << std::endl;
 		this->_channels[channel.second].addUser(*user, 'O');
-		std::cout << "JOIN IS OP " << _channels[channel.second].isOperator(user->get_fd()) << std::endl;
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
-	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + this->_channels[channel.second].getTopic());
+	std::cout  << this->_channels[channel.second].userIsOn() << std::endl;
+	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
 	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
@@ -192,7 +194,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
 		return ;
-	std::cout << GR << "WHOIS" << NC << std::endl;
+	std::cout  << GR << "WHOIS" << NC << std::endl;
 	if (who.second.size() == 0) {
 		user->send_error(to_string(ERRNONICKNAMEGIVEN), ":No nickname given");
 		return ;
@@ -207,7 +209,7 @@ void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string
 void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>  list) {
 	if (list.first == false)
 		return ;
-	std::cout << GR << "LIST" << NC << std::endl;
+	std::cout  << GR << "LIST" << NC << std::endl;
 	std::vector<std::string> tab = split(list.second, ' ');
 	if ((tab.size() == 2 && !tab[1].empty() && tab[1].compare("localhost") != 0) || tab.size() > 2) {
 		user->send_error(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
@@ -230,7 +232,7 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string> oper) {
 	if (oper.first == false)
 		return ;
-	std::cout << GR << "OPER" << NC << std::endl;
+	std::cout  << GR << "OPER" << NC << std::endl;
 	std::vector<std::string> tab = split(oper.second, ' ');
 	if (oper.second.size() == 0 || tab.size() < 2) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), "OPER :Not enough parameters");
@@ -258,7 +260,7 @@ void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string>
 bool	Server::die(std::vector<User>::iterator user, std::pair<bool, std::string> die) {
 	if (die.first == false)
 		return (false);
-	std::cout << GR << "DIE" << NC << std::endl;
+	std::cout  << GR << "DIE" << NC << std::endl;
 	if (user->get_isOperator() == false) {
 		user->send_error(to_string(ERRNOPRIVILEGES), ":Permission Denied- You're not an IRC operator");
 		return false;
@@ -269,7 +271,7 @@ bool	Server::die(std::vector<User>::iterator user, std::pair<bool, std::string> 
 void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
     if (str.first == false)
         return ;
-    std::cout << GR << "PRIVMSG" << NC << std::endl;
+    std::cout  << GR << "PRIVMSG" << NC << std::endl;
     std::vector<std::string> tab = split(str.second, ' ');
 	std::string	msg;
     if (tab.size() < 2) {
@@ -283,7 +285,7 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		msg += " " + tab[i];
 	}
 	msg.erase(0, 1);
-	std::cout << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
+	std::cout  << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
 	if (user_dest != this->_users.end()) {
 		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
@@ -300,7 +302,7 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 	// TO DO : est-ce que mode peut te faire devenir operator -> je ne pense pas -> a check !
 	if (mode.first == false)
 		return ;
-	std::cout << GR << "MODE" << NC << std::endl;
+	std::cout  << GR << "MODE" << NC << std::endl;
 	std::vector<std::string> tab = split(mode.second, ' ');
 	std::cout << tab.size() << std::endl;
 	if (tab.size() < 2) {
@@ -353,7 +355,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 	if (part.first == false)
 		return ;
 	std::string msg = "Part Message";
-	std::cout << GR << "PART" << NC << std::endl;
+	std::cout  << GR << "PART" << NC << std::endl;
 	std::vector<std::string> tab = split(part.second, ' ');
 	if (tab.size() < 1) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
@@ -366,7 +368,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		msg.erase(0, 1);
 	}
 	std::vector<std::string> tab_chan = split(tab[0], ',');
-	std::cout << YEL << "CHANNELS :" << tab_chan[0] << NC << std::endl;
+	std::cout  << YEL << "CHANNELS :" << tab_chan[0] << NC << std::endl;
 	std::map<std::string, Channel>::iterator chan_dest;
 	for (size_t i = 0; i < tab_chan.size(); i++) {
 		chan_dest = this->_channels.find(tab[0]);
@@ -384,7 +386,7 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string> topic) {
 	if (topic.first == false)
 		return ;
-	std::cout << GR << "TOPIC" << NC << std::endl;
+	std::cout  << GR << "TOPIC" << NC << std::endl;
 	std::vector<std::string> tab = split(topic.second, ' ');
 	if (tab.size() < 1) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), ":Not enough parameters");
@@ -406,6 +408,7 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 		} else {
 			for (size_t i = 2; i < tab.size(); i++)
 				tab[1] += " " + tab[i];
+			tab[1].erase(0, 1);
 			chan_dest->second.setTopic(tab[1]);
 			chan_dest->second.send_message(*user, "TOPIC " + tab[0] + " :" + chan_dest->second.getTopic(), true);
 		}
@@ -415,7 +418,7 @@ void	Server::topic(std::vector<User>::iterator user, std::pair<bool, std::string
 void	Server::motd(std::vector<User>::iterator user, std::pair<bool, std::string> motd) {
 	if (motd.first == false)
 		return ;
-	std::cout << GR << "MOTD" << NC << std::endl;
+	std::cout  << GR << "MOTD" << NC << std::endl;
 	if (motd.second.empty() || motd.second.compare("localhost") == 0) 
 		this->motd(user);
 	else	
@@ -436,7 +439,7 @@ void	Server::motd(std::vector<User>::iterator user) {
 void	Server::notice(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
 	if (str.first == false)
 		return ;
-	std::cout << GR << "NOTICE" << NC << std::endl;
+	std::cout  << GR << "NOTICE" << NC << std::endl;
 	std::vector<std::string> tab = split(str.second, ' ');
 	std::string	msg;
     if (tab.size() < 2) { return ;}
@@ -456,7 +459,7 @@ void	Server::notice(std::vector<User>::iterator user, std::pair<bool, std::strin
 void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
 	if (str.first == false)
 		return ;
-	std::cout << GR << "NAMES" << NC << std::endl;
+	std::cout  << GR << "NAMES" << NC << std::endl;
 	std::vector<std::string> tab = split(str.second, ' ');
 	if ((tab.size() == 2 && !tab[1].empty() && tab[1].compare("localhost") != 0) || tab.size() > 2) {
 		user->send_error(to_string(ERRNOSUCHSERVER), tab[1] + " :No such server");
@@ -478,7 +481,7 @@ void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string
 void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
 	if (str.first == false)
 		return ;
-	std::cout << GR << "INVITE" << NC << std::endl;
+	std::cout  << GR << "INVITE" << NC << std::endl;
 	std::map<std::string, Channel>::iterator chan_dest;
 	std::vector<User>::iterator user_dest;
 	std::vector<std::string> tab = split(str.second, ' ');
@@ -563,7 +566,7 @@ void	Server::server_loop() {
 		std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
 		if (num_events == -1) {
-			std::cout << RED << "ERROR: POLL failed" << NC << std::endl;
+			std::cout  << RED << "ERROR: POLL failed" << NC << std::endl;
 		} else {
 			if (_pfds[0].revents == POLLIN) {
 				struct sockaddr_in  their_addr; // connector's address information
@@ -579,11 +582,12 @@ void	Server::server_loop() {
 				_pfds.back().events = POLLIN;
 				_pfds.back().fd = new_fd;
 				_users.push_back(User(new_fd, hostname));
-				std::cout << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
+				std::cout  << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
 			} else {
 				stop = this->receive();
 			}
 		}
+		print_all();
 	}
 	while (_pfds.size() > 0) {
 		close(_pfds.back().fd);
@@ -600,33 +604,57 @@ bool	Server::receive() {
 			int size = recv(_pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
 			this->get_user(_pfds[i].fd)->set_buffer(packets);
 			std::string buffer = this->get_user(_pfds[i].fd)->get_buffer();
-			std::cout << YEL << buffer << NC << std::endl;
+			std::cout  << YEL << buffer << NC << std::endl;
 			if (size == -1)
 				std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
 			else if (size == 0) {
-				std::cerr << RED << "ERROR: Client disconnected" << NC << std::endl;
-				close(_pfds[i].fd);
-				_pfds.erase(_pfds.begin() + i);
+				std::cerr << RED << "ERROR: Client " << this->get_user(_pfds[i].fd)->get_nickName() << " disconnected" << NC << std::endl;
 				_users.erase(this->get_user(_pfds[i].fd));
+				int tmp = _pfds[i].fd;
+				_pfds.erase(_pfds.begin() + i);
+				close(tmp);
 			}
 			if (buffer.find("\n") != std::string::npos) {
 				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(buffer));
 				if (pass.first == true  && pass.second.compare(_password) != 0){
+					if (pass.second.size() == 0)
+						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");
 					std::cerr << RED << "ERROR: Wrong password" << NC << std::endl;
 					close(_pfds[i].fd);
 					_pfds.erase(_pfds.begin() + i);
 					_users.erase(this->get_user(_pfds[i].fd));
 				}
 				else {
-					std::cout << GRN << "RECEIVE: " << buffer << NC << std::endl;
+					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
 					stop = this->parse_packets(buffer, _pfds[i].fd);
+					this->get_user(_pfds[i].fd)->clear_buffer();
 				}
-				std::cout << GR << buffer << NC << std::endl;
-				this->get_user(_pfds[i].fd)->clear_buffer();
 			}
 			for (int j = 0; packets[j] != '\0'; j++)
 				packets[j] = '\0';
 		}
 	}
 	return (stop);
+}
+
+void	Server::print_all() {
+	std::cout << "\x1B[2J\x1B[H";
+	std::cout << MAG <<  "	 _       ____________________  __   _____ __________ _    __" << NC << std::endl;
+	std::cout << MAG <<  "	| |     / /  _/_  __/ ____/ / / /  / ___// ____/ __ \\ |  / /" << NC << std::endl;
+	std::cout << MAG <<  "	| | /| / // /  / / / /   / /_/ /   \\__ \\/ __/ / /_/ / | / / " << NC << std::endl;
+	std::cout << MAG <<  "	| |/ |/ // /  / / / /___/ __  /   ___/ / /___/ _, _/| |/ /  " << NC << std::endl;
+	std::cout << MAG <<  "	|__/|__/___/ /_/  \\____/_/ /_/   /____/_____/_/ |_| |___/   " << NC << std::endl;
+                                                            
+	std::cout << std::endl << std::endl;
+	std::cout << YEL << "SERVER: " << _users.size() << " clients connected :" << NC << std::endl;
+	for (size_t i = 0; i < _users.size(); i++)
+		std::cout << "    - " << _users[i].get_nickName() << std::endl;
+	std::cout << std::endl << std::endl;
+	std::cout << YEL << "SERVER: " << _channels.size() << " channels :" << NC << std::endl;
+	std::map<std::string, Channel>::iterator it = _channels.begin();
+	while (it != _channels.end()) {
+		std::cout << "    - " << it->first << std::endl;
+		it++;
+	}
+	std::cout << std::endl << std::endl;
 }

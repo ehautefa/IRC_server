@@ -41,6 +41,9 @@ class User
 		// User &operator=(const User &rhs);
 		~User(void);
 
+		std::string packets;
+
+
 		// GETTERS
 
 		int		get_fd(void) const;

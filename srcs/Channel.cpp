@@ -50,6 +50,7 @@ void	Channel::set_userMode(int fd, char mode) {
 }
 
 void	Channel::addUser(User user, char mode) {
+	std::cout  << YEL << user.get_fd() << NC << std::endl;
 	this->users[user.get_fd()] = user;
 	this->_users_modes[user.get_fd()] = mode;
 }
