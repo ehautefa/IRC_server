@@ -556,7 +556,8 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} else if ((chan_dest = this->_channels.find(tab[0])) == this->_channels.end()) {
 		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
 		return ;
-	} else if (chan_dest->second.userIsOn().find(tab[1]) == std::string::npos) {
+	} else if (chan_dest->second.users.find(user->get_fd()) == chan_dest->second.users.end()
+			|| chan_dest->second.users.find(this->get_user(tab[1])->get_fd()) == chan_dest->second.users.end()) {
 		user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
 		return ;
 	} 
