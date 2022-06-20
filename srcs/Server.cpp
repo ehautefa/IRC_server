@@ -500,7 +500,7 @@ void	Server::names(std::vector<User>::iterator user, std::pair<bool, std::string
 			if (this->_channels.count(channel[i])) {
 				std::map<int, User>::iterator users = this->_channels.find(channel[i])->second.users.begin();
 				for (; users != this->_channels.find(channel[i])->second.users.end(); users++) {
-					if (users->second.get_mode('i') == false || user->get_mode('o') == true)
+					if (users->second.get_mode('i') == false || user->get_isOperator() == true)
 						user->send_message(to_string(RPL_NAMREPLY), "=" + channel[i] + " :" + users->second.get_nickName());
 				}
 			}

@@ -10,8 +10,6 @@ std::string Channel::getTopic() const { return (_topic); }
 
 std::string Channel::getName() const { return (_name); }
 
-std::string	Channel::getChannelMode() const { return (_modeChannel); }
-
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 std::string	Channel::userIsOn(void){
