@@ -151,6 +151,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	if (channel.first == false)
 		return ;
 	std::cout  << GR << "JOIN" << NC << std::endl;
+	std::cout << "CHAN MODE I" << _channels[channel.second].getChannelMode('i') << " INVITE" << invite << std::endl;
 	if (channel.second.size() == 0) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Need more params\r\n");
 		return ;
