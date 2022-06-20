@@ -15,23 +15,17 @@ std::string	Channel::getMode() const { return (_modeChannel); }
 bool	Channel::getKickStatus(std::string name) const {
 
 	for (int i = 0; i < _bannedList[i]; i++) {
-		if (_bannedList.find(name) != std::string::npos)
-		{
-			std::cout << " TRUE : " << name << std::endl;
+		if (_bannedList.find(name) != std::string::npos) {
 			return (true);
 		}
 	}
-	std::cout << " FALSE : " << name << std::endl;
 	return (false);
 }
 
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
 void	Channel::setKickStatus(std::string name) { 
-
-	std::cout << "HERE : " << name << std::endl;
 	this->_bannedList += " " + name;
-	std::cout << "LIST : " << this->_bannedList << std::endl;
 }
 
 void	Channel::setMode(std::string mode) {
@@ -50,20 +44,20 @@ std::string	Channel::userIsOn(void){
 	return (ret);
 }
 
-bool	Channel::isOperator(int fd) {
+bool	Channel::isOperator(int fd) const {
 	if (this->_users_modes.find(fd)->second == 'o'
 	|| this->_users_modes.find(fd)->second == 'O') 
 		return (true);
 	return false;
 }
 
-bool	Channel::isCreator(int fd) {
+bool	Channel::isCreator(int fd) const {
 	if (this->_users_modes.find(fd)->second == 'O')
 		return (true);
 	return false;
 }
 
-bool	Channel::isVoice(int fd) {
+bool	Channel::isVoice(int fd) const {
 	if (this->_users_modes.find(fd)->second == 'o'
 		|| this->_users_modes.find(fd)->second == 'O'
 		|| this->_users_modes.find(fd)->second == 'v')
@@ -75,11 +69,43 @@ void	Channel::set_userMode(int fd, char mode) {
 	this->_users_modes[fd] = mode;
 }
 
+void	Channel::delete_userMode(int fd, char mode) {
+	if (this->_users_modes[fd] == 'o' && mode == 'o')
+		this->_users_modes[fd] = 'v';
+	else if (this->_users_modes[fd] == 'v' && mode == 'v')
+		this->_users_modes[fd] = ' ';
+}
+
+void	Channel::setChannelMode(char c) {
+	if (_modeChannel.find(c) == std::string::npos)
+		_modeChannel += c;
+}
+
+void	Channel::deleteChannelMode(char c) {
+	if (_modeChannel.find(c) != std::string::npos)
+		_modeChannel.erase(_modeChannel.find(c), 1);
+}
+
+std::string		Channel::getCreator() const {
+	std::map<int, User>::const_iterator	it = users.begin();
+	for (; it != users.end(); it++) {
+		if (this->isCreator(it->second.get_fd()))
+			return (it->second.get_nickName());
+	}
+	return ("");
+}
+
+
+
 void	Channel::addUser(User user, char mode) {
 	std::cout  << YEL << user.get_fd() << NC << std::endl;
 	this->users[user.get_fd()] = user;
 	this->_users_modes[user.get_fd()] = mode;
 }
+
+std::string	Channel::getChannelMode() const { return (_modeChannel); }
+		
+char		Channel::getUserMode(int fd) const { return (this->_users_modes.find(fd)->second); }
 
 bool	Channel::getChannelMode(char c) const {
 	if (_modeChannel.find(c) != std::string::npos)
