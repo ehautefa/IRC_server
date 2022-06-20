@@ -191,7 +191,10 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
 	std::cout  << this->_channels[channel.second].userIsOn() << std::endl;
-	user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
+	if (_channels[channel.second].getTopic() == "")
+		user->send_message(to_string(RPL_NOTOPIC), channel.second + " :No topic is set");
+	else
+		user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
 	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
@@ -564,10 +567,15 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
-	(void)user;
-	(void)str;
-}
+// void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+// 	(void)user;
+// 	(void)str;
+// 	std::cerr << RED << "ERROR: Client " << this->get_user(_pfds[i].fd)->get_nickName() << " disconnected" << NC << std::endl;
+// 	_users.erase(this->get_user(_pfds[i].fd));
+// 	int tmp = _pfds[i].fd;
+// 	_pfds.erase(_pfds.begin() + i);
+// 	close(tmp);
+// }
 
 // METHODS
 
@@ -589,7 +597,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->notice(user, this->getInfo("NOTICE", packets));
 	this->invite(user, this->getInfo("INVITE", packets));
 	this->kick(user, this->getInfo("KICK", packets));
-	this->kill(user, this->getInfo("KILL", packets));
+	// this->kill(user, this->getInfo("KILL", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
