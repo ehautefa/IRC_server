@@ -28,10 +28,6 @@ void	Channel::setKickStatus(std::string name) {
 	this->_bannedList += " " + name;
 }
 
-void	Channel::setMode(std::string mode) {
-	std::cout << mode << std::endl;
-	_modeChannel += mode;}
-
 std::string	Channel::userIsOn(void){
 
 	std::string ret = "";
