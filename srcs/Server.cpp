@@ -442,12 +442,11 @@ void	Server::motd(std::vector<User>::iterator user, std::pair<bool, std::string>
 
 void	Server::motd(std::vector<User>::iterator user) {
 	user->send_message(to_string(RPL_MOTDSTART), "MOTD :- " + user->get_hostName() + " Message of the day -");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	__          _______ _______ _____ _    _ ______  _____ ");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	\\ \\        / /_   _|__   __/ ____| |  | |  ____|/ ____|");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	 \\ \\  /\\  / /  | |    | | | |    | |__| | |__  | (___  ");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	  \\ \\/  \\/ /   | |    | | | |    |  __  |  __|  \\___ \\ ");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	   \\  /\\  /   _| |_   | | | |____| |  | | |____ ____) |");
-	user->send_message(to_string(RPL_MOTD), "MOTD :	    \\/  \\/   |_____|  |_|  \\_____|_|  |_|______|_____/ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	 _       __  ______ __________ _    __ __________ ");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	| |     / / /  ___// ____/ __ \\ |  / // ____/ __ \\");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	| | /| / /  \\___ \\/ __/ / /_/ / | / // __/ / /_/ /");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	| |/ |/ /   ___/ / /___/ _, _/| |/ // /__ / _, _/");
+	user->send_message(to_string(RPL_MOTD), "MOTD :	|__/|__/   /____/_____/_/ |_| |___//____ /_/ |_|");
 	user->send_message(to_string(RPL_ENDOFMOTD), "MOTD :End of MOTD command");
 }
 
@@ -632,6 +631,7 @@ void	Server::server_loop() {
 	_pfds.back().events = POLLIN;
 	_pfds.back().fd = _sockfd;
 	while (!stop) {
+		print_all();
 		std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
 		if (num_events == -1) {
@@ -656,7 +656,6 @@ void	Server::server_loop() {
 				stop = this->receive();
 			}
 		}
-		print_all();
 	}
 	while (_pfds.size() > 0) {
 		close(_pfds.back().fd);
