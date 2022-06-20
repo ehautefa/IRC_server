@@ -524,25 +524,38 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	std::map<std::string, Channel>::iterator chan_dest;
 	std::vector<User>::iterator user_dest;
 	std::vector<std::string> tab = split(str.second, ' ');
-	std::cout << tab[0] << std::endl;
-	std::cout << tab[1] << std::endl;
-	std::cout << tab[2] << std::endl;
+	std::string	msg;
+	if (tab.size() >= 3)
+		for (unsigned long i = 2; i < tab.size(); i++)
+			msg += " " + tab[i];
 	if (tab.size() < 3) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), "KICK :Not enough parameters");
 		return ;
-	}
-	else if ((chan_dest = this->_channels.find(tab[0])) == this->_channels.end()) {
+	} else if ((chan_dest = this->_channels.find(tab[0])) == this->_channels.end()) {
 		user->send_error(to_string(ERRNOSUCHCHANNEL), tab[0] + " :No such channel");
 		return ;
-	} else if (chan_dest->second.users.find(user->get_fd()) == chan_dest->second.users.end()) {
+	} else if (chan_dest->second.userIsOn().find(tab[1]) == std::string::npos) {
 		user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
 		return ;
+	} 
+	else if (tab[1] == user->get_nickName()) {
+		user->send_error(to_string(ERRUSERSDONTMATCH), " : You can't kick yourself");
+		return ;
+	} else if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+		user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
+		return ;
+	} else {
+		std::vector<User>::iterator	it = this->_users.begin();
+		std::vector<User>::iterator	to_delete;
+		while (it != this->_users.end()) {
+			if (it->get_nickName().compare(tab[1]) == 0)
+				to_delete = it;
+			it++;
+		}
+		chan_dest->second.send_message(*user, "KICK " + tab[0] + " :" + tab[1] + msg, true);
+		chan_dest->second.send_message(*to_delete, "PART " + tab[0] + " :" + msg, true);
+		chan_dest->second.users.erase(to_delete->get_fd());
 	}
-	// else if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
-	// 	std::cout << "HERE SEG 3" << std::endl;
-	// 	user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
-	// 	return ;
-	// }
 }
 
 // METHODS

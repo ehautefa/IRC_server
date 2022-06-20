@@ -59,7 +59,6 @@ void	Channel::addUser(User user, char mode) {
 	this->_users_modes[user.get_fd()] = mode;
 }
 
-
 bool	Channel::getChannelMode(char c) const {
 	if (_modeChannel.find(c) != std::string::npos)
 		return (true);
