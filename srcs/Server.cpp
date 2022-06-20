@@ -376,7 +376,10 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 				user->set_mode(tab[1][1]);
 			else
 				user->delete_mode('i');
-			user->send_message(to_string(RPL_UMODEIS), " MODE :" + user->get_mode());
+			if (user->get_isOperator() == true)
+				user->send_message(to_string(RPL_UMODEIS), " MODE :" + user->get_mode() + "o");
+			else 
+				user->send_message(to_string(RPL_UMODEIS), " MODE :" + user->get_mode());
 		}
 	}
 }
