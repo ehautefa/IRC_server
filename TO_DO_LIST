@@ -10,8 +10,11 @@
 
 BUG
 	❌ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
-	❌ A VOIR: pourquoi les messages de join ne s'affiche pas tout le temps
-	❌ des fois oper dit qu'il ne connait pas l'user ou envoie un mag positif mais tu n'a pas les droits operator
+		❌ A VOIR: pourquoi les messages de join ne s'affiche pas tout le temps
+		❌ des fois oper dit qu'il ne connait pas l'user ou envoie un mag positif mais tu n'a pas les droits operator
+	✅ On doit pas pouvoir se kick soit memes
+	❌ Suppression du channel quand le dernier PART
+		❌ Tuojours un operator dans le channel
 	✅ Probleme quand on se deconnect puis reconnecte, error : already registered
 	✅ VALGRIND !!!!
 

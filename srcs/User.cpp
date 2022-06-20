@@ -59,6 +59,12 @@ bool	User::set_mode(char mode) {
 	return (true);
 }
 
+void	User::delete_mode(char mode) {
+	if (this->_mode.find(mode) != std::string::npos)
+		this->_mode.erase(this->_mode.find(mode));
+}
+
+
 void	User::set_nickName(std::string nickName) {
 	if (nickName.length() > 0)
 		this->_nickName = nickName;
