@@ -38,6 +38,7 @@ class Channel
 
 		std::string			getTopic() const;
         std::string         getName() const;
+		std::string			getChannelMode() const;
 		bool				getChannelMode(char c) const;
 		bool				isOperator(int fd);
 		bool				isCreator(int fd);
