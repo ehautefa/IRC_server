@@ -573,7 +573,7 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	else if (tab[1] == user->get_nickName()) {
 		user->send_error(to_string(ERRUSERSDONTMATCH), " : You can't kick yourself");
 		return ;
-	} else if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+	} else if (chan_dest->second.isOperator(user->get_fd()) == false) {
 		user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 		return ;
 	} else {
