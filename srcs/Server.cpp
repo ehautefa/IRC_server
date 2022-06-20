@@ -409,6 +409,8 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else {
 			chan_dest->second.send_message(*user, "PART " + tab_chan[i] + " :" + msg, true);
 			chan_dest->second.users.erase(user->get_fd());
+			if (chan_dest->second.users.size() == 0)
+				this->_channels.erase(chan_dest);
 		}
 	}
 }
