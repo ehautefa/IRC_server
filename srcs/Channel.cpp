@@ -43,6 +43,8 @@ std::string	Channel::userIsOn(void){
 	std::string ret = "";
 	std::map<int, User>::iterator	it = users.begin();
 	for (; it != users.end(); it++) {
+		// if (it->second.get_mode('o') == true || it->second.get_mode('O') == true)
+		// 	ret += "@" + it->second.get_nickName() + " ";
 		ret += it->second.get_nickName() + " ";
 	}
 	return (ret);

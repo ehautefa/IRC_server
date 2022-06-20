@@ -195,7 +195,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_message(to_string(RPL_NOTOPIC), channel.second + " :No topic is set");
 	else
 		user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
-	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :@" + this->_channels[channel.second].userIsOn());	
+	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :" + this->_channels[channel.second].userIsOn());
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
 
