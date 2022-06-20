@@ -151,7 +151,8 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	if (channel.first == false)
 		return ;
 	std::cout  << GR << "JOIN" << NC << std::endl;
-	std::cout << "CHAN MODE I" << _channels[channel.second].getChannelMode('i') << " INVITE" << invite << std::endl;
+	if (_channels.count(channel.second) == 1)
+		std::cout << RED << "Mode Channel :" << _channels[channel.second].getMode() << " INVITE " << invite << std::endl;
 	if (channel.second.size() == 0) {
 		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Need more params\r\n");
 		return ;
@@ -164,14 +165,15 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} 
 	else if (_channels.count(channel.second) == 1) {
 		std::cout  << "ALREADY EXIST" << std::endl;
+		if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
+			user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
+			return ;
+		}
 		if (_channels[channel.second].getKickStatus(user->get_nickName()) == true) {
 			user->send_message(to_string(ERRBANNEDFROMCHAN), channel.second);
 			return ;
 		}
 		this->_channels[channel.second].addUser(*user, ' ');
-	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
-		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
-		return ;
 	} else {
 		this->_channels[channel.second] = Channel(channel.second);
 		std::cout  << "JOIN IS OP " << _channels[channel.second].isOperator(user->get_fd()) << std::endl;

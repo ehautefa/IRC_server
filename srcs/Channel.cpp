@@ -1,8 +1,8 @@
 #include "../include/Channel.hpp"
 
-Channel::Channel() : _name(), _topic(), _modeChannel(), _bannedList(), users() {}
+Channel::Channel() : _name(), _topic(), _modeChannel(""), _bannedList(), users() {}
 
-Channel::Channel(std::string name) : _name(name), _topic(), _modeChannel(), _bannedList(), users() {}
+Channel::Channel(std::string name) : _name(name), _topic(), _modeChannel(""), _bannedList(), users() {}
 
 Channel::~Channel(void) {}
 
