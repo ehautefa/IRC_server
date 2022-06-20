@@ -72,7 +72,7 @@ COMMAND :
 		QUIT [<message>]
 			Disconnects the user from the server.[32] Defined in RFC 14
 	✅	TOPIC :
-	🔘	MODE :
+	✅ 	MODE :
 	❌	KICK :
 		KICK <channel> <client> :[<message>]
 			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
@@ -82,14 +82,14 @@ COMMAND :
 
 
 USER MODES :
-	❌	i : invisible
-	❌	o : operator
+	✅ 	i : invisible
+	✅ 	o : operator
 
 CHANNEL MODES : 
 	for users : 
-		❌	O : channel creator
-		❌	o : channel operator 
-		❌	v : voice 
+		✅ 	O : channel creator
+		✅ 	o : channel operator 
+		✅ 	v : voice 
 	for channels : 
 		❌	i : invite only
 		❌	m : moderated
