@@ -165,16 +165,21 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	std::cout  << GR << "JOIN" << NC << std::endl;
 	if (channel.second.size() == 0) {
-		user->send_message(to_string(ERRNEEDMOREPARAMS), ": Need more params\r\n");
+		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Need more params\r\n");
 		return ;
 	}
 	else if (channel.second.size() > 200 || (channel.second[0] != '#' && channel.second[0] != '&')
 			|| channel.second.find(' ', 0) != std::string::npos)
 	{
-		user->send_message(to_string(ERRBADCHANMASK), ": Wrong params\r\n");
+		user->send_message(to_string(ERRBADCHANMASK), ":Wrong params\r\n");
 		return ;
-	} else if (_channels.count(channel.second) == 1) {
+	} 
+	else if (_channels.count(channel.second) == 1) {
 		std::cout  << "ALREADY EXIST" << std::endl;
+		if (_channels[channel.second].getKickStatus(user->get_nickName()) == true) {
+			user->send_message(to_string(ERRBANNEDFROMCHAN), channel.second);
+			return ;
+		}
 		this->_channels[channel.second].addUser(*user, ' ');
 	} else if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
 		user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
@@ -554,8 +559,14 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		}
 		chan_dest->second.send_message(*user, "KICK " + tab[0] + " :" + tab[1] + msg, true);
 		chan_dest->second.send_message(*to_delete, "PART " + tab[0] + " :" + msg, true);
+		chan_dest->second.setKickStatus(tab[1]);
 		chan_dest->second.users.erase(to_delete->get_fd());
 	}
+}
+
+void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	(void)user;
+	(void)str;
 }
 
 // METHODS
@@ -578,6 +589,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->notice(user, this->getInfo("NOTICE", packets));
 	this->invite(user, this->getInfo("INVITE", packets));
 	this->kick(user, this->getInfo("KICK", packets));
+	this->kill(user, this->getInfo("KILL", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());

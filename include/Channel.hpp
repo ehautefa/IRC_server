@@ -25,10 +25,11 @@ class Channel
 {
 	private:
 
-		std::string				_name;
-		std::string				_topic;
-		std::string				_modeChannel;
-		std::map<int, char>		_users_modes;
+		std::string					_name;
+		std::string					_topic;
+		std::string					_modeChannel;
+		std::map<int, char>			_users_modes;
+		std::string					_bannedList;
 
 	public:
 		std::map<int, User>		users;
@@ -39,10 +40,12 @@ class Channel
 		std::string			getMode() const;
 		std::string			getTopic() const;
         std::string         getName() const;
+		bool				getKickStatus(std::string name) const;
 		bool				getChannelMode(char c) const;
 		bool				isOperator(int fd);
 		bool				isCreator(int fd);
 		bool				isVoice(int fd);
+		void				setKickStatus(std::string name);
 		void				setMode(std::string mode);
 		void				setTopic(std::string topic);
 		void				addUser(User user, char mode);

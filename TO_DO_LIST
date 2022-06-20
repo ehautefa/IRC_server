@@ -70,7 +70,7 @@ COMMAND :
 			Disconnects the user from the server.[32] Defined in RFC 14
 	✅	TOPIC :
 	🔘	MODE :
-	❌	KICK :
+	✅	KICK :
 		KICK <channel> <client> :[<message>]
 			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
 	❌	KILL : 

@@ -1,8 +1,8 @@
 #include "../include/Channel.hpp"
 
-Channel::Channel() : _name(), _topic(), _modeChannel(), users() {}
+Channel::Channel() : _name(), _topic(), _modeChannel(), _bannedList(), users() {}
 
-Channel::Channel(std::string name) : _name(name), _topic(), _modeChannel(), users() {}
+Channel::Channel(std::string name) : _name(name), _topic(), _modeChannel(), _bannedList(), users() {}
 
 Channel::~Channel(void) {}
 
@@ -12,7 +12,27 @@ std::string Channel::getName() const { return (_name); }
 
 std::string	Channel::getMode() const { return (_modeChannel); }
 
+bool	Channel::getKickStatus(std::string name) const {
+
+	for (int i = 0; i < _bannedList[i]; i++) {
+		if (_bannedList.find(name) != std::string::npos)
+		{
+			std::cout << " TRUE : " << name << std::endl;
+			return (true);
+		}
+	}
+	std::cout << " FALSE : " << name << std::endl;
+	return (false);
+}
+
 void	Channel::setTopic(std::string topic) { _topic = topic; }
+
+void	Channel::setKickStatus(std::string name) { 
+
+	std::cout << "HERE : " << name << std::endl;
+	this->_bannedList += " " + name;
+	std::cout << "LIST : " << this->_bannedList << std::endl;
+}
 
 void	Channel::setMode(std::string mode) {
 	std::cout << mode << std::endl;
