@@ -75,8 +75,6 @@ int							Server::get_port() const { return (_port); }
 
 std::vector<struct pollfd>	Server::get_pfds() const { return (_pfds); }
 
-// std::map<std::string, Channel>	Server::get_channel() { return (this->_channels); }
-
 std::vector<User>::iterator	Server::find_user(std::string str) {
     std::vector<User>::iterator	it = this->_users.begin();
     while (it != this->_users.end()) {
@@ -89,15 +87,6 @@ std::vector<User>::iterator	Server::find_user(std::string str) {
         it++;
     }
     return (it);
-}
-
-int	Server::isInStr(char toFind, std::string channelName)
-{
-	for (int i = 0; channelName[i]; i++) {
-		if (toFind == channelName[i])
-			return (1);
-	}
-	return (0);
 }
 
 // COMMANDS
@@ -133,8 +122,6 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 			|| nickname.second.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}0123456789-") != std::string::npos
 			|| std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ[]\\`_^{|}").find(nickname.second[0]) == std::string::npos) {
 		user->send_error(to_string(ERRERRONEUSNICKNAME), nickname.second + ":Erroneous nickname");
-	} else if (user->get_mode('r') == true) {
-		user->send_error(to_string(ERRRESTRICTED), ":You are restricted");
 	} else if (this->get_user(nickname.second) != this->_users.end()) {
 		user->send_other_error(to_string(ERRNICKNAMEINUSE), nickname.second + " :Nickname is already in use.");
 		return ;
@@ -332,7 +319,7 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 					user->send_error(to_string(RPL_CHANNELMODEIS), user->get_nickName() + " " + tab[0] + " " + chan_dest->second.getChannelMode());
 			} else if (tab.size() == 2) {
 				std::cout << "MODE : tab.size() == 2" << std::endl;
-				if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+				if (chan_dest->second.isOperator(user->get_fd()) == false) {
 					user->send_message(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 				} else if (tab[1][0] == '+' || tab[1][0] == '-') {
 					for (size_t i = 1; i < tab[1].size(); i++) {
@@ -352,20 +339,23 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 				}
 			} else if (tab.size() == 3) {
 				std::cout << "MODE : tab.size() == 3" << std::endl;
-				if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+				std::cout << "USER : " << this->get_user(tab[2])->get_nickName() << std::endl;
+				if (chan_dest->second.isOperator(user->get_fd()) == false) {
 					user->send_message(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
-				} else if (chan_dest->second.userIsOn().find(tab[2]) == std::string::npos)
+				} else if (chan_dest->second.users.find(this->get_user(tab[2])->get_fd()) == chan_dest->second.users.end()) {
 						user->send_error(to_string(ERRUSERNOTINCHANNEL), " :User not in channel");
-				else if (tab[1].size() == 2 && (tab[1][0] == '+' || tab[1][0] == '-')
+				} else if (tab[1].size() == 2 && (tab[1][0] == '+' || tab[1][0] == '-')
 					&& (tab[1][1] == 'o' || tab[1][1] == 'v')) {
 						if (tab[1][0] == '+')
 							chan_dest->second.set_userMode(this->get_user(tab[2])->get_fd(), tab[1][1]);
 						else
 							chan_dest->second.delete_userMode(this->get_user(tab[2])->get_fd(), tab[2][1]);
-						this->get_user(tab[2])->send_message(to_string(RPL_UMODEIS), " MODE : in channel " + chan_dest->second.getName() + "  " + std::string(1, chan_dest->second.getUserMode(this->get_user(tab[2])->get_fd())));
+						
+					this->get_user(tab[2])->send_message(to_string(RPL_UMODEIS), " MODE : in channel " + chan_dest->second.getName() + "  " + std::string(1, chan_dest->second.getUserMode(this->get_user(tab[2])->get_fd())));
+			 		std::cout << RED <<  "MODE : " << tab[2] << " " << chan_dest->second.isOperator(this->get_user(tab[2])->get_fd()) << std::endl;
 				} else
 					user->send_other_error(to_string(ERRUMODEUNKNOWNFLAG), std::string(1, tab[1][1]) + " :is unknown mode char to me for " + tab[0]);
-			} else {
+			} else {      
 				user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
 			}
 		}
@@ -573,7 +563,7 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	else if (tab[1] == user->get_nickName()) {
 		user->send_error(to_string(ERRUSERSDONTMATCH), " : You can't kick yourself");
 		return ;
-	} else if (chan_dest->second.isOperator(user->get_fd()) == false || chan_dest->second.isCreator((user->get_fd())) == false) {
+	} else if (chan_dest->second.isOperator(user->get_fd()) == false) {
 		user->send_error(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 		return ;
 	} else {
