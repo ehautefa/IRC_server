@@ -62,6 +62,7 @@ class User
 		// SETTER	
 
 		bool		set_mode(char mode);
+		void		delete_mode(char mode);
 		void		set_nickName(std::string nickName);
 		void		set_userName(std::string userName);
 		void		set_hostName(std::string hostName);

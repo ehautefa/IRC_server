@@ -38,15 +38,20 @@ class Channel
 
 		std::string			getTopic() const;
         std::string         getName() const;
+		std::string			getCreator() const;
 		std::string			getChannelMode() const;
 		bool				getChannelMode(char c) const;
-		bool				isOperator(int fd);
-		bool				isCreator(int fd);
-		bool				isVoice(int fd);
-		void				set_userMode(int fd, char mode);
+		void				setChannelMode(char c);
+		void				deleteChannelMode(char c);
+		bool				isOperator(int fd) const;
+		bool				isCreator(int fd) const;
+		bool				isVoice(int fd) const;
 		void				setTopic(std::string topic);
-		void				send_message(User fromWho, std::string msg, bool toWho);
 		void				addUser(User user, char mode);
+		char				getUserMode(int fd) const;
+		void				set_userMode(int fd, char mode);
+		void				delete_userMode(int fd, char mode);
+		void				send_message(User fromWho, std::string msg, bool toWho);
 		std::string			userIsOn(void);
 };
 

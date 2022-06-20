@@ -220,8 +220,8 @@ enum Reply
 	ERRNOOPERHOST			= 491,				  // :No O-lines for your host
 	ERRUMODEUNKNOWNFLAG		= 501,				  // :Unknown MODE flag
 	ERRUSERSDONTMATCH		= 502,				  // :Cant change mode for other users
-	ERRSILENCELISTFULL		= 511				   // <mask> :Your silence list is full												UNDERNET/DALNET
-
+	ERRSILENCELISTFULL		= 511,				   // <mask> :Your silence list is full												UNDERNET/DALNET
+	ERRNOCHANMODES			= 512
 };
 
 #endif
