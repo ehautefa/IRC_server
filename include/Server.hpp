@@ -62,7 +62,7 @@ class Server
 		int		findChannel(std::string name);
 
 		void                        	server_loop();
-		std::pair<bool, std::string>	getInfo(std::string to_find, std::string buffer);
+		std::pair<bool, std::string>	getInfo(std::vector<User>::iterator user,std::string to_find, std::string buffer);
 		bool                        	receive();
 		bool	       					parse_packets(std::string packets, int size);
 
@@ -86,7 +86,6 @@ class Server
 		void	invite(std::vector<User>::iterator user, std::pair<bool, std::string> invite);
 		void	kick(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 		void	kill(std::vector<User>::iterator user, std::pair<bool, std::string> str, int fd);
-		void	who(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	motd(std::vector<User>::iterator user);
 		
 		void	print_all();
