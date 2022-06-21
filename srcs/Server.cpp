@@ -321,6 +321,8 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 				else
 					user->send_error(to_string(RPL_CHANNELMODEIS), user->get_nickName() + " " + tab[0] + " " + chan_dest->second.getChannelMode());
 			} else if (tab.size() == 2) {
+				if (tab[1].compare("b") == 0)
+					return ;
 				if (chan_dest->second.isOperator(user->get_fd()) == false) {
 					user->send_message(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 				} else if (tab[1][0] == '+' || tab[1][0] == '-') {
@@ -637,6 +639,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->invite(user, this->getInfo(user, "INVITE", packets));
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	this->kill(user, this->getInfo(user, "kill", packets));
+	user->clear_buffer();
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
