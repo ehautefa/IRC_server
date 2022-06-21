@@ -106,6 +106,7 @@ enum Reply
 	RPL_ADMINLOC2			= 258,				  // :<info>
 	RPL_ADMINEMAIL			= 259,				  // :<info>
 	RPL_TRYAGAIN			= 263,				  // :Server load is temporarily too heavy. Please wait a while and try again.
+	RPL_KILLDONE			= 361,
 
 	// tracing
 	RPL_TRACELINK			= 200,

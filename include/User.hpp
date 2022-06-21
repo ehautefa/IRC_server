@@ -76,7 +76,7 @@ class User
 		int 		send_error(std::string rpl, std::string to_send);
 		int			relay_message(User from, std::string to_relay);
 		int 		send_other_error(std::string rpl, std::string to_send);
-		
+		int			sendMessageToAll(User fromWho, std::string to_send, bool toWho);	
 };
 
 #endif

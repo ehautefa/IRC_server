@@ -29,7 +29,7 @@ std::vector<std::string> split(const std::string &chaine, char delimiteur)
 
 // CONSTRUCTOR
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _pfds(), _users(), _channels(), _sockfd(0) {}
+Server::Server(int port, std::string password) : _port(port), _password(password), _pfds(), _users(), _channels(), _bannedList(), _sockfd(0) {}
 
 // DESTRUCTOR
 
@@ -164,7 +164,6 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		return ;
 	} 
 	else if (_channels.count(channel.second) == 1) {
-		std::cout  << "ALREADY EXIST" << std::endl;
 		if (_channels[channel.second].getChannelMode('i') == true && invite == false) {
 			user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
 			return ;
@@ -176,7 +175,6 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		this->_channels[channel.second].addUser(*user, ' ');
 	} else {
 		this->_channels[channel.second] = Channel(channel.second);
-		std::cout  << "JOIN IS OP " << _channels[channel.second].isOperator(user->get_fd()) << std::endl;
 		this->_channels[channel.second].addUser(*user, 'O');
 	}
 	this->_channels[channel.second].send_message(*user, "JOIN " + channel.second, true);
@@ -248,7 +246,6 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 }
 
 void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string> oper) {
-	std::cout << "OPER " << oper.second << std::endl;	
 	if (oper.first == false)
 		return ;
 	std::cout  << GR << "OPER" << NC << std::endl;
@@ -304,7 +301,6 @@ void    Server::privmsg(std::vector<User>::iterator user, std::pair<bool, std::s
 		msg += " " + tab[i];
 	}
 	msg.erase(0, 1);
-	std::cout  << YEL << "MESSAGE TO SEND :" << msg << NC << std::endl;
 	if (user_dest != this->_users.end()) {
 		user_dest->relay_message(*user, "PRIVMSG " + user_dest->get_nickName() + " :" + msg);
 	} else if (chan_dest != this->_channels.end()) {
@@ -336,13 +332,11 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 			user->send_error(to_string(ERRNOTONCHANNEL), tab[0] + " :You're not on that channel");
 		else {
 			if (tab.size() == 1) {
-				std::cout << "MODE : tab.size() == 1" << std::endl;
 				if (chan_dest->second.getChannelMode().size() == 0)
 					user->send_error(to_string(RPL_CHANNELMODEIS), user->get_nickName() + " " + tab[0]);
 				else
 					user->send_error(to_string(RPL_CHANNELMODEIS), user->get_nickName() + " " + tab[0] + " " + chan_dest->second.getChannelMode());
 			} else if (tab.size() == 2) {
-				std::cout << "MODE : tab.size() == 2" << std::endl;
 				if (chan_dest->second.isOperator(user->get_fd()) == false) {
 					user->send_message(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 				} else if (tab[1][0] == '+' || tab[1][0] == '-') {
@@ -362,8 +356,6 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 					user->send_error(to_string(ERRUMODEUNKNOWNFLAG), ":Unknown MODE flag");
 				}
 			} else if (tab.size() == 3) {
-				std::cout << "MODE : tab.size() == 3" << std::endl;
-				std::cout << "USER : " << this->get_user(tab[2])->get_nickName() << std::endl;
 				if (chan_dest->second.isOperator(user->get_fd()) == false) {
 					user->send_message(to_string(ERRCHANOPRIVSNEED), " :You're not an operator");
 				} else if (chan_dest->second.users.find(this->get_user(tab[2])->get_fd()) == chan_dest->second.users.end()) {
@@ -376,7 +368,6 @@ void	Server::mode(std::vector<User>::iterator user, std::pair<bool, std::string>
 							chan_dest->second.delete_userMode(this->get_user(tab[2])->get_fd(), tab[2][1]);
 						
 					this->get_user(tab[2])->send_message(to_string(RPL_UMODEIS), " MODE : in channel " + chan_dest->second.getName() + "  " + std::string(1, chan_dest->second.getUserMode(this->get_user(tab[2])->get_fd())));
-			 		std::cout << RED <<  "MODE : " << tab[2] << " " << chan_dest->second.isOperator(this->get_user(tab[2])->get_fd()) << std::endl;
 				} else
 					user->send_other_error(to_string(ERRUMODEUNKNOWNFLAG), std::string(1, tab[1][1]) + " :is unknown mode char to me for " + tab[0]);
 			} else {      
@@ -425,7 +416,6 @@ void	Server::part(std::vector<User>::iterator user, std::pair<bool, std::string>
 		msg.erase(0, 1);
 	}
 	std::vector<std::string> tab_chan = split(tab[0], ',');
-	std::cout  << YEL << "CHANNELS :" << tab_chan[0] << NC << std::endl;
 	std::map<std::string, Channel>::iterator chan_dest;
 	for (size_t i = 0; i < tab_chan.size(); i++) {
 		chan_dest = this->_channels.find(tab[0]);
@@ -569,7 +559,6 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 }
 
 void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
-	std::cout << "KICK " << str.second << std::endl;	
 	if (str.first == false)
 		return ;
 	std::cout  << GR << "KICK" << NC << std::endl;
@@ -612,16 +601,13 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str, int fd) {
-	std::cout << "KILL " << str.second << std::endl;
-	(void)fd;
+void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
 	if (str.first == false)
 		return ;
-	std::cout << "ICI" << std::endl;
 	std::cout  << GR << "KILL" << NC << std::endl;
 	std::vector<std::string> tab = split(str.second, ' ');
-	std::cout << "SIZE " << tab.size() << std::endl;
-	if (tab.size() != 2) {
+	std::string	msg;
+	if (tab.size() < 2 || tab[1].size() == 1) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), "KILL :Not enough parameters");
 		return ;
 	}
@@ -629,10 +615,21 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
 		return ;
 	} else if (user->get_isOperator() == false) {
-		user->send_error(to_string(ERRNOPRIVILEGES), tab[1] + " :You're not an operator");
+		user->send_error(to_string(ERRNOPRIVILEGES), user->get_nickName() + " :You're not an operator");
 		return ;
-	}	
-
+	} 
+	for (unsigned long j = 1; j < tab.size(); j++)
+		msg += " " + tab[j];
+	for (size_t i = 0; i < _pfds.size(); i++) {
+        if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
+			get_user(tab[0])->send_message(to_string(RPL_KILLDONE), " " + tab[0] + " KILLED : " + msg);
+			_bannedList.push_back(tab[0]);
+            _users.erase(this->get_user(_pfds[i].fd));
+            int tmp = _pfds[i].fd;
+            _pfds.erase(_pfds.begin() + i);
+            close(tmp);
+        }
+    }
 }
 
 // METHODS
@@ -640,7 +637,6 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 bool	Server::parse_packets(std::string packets, int fd) {
 	std::vector<User>::iterator user = this->get_user(fd);
 
-	std::cout << "PACKETS " << packets << std::endl;
 	this->nick(user, this->getInfo("NICK", packets));
 	this->user(user, this->getInfo("USER", packets));
 	this->ping(user, this->getInfo("PING", packets));
@@ -657,8 +653,21 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->invite(user, this->getInfo("INVITE", packets));
 	this->kick(user, this->getInfo("KICK", packets));
 	this->who(user, this->getInfo("WHO", packets));
-	this->kill(user, this->getInfo("kill", packets), fd);
+	this->get_user(fd)->clear_buffer();
+	this->kill(user, this->getInfo("kill", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
+		for (size_t i = 0; i < _bannedList.size(); i++) {
+			if (user->get_nickName() == _bannedList[i])
+			{
+				user->send_message(to_string(ERRYOUREBANNEDCREEP), ":You're banned from this server"); 
+				close(fd);
+				for (size_t j = 0; j < _pfds.size(); j++) {
+        			if (user->get_fd() == _pfds[j].fd)
+						_pfds.erase(_pfds.begin() + j);
+				}
+				_users.erase(this->get_user(fd));
+			}
+		}
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
 		user->print_user();
@@ -680,7 +689,6 @@ std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string bu
 	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
-	std::cout << "RET " << ret << std::endl;
 	return std::make_pair(true, ret);
 }
 
@@ -756,7 +764,6 @@ bool	Server::receive() {
 				else {
 					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
 					stop = this->parse_packets(buffer, _pfds[i].fd);
-					this->get_user(_pfds[i].fd)->clear_buffer();
 				}
 			}
 			for (int j = 0; packets[j] != '\0'; j++)

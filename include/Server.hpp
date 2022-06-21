@@ -43,6 +43,7 @@ class Server
 		std::vector<struct pollfd>  	_pfds;
 		std::vector<User>		   		_users;
 		std::map<std::string, Channel>  _channels;
+		std::vector<std::string>		_bannedList;
 		int						 		_sockfd;
 
 	public:
@@ -85,7 +86,7 @@ class Server
 		void	names(std::vector<User>::iterator user, std::pair<bool, std::string> channel);
 		void	invite(std::vector<User>::iterator user, std::pair<bool, std::string> invite);
 		void	kick(std::vector<User>::iterator user, std::pair<bool, std::string> str);
-		void	kill(std::vector<User>::iterator user, std::pair<bool, std::string> str, int fd);
+		void	kill(std::vector<User>::iterator user, std::pair<bool, std::string> str);
 		void	who(std::vector<User>::iterator user, std::pair<bool, std::string> who);
 		void	motd(std::vector<User>::iterator user);
 		
