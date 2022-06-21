@@ -131,6 +131,10 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else
 			user->send_message("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
+		std::map<std::string, Channel>::iterator it = this->_channels.begin();
+		for (; it != this->_channels.end(); it++) {
+			it->second.setNickname(user->get_fd(), user->get_nickName());
+		}
 	}
 }
  
@@ -168,7 +172,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 			user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
 			return ;
 		}
-		if (_channels[channel.second].getKickStatus(user->get_nickName()) == true) {
+		if (_channels[channel.second].getKickStatus(user->get_fd()) == true) {
 			user->send_message(to_string(ERRBANNEDFROMCHAN), channel.second);
 			return ;
 		}
@@ -185,26 +189,6 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->send_message(to_string(RPL_TOPIC), user->get_nickName() + " " + channel.second + " :" + this->_channels[channel.second].getTopic());
 	user->send_message(to_string(RPL_NAMREPLY), user->get_nickName() + " = " + channel.second + " :" + this->_channels[channel.second].userIsOn());
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
-}
-
-void	Server::who(std::vector<User>::iterator user, std::pair<bool, std::string> who) {
-	if (who.first == false)
-		return ;
-	std::cout  << GR << "WHO" << NC << std::endl;
-	if (who.second.size() == 0){
-		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Need more params\r\n");
-		return ;
-	}
-	if (who.second.find_first_of('#') == 0 || who.second.find_first_of('&') == 0) {
-    	std::map<std::string, Channel>::iterator chan_dest = _channels.find(who.second);
-		if (chan_dest == _channels.end()){
-			user->send_message(to_string(ERRNOSUCHCHANNEL), who.second + " :No such channel");
-			return ;
-		} else {
-			user->send_other_error(to_string(RPL_WHOREPLY), user->get_nickName() + " :" + chan_dest->second.userIsOn());
-			user->send_other_error(to_string(RPL_ENDOFNAMES), " :End of NAMES list");	
-		}
-	}
 }
 
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
@@ -596,7 +580,7 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		}
 		chan_dest->second.send_message(*user, "KICK " + tab[0] + " :" + tab[1] + msg, true);
 		chan_dest->second.send_message(*to_delete, "PART " + tab[0] + " :" + msg, true);
-		chan_dest->second.setKickStatus(tab[1]);
+		chan_dest->second.setKickStatus(to_delete->get_fd());
 		chan_dest->second.users.erase(to_delete->get_fd());
 	}
 }
@@ -637,24 +621,22 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 bool	Server::parse_packets(std::string packets, int fd) {
 	std::vector<User>::iterator user = this->get_user(fd);
 
-	this->nick(user, this->getInfo("NICK", packets));
-	this->user(user, this->getInfo("USER", packets));
-	this->ping(user, this->getInfo("PING", packets));
-	this->whois(user, this->getInfo("WHOIS", packets));
-	this->list(user, this->getInfo("LIST", packets));
-	this->oper(user, this->getInfo("OPER", packets));
-	this->privmsg(user, this->getInfo("PRIVMSG", packets));
-	this->join(user, this->getInfo("JOIN", packets), false);
-	this->mode(user, this->getInfo("MODE", packets));
-	this->part(user, this->getInfo("PART", packets));
-	this->topic(user, this->getInfo("TOPIC", packets));
-	this->motd(user, this->getInfo("motd", packets));
-	this->notice(user, this->getInfo("NOTICE", packets));
-	this->invite(user, this->getInfo("INVITE", packets));
-	this->kick(user, this->getInfo("KICK", packets));
-	this->who(user, this->getInfo("WHO", packets));
-	this->get_user(fd)->clear_buffer();
-	this->kill(user, this->getInfo("kill", packets));
+	this->nick(user, this->getInfo(user, "NICK", packets));
+	this->user(user, this->getInfo(user, "USER", packets));
+	this->ping(user, this->getInfo(user, "PING", packets));
+	this->whois(user, this->getInfo(user, "WHOIS", packets));
+	this->list(user, this->getInfo(user, "LIST", packets));
+	this->oper(user, this->getInfo(user, "OPER", packets));
+	this->privmsg(user, this->getInfo(user, "PRIVMSG", packets));
+	this->join(user, this->getInfo(user, "JOIN", packets), false);
+	this->mode(user, this->getInfo(user, "MODE", packets));
+	this->part(user, this->getInfo(user, "PART", packets));
+	this->topic(user, this->getInfo(user, "TOPIC", packets));
+	this->motd(user, this->getInfo(user, "motd", packets));
+	this->notice(user, this->getInfo(user, "NOTICE", packets));
+	this->invite(user, this->getInfo(user, "INVITE", packets));
+	this->kick(user, this->getInfo(user, "KICK", packets));
+	this->kill(user, this->getInfo(user, "kill", packets));
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
@@ -673,22 +655,30 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
-	return (this->die(user, this->getInfo("die", packets)));
+	return (this->die(user, this->getInfo(user, "die", packets)));
 }
 
-std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string buffer) {
-
+std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, std::string to_find, std::string buffer) {
 	size_t begin = buffer.find(to_find);
-	// if (begin != 0 && (to_find[begin - 1] && to_find[begin - 1] != '\n'))
-	// 	return (std::make_pair(false, "")); => genere erreur valgrind
-	size_t end = buffer.find("\r\n", begin);
+	bool noise_before = false;
+	if (begin != 0 && begin != std::string::npos) {
+		if (buffer[begin - 1] != '\n')
+			noise_before = true;
+	}
+	size_t end = buffer.find("\n", begin);
 	if (begin == std::string::npos || end == std::string::npos || begin >= end)
 		return (std::make_pair(false, ""));
+	std::cout << "GETINFO " << to_find  << " && " << buffer << std::endl;
 	begin += to_find.size() + 1;
 	end = begin;
 	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
+	std::cout << "RET " << ret << std::endl;
+	if (noise_before == true) {
+		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknown command");
+		return (std::make_pair(false, ""));
+	}
 	return std::make_pair(true, ret);
 }
 
@@ -752,7 +742,7 @@ bool	Server::receive() {
 				close(tmp);
 			}
 			if (buffer.find("\n") != std::string::npos) {
-				std::pair<bool, std::string> pass = this->getInfo("PASS", std::string(buffer));
+				std::pair<bool, std::string> pass = this->getInfo(this->get_user(_pfds[i].fd), "PASS", std::string(buffer));
 				if (pass.first == true  && pass.second.compare(_password) != 0){
 					if (pass.second.size() == 0)
 						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");
@@ -784,12 +774,13 @@ void	Server::print_all() {
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _users.size() << " clients connected :" << NC << std::endl;
 	for (size_t i = 0; i < _users.size(); i++)
-		std::cout << "    - " << _users[i].get_nickName() << GRN <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
+		std::cout << "    - " << _users[i].get_nickName() << BLU <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _channels.size() << " channels :" << NC << std::endl;
 	std::map<std::string, Channel>::iterator it = _channels.begin();
 	while (it != _channels.end()) {
-		std::cout << "    - " << it->first << BLU << "	mode : " << it->second.getChannelMode() << NC << std::endl;
+		std::cout << "    - " << it->first << BLU << ":	mode : " << it->second.getChannelMode() << NC << std::endl;
+		std::cout << "		users in channel: " << GRN << it->second.userIsOn() << NC << std::endl;
 		it++;
 	}
 	std::cout << std::endl << std::endl;
