@@ -203,7 +203,7 @@ void	Server::who(std::vector<User>::iterator user, std::pair<bool, std::string> 
 			user->send_message(to_string(ERRNOSUCHCHANNEL), who.second + " :No such channel");
 			return ;
 		} else {
-			user->send_other_error(to_string(RPL_NAMREPLY), user->get_nickName() + " :" + chan_dest->second.userIsOn());
+			user->send_other_error(to_string(RPL_WHOREPLY), user->get_nickName() + " :" + chan_dest->second.userIsOn());
 			user->send_other_error(to_string(RPL_ENDOFNAMES), " :End of NAMES list");	
 		}
 	}
@@ -657,7 +657,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->invite(user, this->getInfo("INVITE", packets));
 	this->kick(user, this->getInfo("KICK", packets));
 	this->who(user, this->getInfo("WHO", packets));
-	this->kill(user, this->getInfo("KILL", packets), fd);
+	this->kill(user, this->getInfo("kill", packets), fd);
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
