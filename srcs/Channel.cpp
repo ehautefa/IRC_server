@@ -12,20 +12,27 @@ std::string Channel::getName() const { return (_name); }
 
 std::string	Channel::getMode() const { return (_modeChannel); }
 
-bool	Channel::getKickStatus(std::string name) const {
-
-	for (int i = 0; i < _bannedList[i]; i++) {
-		if (_bannedList.find(name) != std::string::npos) {
+bool	Channel::getKickStatus(int fd) const {
+	std::vector<int>::const_iterator it = _bannedList.begin();
+	for (; it != _bannedList.end(); it++) {
+		if (*it == fd)
 			return (true);
-		}
 	}
 	return (false);
 }
 
 void	Channel::setTopic(std::string topic) { _topic = topic; }
 
-void	Channel::setKickStatus(std::string name) { 
-	this->_bannedList += " " + name;
+void	Channel::setNickname(int fd, std::string nickname) {
+	std::map<int, User>::iterator it = users.find(fd);
+	if (it != users.end()) {
+		it->second.set_nickName(nickname);
+	}
+}
+
+
+void	Channel::setKickStatus(int fd) { 
+	this->_bannedList.push_back(fd);
 }
 
 std::string	Channel::userIsOn(void){
@@ -35,7 +42,7 @@ std::string	Channel::userIsOn(void){
 	for (; it != users.end(); it++) {
 		if (this->isOperator(it->first) == true)
 			ret += "@" + it->second.get_nickName() + " ";
-		else if (this->isVoice((it->first) == true))
+		else if (this->isVoice(it->first) == true)
 			ret += "+v" + it->second.get_nickName() + " ";
 		else 
 			ret += it->second.get_nickName() + " ";

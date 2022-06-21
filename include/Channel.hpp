@@ -29,7 +29,7 @@ class Channel
 		std::string					_topic;
 		std::string					_modeChannel;
 		std::map<int, char>			_users_modes;
-		std::string					_bannedList;
+		std::vector<int>			_bannedList;
 
 	public:
 		std::map<int, User>		users;
@@ -40,8 +40,9 @@ class Channel
 		std::string			getMode() const;
 		std::string			getTopic() const;
         std::string         getName() const;
-		void				setKickStatus(std::string name);
-		bool				getKickStatus(std::string name) const;
+		void				setNickname(int fd, std::string nickname);
+		void				setKickStatus(int fd);
+		bool				getKickStatus(int fd) const;
 		std::string			getCreator() const;
 		std::string			getChannelMode() const;
 		bool				getChannelMode(char c) const;

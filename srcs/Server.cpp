@@ -131,6 +131,10 @@ void	Server::nick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		} else
 			user->send_message("", "NICK :" + nickname.second);
 		user->set_nickName(nickname.second);
+		std::map<std::string, Channel>::iterator it = this->_channels.begin();
+		for (; it != this->_channels.end(); it++) {
+			it->second.setNickname(user->get_fd(), user->get_nickName());
+		}
 	}
 }
  
@@ -169,7 +173,7 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 			user->send_message(to_string(ERRINVITEONLYCHAN), channel.second + " :Cannot join channel (Invite only)");
 			return ;
 		}
-		if (_channels[channel.second].getKickStatus(user->get_nickName()) == true) {
+		if (_channels[channel.second].getKickStatus(user->get_fd()) == true) {
 			user->send_message(to_string(ERRBANNEDFROMCHAN), channel.second);
 			return ;
 		}
@@ -607,7 +611,7 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 		}
 		chan_dest->second.send_message(*user, "KICK " + tab[0] + " :" + tab[1] + msg, true);
 		chan_dest->second.send_message(*to_delete, "PART " + tab[0] + " :" + msg, true);
-		chan_dest->second.setKickStatus(tab[1]);
+		chan_dest->second.setKickStatus(to_delete->get_fd());
 		chan_dest->second.users.erase(to_delete->get_fd());
 	}
 }
@@ -777,12 +781,13 @@ void	Server::print_all() {
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _users.size() << " clients connected :" << NC << std::endl;
 	for (size_t i = 0; i < _users.size(); i++)
-		std::cout << "    - " << _users[i].get_nickName() << GRN <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
+		std::cout << "    - " << _users[i].get_nickName() << BLU <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _channels.size() << " channels :" << NC << std::endl;
 	std::map<std::string, Channel>::iterator it = _channels.begin();
 	while (it != _channels.end()) {
-		std::cout << "    - " << it->first << BLU << "	mode : " << it->second.getChannelMode() << NC << std::endl;
+		std::cout << "    - " << it->first << BLU << ":	mode : " << it->second.getChannelMode() << NC << std::endl;
+		std::cout << "		users in channel: " << GRN << it->second.userIsOn() << NC << std::endl;
 		it++;
 	}
 	std::cout << std::endl << std::endl;
