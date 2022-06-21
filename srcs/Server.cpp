@@ -189,6 +189,26 @@ void	Server::join(std::vector<User>::iterator user, std::pair<bool, std::string>
 	user->send_message(to_string(RPL_ENDOFNAMES), user->get_nickName() + " " + channel.second + " :End of NAMES list");		
 }
 
+void	Server::who(std::vector<User>::iterator user, std::pair<bool, std::string> who) {
+	if (who.first == false)
+		return ;
+	std::cout  << GR << "WHO" << NC << std::endl;
+	if (who.second.size() == 0){
+		user->send_message(to_string(ERRNEEDMOREPARAMS), ":Need more params\r\n");
+		return ;
+	}
+	if (who.second.find_first_of('#') == 0 || who.second.find_first_of('&') == 0) {
+    	std::map<std::string, Channel>::iterator chan_dest = _channels.find(who.second);
+		if (chan_dest == _channels.end()){
+			user->send_message(to_string(ERRNOSUCHCHANNEL), who.second + " :No such channel");
+			return ;
+		} else {
+			user->send_other_error(to_string(RPL_NAMREPLY), user->get_nickName() + " :" + chan_dest->second.userIsOn());
+			user->send_other_error(to_string(RPL_ENDOFNAMES), " :End of NAMES list");	
+		}
+	}
+}
+
 void	Server::whois(std::vector<User>::iterator user, std::pair<bool, std::string>  who) {
 	if (who.first == false)
 		return ;
@@ -228,6 +248,7 @@ void	Server::list(std::vector<User>::iterator user, std::pair<bool, std::string>
 }
 
 void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string> oper) {
+	std::cout << "OPER " << oper.second << std::endl;	
 	if (oper.first == false)
 		return ;
 	std::cout  << GR << "OPER" << NC << std::endl;
@@ -548,6 +569,7 @@ void	Server::invite(std::vector<User>::iterator user, std::pair<bool, std::strin
 }
 
 void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+	std::cout << "KICK " << str.second << std::endl;	
 	if (str.first == false)
 		return ;
 	std::cout  << GR << "KICK" << NC << std::endl;
@@ -590,21 +612,35 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-// void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
-// 	(void)user;
-// 	(void)str;
-// 	std::cerr << RED << "ERROR: Client " << this->get_user(_pfds[i].fd)->get_nickName() << " disconnected" << NC << std::endl;
-// 	_users.erase(this->get_user(_pfds[i].fd));
-// 	int tmp = _pfds[i].fd;
-// 	_pfds.erase(_pfds.begin() + i);
-// 	close(tmp);
-// }
+void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str, int fd) {
+	std::cout << "KILL " << str.second << std::endl;
+	(void)fd;
+	if (str.first == false)
+		return ;
+	std::cout << "ICI" << std::endl;
+	std::cout  << GR << "KILL" << NC << std::endl;
+	std::vector<std::string> tab = split(str.second, ' ');
+	std::cout << "SIZE " << tab.size() << std::endl;
+	if (tab.size() != 2) {
+		user->send_error(to_string(ERRNEEDMOREPARAMS), "KILL :Not enough parameters");
+		return ;
+	}
+	else if (this->get_user(tab[0]) == this->_users.end()) {
+		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
+		return ;
+	} else if (user->get_isOperator() == false) {
+		user->send_error(to_string(ERRNOPRIVILEGES), tab[1] + " :You're not an operator");
+		return ;
+	}	
+
+}
 
 // METHODS
 
 bool	Server::parse_packets(std::string packets, int fd) {
 	std::vector<User>::iterator user = this->get_user(fd);
-	
+
+	std::cout << "PACKETS " << packets << std::endl;
 	this->nick(user, this->getInfo("NICK", packets));
 	this->user(user, this->getInfo("USER", packets));
 	this->ping(user, this->getInfo("PING", packets));
@@ -620,7 +656,8 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->notice(user, this->getInfo("NOTICE", packets));
 	this->invite(user, this->getInfo("INVITE", packets));
 	this->kick(user, this->getInfo("KICK", packets));
-	// this->kill(user, this->getInfo("KILL", packets));
+	this->who(user, this->getInfo("WHO", packets));
+	this->kill(user, this->getInfo("KILL", packets), fd);
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		user->set_isConnected(true);		
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
@@ -643,7 +680,7 @@ std::pair<bool, std::string> Server::getInfo(std::string to_find, std::string bu
 	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
-	
+	std::cout << "RET " << ret << std::endl;
 	return std::make_pair(true, ret);
 }
 
