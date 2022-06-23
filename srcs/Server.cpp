@@ -606,14 +606,22 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} 
 	for (unsigned long j = 1; j < tab.size(); j++)
 		msg += " " + tab[j];
+	std::vector<User>::iterator	it = this->_users.begin();
+    std::vector<User>::iterator toKilled = this->find_user(tab[0]);
+	for (; it != _users.end(); it++) {
+		if (get_user(tab[0])->get_fd() != it->get_fd())
+			it->relay_message(*toKilled, "Quit" + msg);
+		if (get_user(tab[0])->get_fd() == it->get_fd())
+			toKilled->send_message(to_string(RPL_KILLDONE), msg);
+	}
 	for (size_t i = 0; i < _pfds.size(); i++) {
         if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
-			get_user(tab[0])->send_message(to_string(RPL_KILLDONE), " " + tab[0] + " KILLED : " + msg);
 			_bannedList.push_back(tab[0]);
             _users.erase(this->get_user(_pfds[i].fd));
             int tmp = _pfds[i].fd;
             _pfds.erase(_pfds.begin() + i);
             close(tmp);
+			return ;
         }
     }
 }
