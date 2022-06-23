@@ -607,12 +607,12 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 	for (unsigned long j = 1; j < tab.size(); j++)
 		msg += " " + tab[j];
 	std::vector<User>::iterator	it = this->_users.begin();
-    std::vector<User>::iterator toKilled = this->find_user(tab[0]);
+    // std::vector<User>::iterator toKilled = this->find_user(tab[0]);
 	for (; it != _users.end(); it++) {
 		if (get_user(tab[0])->get_fd() != it->get_fd())
-			it->relay_message(*toKilled, "Quit" + msg);
+			it->relay_message(*this->find_user(tab[0]), "Quit" + msg);
 		if (get_user(tab[0])->get_fd() == it->get_fd())
-			toKilled->send_message(to_string(RPL_KILLDONE), msg);
+			this->find_user(tab[0])->send_message(to_string(RPL_KILLDONE), user->get_nickName() + " KILL " + tab[0] + " : " + msg);
 	}
 	for (size_t i = 0; i < _pfds.size(); i++) {
         if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
