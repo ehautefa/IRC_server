@@ -90,6 +90,13 @@ class Server
 		void	motd(std::vector<User>::iterator user);
 		
 		void	print_all();
+
+		class	acceptFailed : public std::exception
+		{
+			public :
+				virtual const char * what() const throw();
+		};
+
 };
 
 

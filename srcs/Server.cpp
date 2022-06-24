@@ -606,16 +606,19 @@ void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 	} 
 	for (unsigned long j = 1; j < tab.size(); j++)
 		msg += " " + tab[j];
-	std::vector<User>::iterator	it = this->_users.begin();
-    // std::vector<User>::iterator toKilled = this->find_user(tab[0]);
-	for (; it != _users.end(); it++) {
-		if (get_user(tab[0])->get_fd() != it->get_fd())
-			it->relay_message(*this->find_user(tab[0]), "Quit" + msg);
-		if (get_user(tab[0])->get_fd() == it->get_fd())
-			this->find_user(tab[0])->send_message(to_string(RPL_KILLDONE), user->get_nickName() + " KILL " + tab[0] + " : " + msg);
+	// for (std::vector<User>::iterator it = this->_users.begin(); it != _users.end(); it++) {
+	// 	if (get_user(tab[0])->get_fd() != it->get_fd())
+	// 		it->relay_message(*this->find_user(tab[0]), "Quit" + msg);
+	// 	if (get_user(tab[0])->get_fd() == it->get_fd())
+	// 		this->find_user(tab[0])->send_message(to_string(RPL_KILLDONE), user->get_nickName() + " KILL " + tab[0] + " : " + msg + "\n");
+	// }
+	for (std::map<std::string, Channel>::const_iterator it = _channels.begin(); it != _channels.end(); ++it) {
+		if (it->second.users.find(this->get_user(tab[0])->get_fd()) == it->second.users.end())
+			this->part(this->get_user(tab[0]), str);
 	}
 	for (size_t i = 0; i < _pfds.size(); i++) {
         if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
+			this->find_user(tab[0])->send_message(to_string(RPL_KILLDONE), user->get_nickName() + " KILL " + tab[0] + " : " + msg + "\n");
 			_bannedList.push_back(tab[0]);
             _users.erase(this->get_user(_pfds[i].fd));
             int tmp = _pfds[i].fd;
@@ -647,7 +650,6 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->invite(user, this->getInfo(user, "INVITE", packets));
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	this->kill(user, this->getInfo(user, "kill", packets));
-	user->clear_buffer();
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
@@ -666,6 +668,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
+	user->clear_buffer();
 	return (this->die(user, this->getInfo(user, "die", packets)));
 }
 
@@ -711,8 +714,10 @@ void	Server::server_loop() {
 				struct sockaddr_in  their_addr; // connector's address information
 				socklen_t		   sin_size = sizeof(their_addr);
 				int				 new_fd = accept(_pfds[0].fd, (struct sockaddr *)&their_addr, &sin_size);
-				if (new_fd == -1)
+				if (new_fd == -1) {
 					std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
+					throw Server::acceptFailed();
+				}
 				char hostname[NI_MAXHOST];
 				fcntl(new_fd, F_SETFL, O_NONBLOCK);
 				if (getnameinfo((struct sockaddr *)&their_addr, sin_size, hostname, NI_MAXHOST, NULL, 0,  NI_NUMERICSERV) != 0)
@@ -795,4 +800,9 @@ void	Server::print_all() {
 		it++;
 	}
 	std::cout << std::endl << std::endl;
+}
+
+const char *Server::acceptFailed::what(void) const throw()
+{
+	return ("Accept Failed.");	
 }

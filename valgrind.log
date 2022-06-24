@@ -1,29 +1,57 @@
-==179167== Memcheck, a memory error detector
-==179167== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==179167== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==179167== Command: ./ircserv 6667 password
-==179167== Parent PID: 179153
-==179167== 
-==179167== 
-==179167== FILE DESCRIPTORS: 4 open at exit.
-==179167== Open file descriptor 3: /mnt/nfs/homes/hlucie/Documents/ircserver/valgrind.log
-==179167==    <inherited from parent>
-==179167== 
-==179167== Open file descriptor 2: /dev/pts/1
-==179167==    <inherited from parent>
-==179167== 
-==179167== Open file descriptor 1: /dev/pts/1
-==179167==    <inherited from parent>
-==179167== 
-==179167== Open file descriptor 0: /dev/pts/1
-==179167==    <inherited from parent>
-==179167== 
-==179167== 
-==179167== HEAP SUMMARY:
-==179167==     in use at exit: 0 bytes in 0 blocks
-==179167==   total heap usage: 181 allocs, 181 frees, 97,526 bytes allocated
-==179167== 
-==179167== All heap blocks were freed -- no leaks are possible
-==179167== 
-==179167== For lists of detected and suppressed errors, rerun with: -s
-==179167== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==59529== Memcheck, a memory error detector
+==59529== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==59529== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==59529== Command: ./ircserv 6667 password
+==59529== Parent PID: 59522
+==59529== 
+==59529== Invalid write of size 1
+==59529==    at 0x49A899F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::clear() (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==59529==    by 0x4048F7: User::clear_buffer() (User.cpp:42)
+==59529==    by 0x418D86: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:668)
+==59529==    by 0x41AD7E: Server::receive() (Server.cpp:769)
+==59529==    by 0x419942: Server::server_loop() (Server.cpp:728)
+==59529==    by 0x403EA5: main (main.cpp:99)
+==59529==  Address 0x4dc56f0 is 0 bytes inside a block of size 68 free'd
+==59529==    at 0x483CFBF: operator delete(void*) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==59529==    by 0x4044C4: User::~User() (User.cpp:13)
+==59529==    by 0x423FF8: __gnu_cxx::new_allocator<User>::destroy(User*) (new_allocator.h:165)
+==59529==    by 0x423CBC: __gnu_cxx::__alloc_traits<std::allocator<User>, User>::destroy(std::allocator<User>&, User*) (alloc_traits.h:148)
+==59529==    by 0x423BDB: std::vector<User, std::allocator<User> >::_M_erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (vector.tcc:177)
+==59529==    by 0x41C174: std::vector<User, std::allocator<User> >::erase(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >) (stl_vector.h:1434)
+==59529==    by 0x41698F: Server::kill(__gnu_cxx::__normal_iterator<User*, std::vector<User, std::allocator<User> > >, std::pair<bool, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >) (Server.cpp:620)
+==59529==    by 0x41799C: Server::parse_packets(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, int) (Server.cpp:649)
+==59529==    by 0x41AD7E: Server::receive() (Server.cpp:769)
+==59529==    by 0x419942: Server::server_loop() (Server.cpp:728)
+==59529==    by 0x403EA5: main (main.cpp:99)
+==59529==  Block was alloc'd at
+==59529==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==59529==    by 0x49A829E: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==59529==    by 0x49A85FD: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::operator=(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==59529==    by 0x404944: User::set_buffer(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (User.cpp:50)
+==59529==    by 0x41A254: Server::receive() (Server.cpp:745)
+==59529==    by 0x419942: Server::server_loop() (Server.cpp:728)
+==59529==    by 0x403EA5: main (main.cpp:99)
+==59529== 
+==59529== 
+==59529== FILE DESCRIPTORS: 4 open at exit.
+==59529== Open file descriptor 3: /mnt/nfs/homes/hlucie/Documents/ircserver/valgrind.log
+==59529==    <inherited from parent>
+==59529== 
+==59529== Open file descriptor 2: /dev/pts/0
+==59529==    <inherited from parent>
+==59529== 
+==59529== Open file descriptor 1: /dev/pts/0
+==59529==    <inherited from parent>
+==59529== 
+==59529== Open file descriptor 0: /dev/pts/0
+==59529==    <inherited from parent>
+==59529== 
+==59529== 
+==59529== HEAP SUMMARY:
+==59529==     in use at exit: 0 bytes in 0 blocks
+==59529==   total heap usage: 2,039 allocs, 2,039 frees, 180,847 bytes allocated
+==59529== 
+==59529== All heap blocks were freed -- no leaks are possible
+==59529== 
+==59529== For lists of detected and suppressed errors, rerun with: -s
+==59529== ERROR SUMMARY: 6 errors from 1 contexts (suppressed: 0 from 0)
