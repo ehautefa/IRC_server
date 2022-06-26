@@ -14,7 +14,7 @@ BUG
 	❌ buffer after kill someone
 	❌ banned list dont work always
 	❌ mot de passe ""
-	❌ probleme de ping/pong
+	✅ probleme de ping/pong
 	✅ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
 	✅ On doit pas pouvoir se kick soit memes
 	✅ Suppression du channel quand le dernier PART

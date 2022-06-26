@@ -147,7 +147,7 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 	else if (user->get_isConnected() == false)
 		user->send_error(to_string(ERRNOORIGIN), ":No origin specified");
 	else {
-		user->send_message("", "PONG :" + server.second + " " + user->get_nickName() + "\r\n");
+		user->send_message("", "PONG");
 	}
 }
 
@@ -587,35 +587,36 @@ void	Server::kick(std::vector<User>::iterator user, std::pair<bool, std::string>
 	}
 }
 
-void	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
+bool	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string> str) {
 	if (str.first == false)
-		return ;
+		return false;
 	std::cout  << GR << "KILL" << NC << std::endl;
 	std::vector<std::string> tab = split(str.second, ' ');
 	std::string	msg;
 	if (tab.size() < 2 || tab[1].size() == 1) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), "KILL :Not enough parameters");
-		return ;
-	}
-	else if (this->get_user(tab[0]) == this->_users.end()) {
+	} else if (this->get_user(tab[0]) == this->_users.end()) {
 		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
-		return ;
 	} else if (user->get_isOperator() == false) {
 		user->send_error(to_string(ERRNOPRIVILEGES), user->get_nickName() + " :You're not an operator");
-		return ;
-	} 
-	for (unsigned long j = 1; j < tab.size(); j++)
-		msg += " " + tab[j];
-	for (size_t i = 0; i < _pfds.size(); i++) {
-        if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
-			get_user(tab[0])->send_message(to_string(RPL_KILLDONE), " " + tab[0] + " KILLED : " + msg);
-			_bannedList.push_back(tab[0]);
-            _users.erase(this->get_user(_pfds[i].fd));
-            int tmp = _pfds[i].fd;
-            _pfds.erase(_pfds.begin() + i);
-            close(tmp);
-        }
-    }
+	} else {
+		user->clear_buffer();
+		for (unsigned long j = 1; j < tab.size(); j++)
+			msg += " " + tab[j];
+		for (size_t i = 0; i < _pfds.size(); i++) {
+			if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
+				std::cout << YEL << "USER KILLED " << get_user(tab[0])->get_nickName() << NC << std::endl;
+				get_user(tab[0])->send_message(to_string(RPL_KILLDONE), " " + tab[0] + " KILLED : " + msg);
+				_bannedList.push_back(tab[0]);
+				_users.erase(this->get_user(_pfds[i].fd));
+				int tmp = _pfds[i].fd;
+				_pfds.erase(_pfds.begin() + i);
+				close(tmp);
+			}
+		}
+		return true;
+	}
+	return false;
 }
 
 // METHODS
@@ -638,8 +639,8 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->notice(user, this->getInfo(user, "NOTICE", packets));
 	this->invite(user, this->getInfo(user, "INVITE", packets));
 	this->kick(user, this->getInfo(user, "KICK", packets));
-	this->kill(user, this->getInfo(user, "kill", packets));
-	user->clear_buffer();
+	if (this->kill(user, this->getInfo(user, "kill", packets)) == false)
+		user->clear_buffer();
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
@@ -671,13 +672,11 @@ std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, s
 	size_t end = buffer.find("\n", begin);
 	if (begin == std::string::npos || end == std::string::npos || begin >= end)
 		return (std::make_pair(false, ""));
-	std::cout << "GETINFO " << to_find  << " && " << buffer << std::endl;
 	begin += to_find.size() + 1;
 	end = begin;
 	while (buffer[end] && buffer[end] != '\r' && buffer[end] != '\n')
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
-	std::cout << "RET " << ret << std::endl;
 	if (noise_before == true) {
 		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknown command");
 		return (std::make_pair(false, ""));
@@ -693,7 +692,7 @@ void	Server::server_loop() {
 	_pfds.back().events = POLLIN;
 	_pfds.back().fd = _sockfd;
 	while (!stop) {
-		print_all();
+		// print_all();
 		std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
 		if (num_events == -1) {
@@ -734,7 +733,6 @@ bool	Server::receive() {
 			int size = recv(_pfds[i].fd, packets, LEN_MAX_PACKETS, MSG_WAITALL);
 			this->get_user(_pfds[i].fd)->set_buffer(packets);
 			std::string buffer = this->get_user(_pfds[i].fd)->get_buffer();
-			std::cout  << YEL << buffer << NC << std::endl;
 			if (size == -1)
 				std::cerr << RED << "ERROR: recv() failed" << NC << std::endl;
 			else if (size == 0) {
