@@ -79,8 +79,11 @@ int init_socket(char *port)
 
 int main(int argc, char **argv)
 {
-	if (argc != 3 || std::string(argv[2]).empty()){
+	if (argc != 3){
 		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
+		return EXIT_FAILURE;
+	} else if (std::string(argv[2]).empty()) {
+		std::cerr << RED << "Password can't be empty" << NC << std::endl;
 		return EXIT_FAILURE;
 	}
 	std::string port = argv[1];
