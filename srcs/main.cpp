@@ -79,7 +79,7 @@ int init_socket(char *port)
 
 int main(int argc, char **argv)
 {
-	if (argc != 3){
+	if (argc != 3 || std::string(argv[2]).empty()){
 		std::cerr << RED << "Attempt format is \"./ircserv <port> <password>\"" << NC << std::endl;
 		return EXIT_FAILURE;
 	}

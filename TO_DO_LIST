@@ -12,7 +12,7 @@ BUG
 	❌ segfault reconnexion 
 	❌ double free 
 	❌ banned list dont work always
-	❌ mot de passe ""
+	✅ mot de passe ""
 	✅ buffer after kill someone => cause, iterator can change after an erase
 	✅ probleme de ping/pong
 	✅ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
