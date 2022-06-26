@@ -94,6 +94,12 @@ int main(int argc, char **argv)
 	
 	if (serv.set_sockfd(init_socket(argv[1])) == false)
 		return EXIT_FAILURE;
-	serv.server_loop();
+	try { 
+		
+		serv.server_loop();
+	}
+	catch (std::exception const &e) {
+		std::cerr << e.what() << std::endl;
+	}
 	return 0;
 }
