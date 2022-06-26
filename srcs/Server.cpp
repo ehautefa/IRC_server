@@ -593,7 +593,7 @@ bool	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 	std::cout  << GR << "KILL" << NC << std::endl;
 	std::vector<std::string> tab = split(str.second, ' ');
 	std::string	msg;
-	if (tab.size() < 2 || tab[1].size() == 1) {
+	if (tab.size() < 2 || (tab[1].size() <= 1 && tab.size() == 2)) {
 		user->send_error(to_string(ERRNEEDMOREPARAMS), "KILL :Not enough parameters");
 	} else if (this->get_user(tab[0]) == this->_users.end()) {
 		user->send_error(to_string(ERRNOSUCHNICK), tab[0] + " :No such nick");
@@ -603,9 +603,14 @@ bool	Server::kill(std::vector<User>::iterator user, std::pair<bool, std::string>
 		user->clear_buffer();
 		for (unsigned long j = 1; j < tab.size(); j++)
 			msg += " " + tab[j];
-		for (std::map<std::string, Channel>::const_iterator it = _channels.begin(); it != _channels.end(); ++it) {
-			if (it->second.users.find(this->get_user(tab[0])->get_fd()) == it->second.users.end())
-				this->part(this->get_user(tab[0]), str);
+		std::map<std::string, Channel>::iterator it = _channels.begin();
+		while (it != _channels.end()) {
+			if (it->second.users.find(this->get_user(tab[0])->get_fd()) != it->second.users.end()) {
+				std::cout << GRN << "KILL " << it->first << NC << std::endl;
+				std::map<std::string, Channel>::iterator tmp = it;
+				it++;
+				this->part(this->get_user(tab[0]), std::make_pair(true, tmp->first));
+			}
 		}
 		for (size_t i = 0; i < _pfds.size(); i++) {
 			if (get_user(tab[0])->get_fd() == _pfds[i].fd) {
@@ -662,7 +667,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
-	user->clear_buffer();
+	// user->clear_buffer();
 	return (this->die(user, this->getInfo(user, "die", packets)));
 }
 
@@ -708,17 +713,18 @@ void	Server::server_loop() {
 				int				 new_fd = accept(_pfds[0].fd, (struct sockaddr *)&their_addr, &sin_size);
 				if (new_fd == -1) {
 					std::cerr << RED << "ERROR: accept failed" << NC << std::endl;
-					throw Server::acceptFailed();
-				}
-				char hostname[NI_MAXHOST];
-				fcntl(new_fd, F_SETFL, O_NONBLOCK);
-				if (getnameinfo((struct sockaddr *)&their_addr, sin_size, hostname, NI_MAXHOST, NULL, 0,  NI_NUMERICSERV) != 0)
-					std::cerr << RED << "ERROR : getnameinfo() failed" << NC << std::endl;
-				_pfds.push_back(pollfd());
-				_pfds.back().events = POLLIN;
-				_pfds.back().fd = new_fd;
-				_users.push_back(User(new_fd, hostname));
-				std::cout  << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
+				} else {
+					char hostname[NI_MAXHOST];
+					fcntl(new_fd, F_SETFL, O_NONBLOCK);
+					if (getnameinfo((struct sockaddr *)&their_addr, sin_size, hostname, NI_MAXHOST, NULL, 0,  NI_NUMERICSERV) != 0)
+						std::cerr << RED << "ERROR : getnameinfo() failed" << NC << std::endl;
+					else {
+					_pfds.push_back(pollfd());
+					_pfds.back().events = POLLIN;
+					_pfds.back().fd = new_fd;
+					_users.push_back(User(new_fd, hostname));
+					std::cout  << GRN << "SERVER: new connection from " << hostname << " on socket " << new_fd << NC << std::endl;
+				}}
 			} else {
 				stop = this->receive();
 			}
@@ -791,9 +797,4 @@ void	Server::print_all() {
 		it++;
 	}
 	std::cout << std::endl << std::endl;
-}
-
-const char *Server::acceptFailed::what(void) const throw()
-{
-	return ("Accept Failed.");	
 }
