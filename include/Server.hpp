@@ -14,6 +14,7 @@
 #define SERVER_HPP
 
 #define LEN_MAX_PACKETS 512
+#define OPER_MDP "witch"
 
 #include <map>
 #include <vector>

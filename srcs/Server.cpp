@@ -147,7 +147,7 @@ void	Server::ping(std::vector<User>::iterator user, std::pair<bool, std::string>
 	else if (user->get_isConnected() == false)
 		user->send_error(to_string(ERRNOORIGIN), ":No origin specified");
 	else {
-		user->send_message("", "PONG " + server.second + " " + user->get_nickName() + "\r\n");
+		user->send_message("", "PONG :" + server.second + " " + user->get_nickName() + "\r\n");
 	}
 }
 
@@ -242,7 +242,7 @@ void	Server::oper(std::vector<User>::iterator user, std::pair<bool, std::string>
 		std::vector<User>::iterator it = this->_users.begin();
 		for (; it != this->_users.end(); it++) {
 			if (it->get_nickName().compare(tab[0]) == 0) {
-				if (this->get_password().compare(tab[1]) == 0) {
+				if (tab[1].compare(OPER_MDP) == 0) {
 					user->set_isOperator(true);
 					it->send_message(to_string(RPL_YOUREOPER), ": You are now an IRC operator");
 				} else {

@@ -9,12 +9,15 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 BUG
-	❌ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
-		❌ A VOIR: pourquoi les messages de join ne s'affiche pas tout le temps
-		❌ des fois oper dit qu'il ne connait pas l'user ou envoie un mag positif mais tu n'a pas les droits operator
+	❌ segfault reconnexion 
+	❌ double free 
+	❌ buffer after kill someone
+	❌ banned list dont work always
+	❌ mot de passe ""
+	❌ probleme de ping/pong
+	✅ Dans la liste des nickname renvoye par join le @ veut dire operator, il doit seulement etre mis devant les operateurs
 	✅ On doit pas pouvoir se kick soit memes
-	❌ Suppression du channel quand le dernier PART
-		❌ Tuojours un operator dans le channel
+	✅ Suppression du channel quand le dernier PART
 	✅ Probleme quand on se deconnect puis reconnecte, error : already registered
 	✅ VALGRIND !!!!
 
@@ -76,7 +79,7 @@ COMMAND :
 	✅	KICK :
 		KICK <channel> <client> :[<message>]
 			Forcibly removes <client> from <channel>.[12] This command may only be issued by channel operators. Defined in RFC 1459. 
-	❌	KILL : 
+	✅	KILL : 
 		KILL <client> <comment>
 			Forcibly removes <client> from the network.[13] This command may only be issued by IRC operators. Defined in RFC 1459. 
 
@@ -91,5 +94,5 @@ CHANNEL MODES :
 		✅ 	o : channel operator 
 		✅ 	v : voice 
 	for channels : 
-		❌	i : invite only
-		❌	m : moderated
+		✅	i : invite only
+		✅	m : moderated
