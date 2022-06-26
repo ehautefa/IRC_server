@@ -8,7 +8,7 @@
 		   
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
-BUG
+🔘 BUG
 	❌ segfault reconnexion 
 	❌ double free 
 	❌ banned list dont work always
@@ -22,7 +22,7 @@ BUG
 	✅ VALGRIND !!!!
 
 
-❌ END
+ ✅ END
 	✅	Handling multiple clients at the same time										
 	✅	Authentification								
 	✅	Set a Nickname
