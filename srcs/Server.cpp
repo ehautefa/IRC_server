@@ -696,7 +696,7 @@ void	Server::server_loop() {
 	_pfds.back().events = POLLIN;
 	_pfds.back().fd = _sockfd;
 	while (!stop) {
-		// print_all();
+		print_all();
 		std::cout << CYN << "SERVER: waiting for connections..." << NC << std::endl;
 		num_events = poll(&_pfds[0], _pfds.size(), -1);
 		if (num_events == -1) {

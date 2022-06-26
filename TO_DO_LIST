@@ -9,8 +9,8 @@
 ✅ FAIT ❌ PAS COMMENCÉ 🔘 EN COURS
 
 🔘 BUG
-	❌ segfault reconnexion 
-	❌ double free 
+	✅ segfault reconnexion 
+	✅ double free 
 	❌ banned list dont work always
 	✅ mot de passe ""
 	✅ buffer after kill someone => cause, iterator can change after an erase
