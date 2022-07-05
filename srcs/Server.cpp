@@ -651,12 +651,11 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->clear_buffer();
 	bool stop = this->die(user, this->getInfo(user, "die", packets));
 	if (user->get_cmd_found() == false && packets.find("QUIT") == std::string::npos) {
-		// std::cout << RED << "Command not found" << NC << std::endl;
 	    user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknow command");
 	} else {
 	    user->set_cmd_found(false);
 	}
-	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
+	if (user->get_mdp() == true && user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
 			{
@@ -763,6 +762,8 @@ bool	Server::receive() {
 			}
 			if (buffer.find("\n") != std::string::npos) {
 				std::pair<bool, std::string> pass = this->getInfo(this->get_user(_pfds[i].fd), "PASS", std::string(buffer));
+				if (pass.first == true  && pass.second.compare(_password) == 0)
+					this->get_user(_pfds[i].fd)->set_mdp(true);
 				if (pass.first == true  && pass.second.compare(_password) != 0){
 					if (pass.second.size() == 0)
 						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");
