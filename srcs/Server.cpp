@@ -649,8 +649,13 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	if (this->kill(user, this->getInfo(user, "kill", packets)) == false)
 		user->clear_buffer();
-	std::cout << RED << user->get_isConnected() << " " << user->get_nickName() << " " << user->get_userName() << " " << user->get_mdp() << NC << std::endl;
-	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) { // && user->get_mdp() == true) {
+	bool stop = this->die(user, this->getInfo(user, "die", packets));
+	if (user->get_cmd_found() == false && packets.find("QUIT") == std::string::npos) {
+	    user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknow command");
+	} else {
+	    user->set_cmd_found(false);
+	}
+	if (user->get_mdp() == true && user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
 			{
@@ -667,12 +672,6 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->send_message(to_string(RPL_WELCOME), user->get_nickName() + " :Welcome to the Internet Relay Network " + user->get_nickName() + "!"+ user->get_userName() +"@"+ user->get_hostName());
 		user->print_user();
 		this->motd(user);
-	}
-	bool stop = this->die(user, this->getInfo(user, "die", packets));
-	if (user->get_cmd_found() == false) {
-		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknow command");
-	} else {
-		user->set_cmd_found(false);
 	}
 	return (stop);
 }
@@ -762,8 +761,8 @@ bool	Server::receive() {
 			}
 			if (buffer.find("\n") != std::string::npos) {
 				std::pair<bool, std::string> pass = this->getInfo(this->get_user(_pfds[i].fd), "PASS", std::string(buffer));
-				// if (pass.first == true && pass.second.compare(_password) == 0) 
-				// 	this->get_user(_pfds[i].fd)->set_mdp(true);
+				if (pass.first == true  && pass.second.compare(_password) == 0)
+					this->get_user(_pfds[i].fd)->set_mdp(true);
 				if (pass.first == true  && pass.second.compare(_password) != 0){
 					if (pass.second.size() == 0)
 						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");

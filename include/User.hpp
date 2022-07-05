@@ -23,7 +23,7 @@ class User
 {
 
 	private:
-		int		 _fd;
+		int		 	_fd;
 		bool		_mdp;
 		bool		_cmd_found;
 		std::string _nickName;
@@ -39,20 +39,17 @@ class User
 	public:
 		User();
 		User(int fd, std::string hostname);
-		// User(const User &src);
-		// User &operator=(const User &rhs);
 		~User(void);
 
 		std::string packets;
 
-
 		// GETTERS
 
-		int		get_fd(void) const;
-		bool	get_isConnected(void) const;
-		bool	get_mode(char mode) const;
-		bool	get_mdp(void) const;
-		bool	get_cmd_found(void) const;
+		int			get_fd(void) const;
+		bool		get_isConnected(void) const;
+		bool		get_mode(char mode) const;
+		bool		get_mdp(void) const;
+		bool		get_cmd_found(void) const;
 		std::string get_mode(void) const;
 		std::string get_nickName(void) const;
 		std::string get_hostName(void) const;
@@ -68,7 +65,6 @@ class User
 		bool		set_mode(char mode);
 		void		set_mdp(bool mdp);
 		void		set_cmd_found(bool cmd_found);
-		void		delete_mode(char mode);
 		void		set_nickName(std::string nickName);
 		void		set_userName(std::string userName);
 		void		set_hostName(std::string hostName);
@@ -77,6 +73,7 @@ class User
 		void		set_isOperator(bool isOperator);
 		void		set_buffer(std::string buffer);
 
+		void		delete_mode(char mode);
 		void		print_user(void); // for debug
 		int 		send_message(std::string rpl, std::string to_send);
 		int 		send_error(std::string rpl, std::string to_send);

@@ -33,9 +33,9 @@ std::string User::get_buffer(void) const { return(_buffer); }
 
 std::string	User::get_away(void) const { return(_away); }
 
-bool	User::get_mdp(void) const { return (_mdp); }
+bool	User::get_mdp(void) const { return(_mdp); }
 
-bool	User::get_cmd_found(void) const { return (_cmd_found); }
+bool	User::get_cmd_found(void) const { return(_cmd_found); }
 
 bool	User::get_isConnected(void) const { return(_isConnected); }
 
@@ -48,6 +48,10 @@ void	User::clear_buffer(void) {
 
 
 // SETTER
+
+void	User::set_mdp(bool mdp) { _mdp = mdp; }
+
+void	User::set_cmd_found(bool cmd_found) { _cmd_found = cmd_found; }
 
 void	User::set_buffer(std::string buffer) {
 	if (_buffer.empty() )
