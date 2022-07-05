@@ -1,6 +1,0 @@
-==357409== Memcheck, a memory error detector
-==357409== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==357409== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==357409== Command: ./ircserv 6667 pass
-==357409== Parent PID: 357406
-==357409== 
