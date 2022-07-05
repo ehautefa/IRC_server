@@ -24,6 +24,8 @@ class User
 
 	private:
 		int		 _fd;
+		bool		_mdp;
+		bool		_cmd_found;
 		std::string _nickName;
 		std::string _userName;
 		std::string _hostName;
@@ -49,6 +51,8 @@ class User
 		int		get_fd(void) const;
 		bool	get_isConnected(void) const;
 		bool	get_mode(char mode) const;
+		bool	get_mdp(void) const;
+		bool	get_cmd_found(void) const;
 		std::string get_mode(void) const;
 		std::string get_nickName(void) const;
 		std::string get_hostName(void) const;
@@ -62,6 +66,8 @@ class User
 		// SETTER	
 
 		bool		set_mode(char mode);
+		void		set_mdp(bool mdp);
+		void		set_cmd_found(bool cmd_found);
 		void		delete_mode(char mode);
 		void		set_nickName(std::string nickName);
 		void		set_userName(std::string userName);

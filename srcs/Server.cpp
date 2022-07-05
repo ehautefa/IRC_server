@@ -649,7 +649,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	if (this->kill(user, this->getInfo(user, "kill", packets)) == false)
 		user->clear_buffer();
-	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
+	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0 && user->get_mdp() == true) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
 			{
@@ -667,8 +667,13 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
-	// user->clear_buffer();
-	return (this->die(user, this->getInfo(user, "die", packets)));
+	bool stop = this->die(user, this->getInfo(user, "die", packets));
+	if (user->get_cmd_found() == false) {
+		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknow command");
+	} else {
+		user->set_cmd_found(false);
+	}
+	return (stop);
 }
 
 std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, std::string to_find, std::string buffer) {
@@ -687,9 +692,9 @@ std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, s
 		end++;
 	std::string ret = buffer.substr(begin, end - begin);
 	if (noise_before == true) {
-		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknown command");
 		return (std::make_pair(false, ""));
 	}
+	user->set_cmd_found(true);
 	return std::make_pair(true, ret);
 }
 
@@ -763,8 +768,11 @@ bool	Server::receive() {
 					close(_pfds[i].fd);
 					_pfds.erase(_pfds.begin() + i);
 					_users.erase(this->get_user(_pfds[i].fd));
-				}
-				else {
+				} else if (pass.first == true  && pass.second.compare(_password) == 0) {
+					this->get_user(_pfds[i].fd)->set_mdp(true);
+					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
+					stop = this->parse_packets(buffer, _pfds[i].fd);
+				} else {
 					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
 					stop = this->parse_packets(buffer, _pfds[i].fd);
 				}
