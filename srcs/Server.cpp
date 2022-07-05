@@ -649,6 +649,13 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	if (this->kill(user, this->getInfo(user, "kill", packets)) == false)
 		user->clear_buffer();
+	bool stop = this->die(user, this->getInfo(user, "die", packets));
+	if (user->get_cmd_found() == false && packets.find("QUIT") == std::string::npos) {
+		// std::cout << RED << "Command not found" << NC << std::endl;
+	    user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknow command");
+	} else {
+	    user->set_cmd_found(false);
+	}
 	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
@@ -667,8 +674,7 @@ bool	Server::parse_packets(std::string packets, int fd) {
 		user->print_user();
 		this->motd(user);
 	}
-	// user->clear_buffer();
-	return (this->die(user, this->getInfo(user, "die", packets)));
+	return (stop);
 }
 
 std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, std::string to_find, std::string buffer) {
@@ -690,6 +696,7 @@ std::pair<bool, std::string> Server::getInfo(std::vector<User>::iterator user, s
 		user->send_message(to_string(ERRUNKNOWNCOMMAND), " :Unknown command");
 		return (std::make_pair(false, ""));
 	}
+	user->set_cmd_found(true);
 	return std::make_pair(true, ret);
 }
 
