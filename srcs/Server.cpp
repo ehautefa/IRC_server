@@ -649,7 +649,8 @@ bool	Server::parse_packets(std::string packets, int fd) {
 	this->kick(user, this->getInfo(user, "KICK", packets));
 	if (this->kill(user, this->getInfo(user, "kill", packets)) == false)
 		user->clear_buffer();
-	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0 && user->get_mdp() == true) {
+	std::cout << RED << user->get_isConnected() << " " << user->get_nickName() << " " << user->get_userName() << " " << user->get_mdp() << NC << std::endl;
+	if (user->get_isConnected() == false && user->get_nickName().size() != 0 && user->get_userName().size() != 0) { // && user->get_mdp() == true) {
 		for (size_t i = 0; i < _bannedList.size(); i++) {
 			if (user->get_nickName() == _bannedList[i])
 			{
@@ -761,6 +762,8 @@ bool	Server::receive() {
 			}
 			if (buffer.find("\n") != std::string::npos) {
 				std::pair<bool, std::string> pass = this->getInfo(this->get_user(_pfds[i].fd), "PASS", std::string(buffer));
+				// if (pass.first == true && pass.second.compare(_password) == 0) 
+				// 	this->get_user(_pfds[i].fd)->set_mdp(true);
 				if (pass.first == true  && pass.second.compare(_password) != 0){
 					if (pass.second.size() == 0)
 						this->get_user(_pfds[i].fd)->send_message(to_string(ERRNEEDMOREPARAMS), "PASS :Not enough parameters");
@@ -768,10 +771,6 @@ bool	Server::receive() {
 					close(_pfds[i].fd);
 					_pfds.erase(_pfds.begin() + i);
 					_users.erase(this->get_user(_pfds[i].fd));
-				} else if (pass.first == true  && pass.second.compare(_password) == 0) {
-					this->get_user(_pfds[i].fd)->set_mdp(true);
-					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
-					stop = this->parse_packets(buffer, _pfds[i].fd);
 				} else {
 					std::cout  << GRN << "RECEIVE: " << buffer << NC << std::endl;
 					stop = this->parse_packets(buffer, _pfds[i].fd);
