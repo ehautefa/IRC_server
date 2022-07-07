@@ -794,8 +794,12 @@ void	Server::print_all() {
                                                             
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _users.size() << " clients connected :" << NC << std::endl;
-	for (size_t i = 0; i < _users.size(); i++)
-		std::cout << "    - " << _users[i].get_nickName() << BLU <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
+	for (size_t i = 0; i < _users.size(); i++) {
+		if (_users[i].get_isOperator() == true)
+			std::cout << "    - " << _users[i].get_nickName() << BLU <<  "	mode : operator" << NC << std::endl;
+		else
+			std::cout << "    - " << _users[i].get_nickName() << BLU <<  "	mode : " << _users[i].get_mode() << NC << std::endl;
+	}
 	std::cout << std::endl << std::endl;
 	std::cout << YEL << "SERVER: " << _channels.size() << " channels :" << NC << std::endl;
 	std::map<std::string, Channel>::iterator it = _channels.begin();

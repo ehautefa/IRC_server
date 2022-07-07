@@ -72,7 +72,9 @@ bool	Channel::isVoice(int fd) const {
 }
 
 void	Channel::set_userMode(int fd, char mode) {
-	this->_users_modes[fd] = mode;
+	if ((mode == 'o' && (this->_users_modes[fd] == 'v' || this->_users_modes[fd] == ' '))
+	|| (mode == 'v' && this->_users_modes[fd] == ' '))
+		this->_users_modes[fd] = mode;
 }
 
 void	Channel::delete_userMode(int fd, char mode) {
